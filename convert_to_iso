@@ -1,0 +1,22 @@
+# MDF ti ISO
+sudo apt install mdf2iso
+mdf2iso MyImage.mdf
+
+# BIN and CUE to ISO
+bchunk MyImage.bin MyImage.cue WhateverFilename.iso #mdftoiso works when no .cue file is present?
+
+# IMG to ISO
+sudo apt install ccd2iso
+ccd2iso MyImage.img WhateverFilename.iso
+
+#help: https://beamtic.com/convert-to-iso
+
+#more https://superuser.com/questions/43733/how-do-i-convert-cue-bin-mds-mdf-to-iso-on-ubuntu
+b5i2iso - BlindWrite image to ISO image file converter
+ccd2iso - Converter from CloneCD disc image format to standard ISO
+cdi2iso - DiscJuggler image to ISO image file converter
+daa2iso - The DAA files (Direct Access Archive) to ISO converting tool
+mdf2iso - A simple utility to convert mdf to iso / cue / toc images
+nrg2iso - Extracts ISO9660 data from Nero ".nrg" files
+pdi2iso - Instant Copy image to ISO image file converter
+uif2iso - converts UIF files (used by MagicISO) to ISO or other formats 

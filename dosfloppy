@@ -1,0 +1,10 @@
+#create a blank floppy image
+mkfs.msdos -C /path/imagefile.img 1440
+
+#mount
+sudo mkdir /media/floppy1/
+sudo mount -o loop /path/imagefile.img /media/floppy1/
+sudo mount /path/imagefile.img -o umask=0 /media/floppy1/ #use this!
+
+#unmount
+sudo umount /media/floppy1/

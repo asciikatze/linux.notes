@@ -1,0 +1,7 @@
+lsblk OR sudo fdisk -l	#disks, partitions, mountpoints
+
+# mount hdd ?
+sudo mkdir /mnt/sdb
+sudo mount /dev/sdb /mnt/sdb
+sudo mount | grep sdb #list down all the mounted drives and partitions.
+sudo umount -l /dev/sdb #unmount

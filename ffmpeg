@@ -1,0 +1,2 @@
+#cut video from to
+ffmpeg -i video.mp4 -ss 01:24:17 -to 01:43:40 -c copy trimmed.mp4
