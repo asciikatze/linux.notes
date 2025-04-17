@@ -1,0 +1,14 @@
+# curl
+curl {url}     #download hosted file contents like the html
+curl -I {url}  #only header
+
+# wget
+wget -v {url.mp4}
+wget -v --input-file={file.txt}
+wget -v --limit-rate=50k {url.mp4}
+wget -v --user-agent="{user agent}" --referer={url} {url.mp4}
+
+# yt-dlp
+#help: https://write.corbpie.com/downloading-youtube-videos-and-playlists-with-yt-dlp/
+yt-dlp -f 'bv*[height=720]+ba' <video web page url>
+yt-dlp -x --audio-format mp3 <video web page url>

@@ -1,0 +1,55 @@
+# APACHE2 webserver -----------------------------------------------------------
+sudo apt install apache2
+sudo systemctl status apache2
+
+#make the directories
+sudo mkdir -p /var/www/{mysite-name}/logs
+sudo mkdir -p /var/www/{mysite-name}/public
+
+#move the website files into the public folder
+
+#set file ownership
+sudo chown -R www-data:www-data /var/www/{mysite-name}/public
+
+#make the configuration for the site
+#use the 000-default.conf as a template
+sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/{mysite-name}.conf
+sudo nano /etc/apache2/sites-available/{mysite-name}.conf
+	<VirtualHost *:80>
+	    ServerAdmin webmaster@localhost
+	    DocumentRoot /var/www/{mysite-name}/public
+	    ErrorLog /var/www/{mysite-name}/logs/error.log
+	    CustomLog /var/www/{mysite-name}/logs/access.log combined
+	</VirtualHost>
+
+sudo a2dissite 000-default.conf #disable default site
+sudo a2ensite {mysite-name}.conf #enable the site
+
+sudo systemctl reload apache2
+
+#add custom error pages
+/var/www/{mysite-name}/public/.htaccess
+	ErrorDocument 404 /404.html
+
+# secure apache2
+#edit the config file
+/etc/apache2/apache2.conf
+	<Directory /var/www/{mysite-name}/public>
+	  AllowOverride All
+	  Options -Indexes
+	  ServerSignature off
+	</Directory>
+
+#make a file if above not working
+/var/www/{mysite-name}/public/.htaccess
+	Options -Indexes #add this line
+
+#password protection on site
+sudo apt install apache2-utils
+sudo htpasswd -c /etc/apache2/.htpasswd {login-name}
+/var/www/{mysite-name}/public/.htaccess
+	AuthType Basic
+	AuthName "{messagethatshowsup}"
+	AuthUserFile /etc/apache2/.htpasswd
+	Require valid-user
+
