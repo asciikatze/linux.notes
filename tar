@@ -1,0 +1,11 @@
+# tar -------------------------------------------------------------------------
+tar -xf archive.tar  #unpack, -xvf for verbose
+# for *.tar.gz
+#     *.tar.bz2
+#     *.tar.xz
+# dont need to add any extra options, but you maybe need extra packages/dependencies
+
+tar -tf archive.tar                        #list the contents of a .tar file
+tar -xf archive.tar file1.txt file2.txt    #you can extract individually by specifying which files to extract
+tar -xf archive.tar --wildcards '*.txt'    #extract only .txt files
+tar -xf archive.tar -C /path/to/directory  #extract to a specific directory

@@ -1,11 +1,12 @@
-# MDF ti ISO
+# ISO converter ---------------------------------------------------------------
+#MDF to ISO
 sudo apt install mdf2iso
 mdf2iso MyImage.mdf
 
-# BIN and CUE to ISO
+#BIN and CUE to ISO
 bchunk MyImage.bin MyImage.cue WhateverFilename.iso #mdftoiso works when no .cue file is present?
 
-# IMG to ISO
+#IMG to ISO
 sudo apt install ccd2iso
 ccd2iso MyImage.img WhateverFilename.iso
 
@@ -19,4 +20,20 @@ daa2iso - The DAA files (Direct Access Archive) to ISO converting tool
 mdf2iso - A simple utility to convert mdf to iso / cue / toc images
 nrg2iso - Extracts ISO9660 data from Nero ".nrg" files
 pdi2iso - Instant Copy image to ISO image file converter
-uif2iso - converts UIF files (used by MagicISO) to ISO or other formats 
+uif2iso - converts UIF files (used by MagicISO) to ISO or other formats
+
+# dosfloppy -------------------------------------------------------------------
+#create a blank floppy image
+mkfs.msdos -C /path/imagefile.img 1440
+
+#mount
+sudo mkdir /media/floppy1/
+sudo mount -o loop /path/imagefile.img /media/floppy1/
+sudo mount /path/imagefile.img -o umask=0 /media/floppy1/ #use this!
+
+#unmount
+sudo umount /media/floppy1/
+
+# ffmpeg ----------------------------------------------------------------------
+#cut video from to
+ffmpeg -i video.mp4 -ss 01:24:17 -to 01:43:40 -c copy trimmed.mp4

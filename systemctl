@@ -1,35 +1,33 @@
-# SYSTEMCTL
-
-systemctl --type=service	#list of services
+# systemctl -------------------------------------------------------------------
+systemctl --type=service  #list of services
 systemctl list-unit-files --type=service
-sudo systemctl list-unit-files | grep -E 'disabled|masked'	#lists services that are disbled or masked
+sudo systemctl list-unit-files | grep -E 'disabled|masked'  #lists services that are disbled or masked
 
 sudo systemctl status {daemon/service-name}
 
 sudo systemctl start {daemon/service-name}
 sudo systemctl stop {daemon/service-name}
 
-sudo systemctl enable {daemon/service-name}	#start on boot
-sudo systemctl disable {daemon/service-name}	#not start on boot
+sudo systemctl enable {daemon/service-name}   #start on boot
+sudo systemctl disable {daemon/service-name}  #not start on boot
 
-sudo systemctl mask {daemon/service-name}	#prevents it from starting even if another enabled service requires it, third level of off (stop-1st, disable-2nd, mask-3rd)
+sudo systemctl mask {daemon/service-name}  #prevents it from starting even if another enabled service requires it, third level of off (stop-1st, disable-2nd, mask-3rd)
 sudo systemctl unmask {daemon/service-name}
-# help: https://www.baeldung.com/linux/systemctl-mask-disable
+help: https://www.baeldung.com/linux/systemctl-mask-disable
 
-sudo systemctl reload {daemon/service-name}	#sometimes not enough, prefferred think about webservers
+sudo systemctl reload {daemon/service-name}  #sometimes not enough, prefferred think about webservers
 sudo systemctl restart {daemon/service-name}
-sudo systemctl reload-or-restart {daemon/service-name}	#if cant reload then restart
+sudo systemctl reload-or-restart {daemon/service-name}  #if cant reload then restart
 
-sudo systemctl is-active {daemon/service-name}	#is it runnig
-sudo systemctl is-enabled {daemon/service-name}	#is it enabled
+sudo systemctl is-active {daemon/service-name}   #is it runnig
+sudo systemctl is-enabled {daemon/service-name}  #is it enabled
 
-systemctl --reverse list-dependencies {daemon/service-name} #lists what is dependent on this service, check before removing/masking services
+systemctl --reverse list-dependencies {daemon/service-name}  #lists what is dependent on this service, check before removing/masking services
 
-# SYSTEMD
-
+# systemd ---------------------------------------------------------------------
 pstree
-ps -aux | grep {program}	#processes for that program
-sudo journalctl -xe		#logs for systemd stuff
+ps -aux | grep {program}  #processes for that program
+sudo journalctl -xe       #logs for systemd stuff
 #if journalctl is empty there may be a problem so restart the journalctl daemon
-sudo systemctl list-units | grep journal #to find out the daemon name for journalctl
-sudo systemctl restart systemd-journald #restarts systemd-journald
+sudo systemctl list-units | grep journal  #to find out the daemon name for journalctl
+sudo systemctl restart systemd-journald   #restarts systemd-journald

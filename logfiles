@@ -1,0 +1,18 @@
+/var/log/auth.log    #authorization systems, password prompts, sudo command, remote logins
+                     #if user cant ssh in ... you tail -f this file and see what is happenig during login attempt
+/var/log/daemon.log  #programs that run in the background: display server, SSH sessions, printing services, bluetooth, and more
+/var/log/debug       #debugging information from the Ubuntu system and applications
+/var/log/apport.log  #information about crashes
+/var/log/kern.log    #logs from the Linux kernel
+/var/log/syslog      #if you can’t find anything in the other logs, it’s probably here
+                     #usb not detecting tail -f this file and see what is happenig while you insert the drive
+/var/log/dmesg       #good for hardware trubleshooting, can be viewd by the comamnd 'sudo dmesg'
+/var/log/faillog     #login failures, can be viewd by the comamnd 'faillog'
+/var/log/lastlog     #info about last logins, can be viewd by the comamnd 'lastlog'
+/var/boot.log        #show the text from boot
+/var/log/apt/history.log  #logfiles for apt, package installation and removal information
+/var/log/dpkg.log
+/var/log/dist-upgrade/apt.log  #logs the information during distribution upgrades
+/var/wtmp            #logins, reboots, can be viewd by the comamnd 'last'
+/var/btmp            #bad login attempts, can be viewd by the comamnd 'sudo lastb -adF'
+journalctl -b        #shows all syslog messages since the current boot.

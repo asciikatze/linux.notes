@@ -6,10 +6,9 @@ sudo update-grub
 
 #display of the splash screen
 sudo nano /ect/default/grub
-	GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"	#hide text and show splash, default for the desktop
-	GRUB_CMDLINE_LINUX_DEFAULT="splash"	#for the splash, but the ability to show the boot messages by pressing Esc
+	GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"  #hide text and show splash, default for the desktop
+	GRUB_CMDLINE_LINUX_DEFAULT="splash"        #for the splash, but the ability to show the boot messages by pressing Esc
 sudo update-grub
-
 
 #manual kernel module loading 
 file: /etc/modules

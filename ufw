@@ -1,5 +1,4 @@
-# UFW firewall
-
+# UFW firewall ----------------------------------------------------------------
 sudo ufw status
 OR
 sudo ufw status verbose
@@ -7,44 +6,40 @@ sudo ufw status verbose
 sudo ufw enable
 sudo ufw disable
 
-# adding rules
-sudo ufw default deny incoming #exception is pings!
+#add rules
+sudo ufw default deny incoming  #exception is pings!
 sudo ufw default allow outgoing
 
-sudo ufw limit 22/tcp	#limit: some protection against brute force
-sudo ufw deny 80/tcp	#deny: ignoring / reject: let the sender know traffic is being denied
+sudo ufw limit 22/tcp  #limit: some protection against brute force, ssh uses tcp
+sudo ufw deny 80/tcp   #deny: ignoring / reject: let the sender know traffic is being denied
 sudo ufw allow 443/tcp
-ufw {rule-here} comment '{comment-text-here}' #add comment to rule
+ufw {rule-here} comment '{comment-text-here}'  #add comment to rule
 
-# delete rules
+#delete rules
 sudo ufw delete {rule-here}
 sudo ufw status numbered
 sudo ufw delete {number}
-sudo ufw reset	#delete all firewall rules
+sudo ufw reset               #delete all firewall rules
 
-sudo ufw app list	#config profile for applications
+sudo ufw app list  #config profile for applications
 sudo ufw allow "{application-name}"
 sudo ufw delete allow "{application-name}"
 
-# deny PING
-
+# deny ping -------------------------------------------------------------------
 #change ACCEPT to DROP in
 /etc/ufw/before.rules
-
 	# ok icmp codes for INPUT
 	-A ufw-before-input -p icmp --icmp-type destination-unreachable -j ACCEPT
 	-A ufw-before-input -p icmp --icmp-type time-exceeded -j ACCEPT
 	-A ufw-before-input -p icmp --icmp-type parameter-problem -j ACCEPT
 	-A ufw-before-input -p icmp --icmp-type echo-request -j ACCEPT
-
 	# ok icmp code for FORWARD
 	-A ufw-before-forward -p icmp --icmp-type destination-unreachable -j ACCEPT
 	-A ufw-before-forward -p icmp --icmp-type time-exceeded -j ACCEPT
 	-A ufw-before-forward -p icmp --icmp-type parameter-problem -j ACCEPT
 	-A ufw-before-forward -p icmp --icmp-type echo-request -j ACCEPT
 
-# ufw LOGS
-
+# ufw logs --------------------------------------------------------------------
 #For ufw logging to work, rsyslog must be enabled.
 service rsyslog status
 

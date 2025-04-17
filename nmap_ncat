@@ -1,55 +1,27 @@
-# NMAP
+# nmap ------------------------------------------------------------------------
+sudo nmap -sL 192.168.1.0/24     #list devices on network
+sudo nmap -sn 192.168.1.2        #ping, -sP does the same, no port scan
+sudo nmap -sS 192.168.1.2        #standard scan
+  -sS  #half handshake SYN SYNACK
+  -sT  #full handshake SYN SYNACK ACK
+sudo nmap -sS -v 192.168.1.2     #verbose mode
+sudo nmap -sS 192.168.1.2-6 --exclude 192.168.1.4  #scan range of ips + exclusion
+sudo nmap -sV 192.168.1.2        #tries to guess service version on ports
+sudo nmap -O 192.168.1.2         #tries to guess the operating system
+sudo nmap -A 192.168.1.2         #agressive scan
+sudo nmap scanme.nmap.org        #scan a domain
+sudo nmap -p22 192.168.1.2       #scan a port
+sudo nmap -p1-65535 192.168.1.2  #scan the whole port range
+sudo nmap -p- 192.168.1.2        #scan all the ports
 
-sudo nmap -sL 192.168.1.0/24	#list devices on network
-sudo nmap -sn 192.168.1.2	#ping, -sP does the same, no port scan
-sudo nmap -sS 192.168.1.2	#standard scan
-	-sS #half handshake SYN SYNACK
-	-sT #full handshake SYN SYNACK ACK
-sudo nmap -sS -v 192.168.1.2	#verbose mode
-sudo nmap -sS 192.168.1.2-6 --exclude 192.168.1.4	#scan range of ips + exclusion
-sudo nmap -sV 192.168.1.2	#tries to guess service version on ports
-sudo nmap -O 192.168.1.2	#tries to guess the operating system
-sudo nmap -A 192.168.1.2	#agressive scan
-sudo nmap scanme.nmap.org	#scan a domain
-sudo nmap -p22 192.168.1.2	#scan a port
-sudo nmap -p1-65535 192.168.1.2	#scan the whole port range
-sudo nmap -p- 192.168.1.2	#scan all the ports
+sudo nmap -sL 192.168.1.0/24 -oN list.txt  #writes the output to a file, -oX provides xml output
+sudo nmap -sL 192.168.1.0/24 > list.txt    #writes the output to a file
+sudo nmap -sL list.txt                     #reads ip adresses from file
 
-sudo nmap -sL 192.168.1.0/24 -oN list.txt	#writes the output to a file, -oX provides xml output
-sudo nmap -sL 192.168.1.0/24 > list.txt		#writes the output to a file
-sudo nmap -sL list.txt				#reads ip adresses from file
+nmap <IP> -D <SPOOFIP1>,<SPOOFIP2>,<SPOOFIP3>  #ip spoof
+nmap <IP> --spoof-mac <MACADDRESS>             #macaddress spoof
 
-nmap <IP> -D <SPOOFIP1>,<SPOOFIP2>,<SPOOFIP3>	#ip spoof
-nmap <IP> --spoof-mac <MACADDRESS>		#macaddress spoof
-
-# PORTS
-
-well-known ports (also known as system ports) are those numbered from 0 through 1023
-registered ports are those from 1024 through 49151
-dynamic or private ports are those from 49152 through 65535
-20 	File Transfer Protocol (FTP) Data Transfer
-21 	File Transfer Protocol (FTP) Command Control
-22 	Secure Shell (SSH) Secure Login
-23 	Telnet remote login service, unencrypted text messages
-25 	Simple Mail Transfer Protocol (SMTP) email delivery
-53 	Domain Name System (DNS) service
-67,68 	Dynamic Host Configuration Protocol (DHCP)
-80 	Hypertext Transfer Protocol (HTTP) used in the World Wide Web
-110 	Post Office Protocol (POP3)
-119 	Network News Transfer Protocol (NNTP)
-123 	Network Time Protocol (NTP)
-143 	Internet Message Access Protocol (IMAP) Management of digital mail
-161 	Simple Network Management Protocol (SNMP)
-179	Border Gateway Protocol (BGP)
-194 	Internet Relay Chat (IRC)
-443 	HTTP Secure (HTTPS) HTTP over TLS/SSL
-500	Internet Security Association and Key Management Protocol (ISAKMP)
-546,547	DHCPv6 IPv6 version of DHCP
-587	Modern, secure SMTP that uses encryption
-3389	Remote Desktop Protocol (RDP)
-
-# NETCAT / NCAT / NC
-
+# netcat/ncat/nc --------------------------------------------------------------
 #chat
 #listener side
 nc -l -p <PORTNUMBER>
@@ -73,3 +45,30 @@ nc -l -p <portnumber> -e /bin/bash #nc does not have the -e use ncat instead
 #quick webserver for a single file.html to a browser
 { echo -ne "HTTP/1.0 200 OK\r\n\r\n"; cat file.html; } | nc -l -p 8080
 #help: https://jameshfisher.com/2018/12/31/how-to-make-a-webserver-with-netcat-nc/
+
+# netdiscover ---------------- ???? -------------------------------------------
+
+# help ------------------------------------------------------------------------
+#well-known ports (also known as system ports) are those numbered from 0 through 1023
+#registered ports are those from 1024 through 49151
+#dynamic or private ports are those from 49152 through 65535
+20       File Transfer Protocol (FTP) Data Transfer
+21       File Transfer Protocol (FTP) Command Control
+22       Secure Shell (SSH) Secure Login
+23       Telnet remote login service, unencrypted text messages
+25       Simple Mail Transfer Protocol (SMTP) email delivery
+53       Domain Name System (DNS) service
+67,68    Dynamic Host Configuration Protocol (DHCP)
+80       Hypertext Transfer Protocol (HTTP) used in the World Wide Web
+110      Post Office Protocol (POP3)
+119      Network News Transfer Protocol (NNTP)
+123      Network Time Protocol (NTP)
+143      Internet Message Access Protocol (IMAP) Management of digital mail
+161      Simple Network Management Protocol (SNMP)
+179      Border Gateway Protocol (BGP)
+194      Internet Relay Chat (IRC)
+443      HTTP Secure (HTTPS) HTTP over TLS/SSL
+500      Internet Security Association and Key Management Protocol (ISAKMP)
+546,547  DHCPv6 IPv6 version of DHCP
+587      Modern, secure SMTP that uses encryption
+3389     Remote Desktop Protocol (RDP)

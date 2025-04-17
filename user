@@ -1,46 +1,45 @@
-# USER
-
-useradd {user} -m -s /bin/bash	#-m: create home folder -s: add login shell OR adduser {user}
-passwd {user}	#add/change password
-userdel {user}	#delete user
+# user ------------------------------------------------------------------------
+useradd {user} -m -s /bin/bash  #-m: create home folder -s: add login shell OR adduser {user}
+passwd {user}                   #add/change password
+userdel {user}                  #delete user
 
 #set the requirements for user passwords
 /etc/pam.d/common-password
 
-id -u <username>	#shows user id UID
+id -u <username>  #shows user id UID
 
-usermod -l {users-newname} {user}	#change username
-usermod {user} --shell /bin/bash	#add bash shell to user
+usermod -l {users-newname} {user}  #change username
+usermod {user} --shell /bin/bash   #add bash shell to user
 
-usermod -aG {group} {user}	#add user to group
-gpasswd -d {user} {group}	#remove user from group
-groups {user}			#list groups user is in
+usermod -aG {group} {user}  #add user to group
+gpasswd -d {user} {group}   #remove user from group
+groups {user}               #list groups user is in
 
-file: /etc/passwd #all the users on the system
-	<username>:x:<userid>:<groupid>:<info,>:<homedirectory>:<whatshelltheuseruses>	#x means the password stored in /etc/shadow
+file: /etc/passwd  #all the users on the system
+	<username>:x:<userid>:<groupid>:<info,>:<homedirectory>:<whatshelltheuseruses>  #x means the password stored in /etc/shadow
+file: /etc/shadow  #user passwords
 
-users OR who OR w	#users currently logged in
-whoami	#current user
-id	#current users group ids
+users OR who OR w  #users currently logged in
+whoami             #current user
+id                 #current users group ids
 
-su -l {user}	#switch to user
-su -l		#switch to root
+su -l {user}  #switch to user
+su -l         #switch to root
 
 #limit root account(this does not disable ssh access for root)
-sudo passwd -l root	#disable root account, in the /etc/shadow file a '!' appears in font of the password-hash
-sudo passwd -u root	#enable root account
+sudo passwd -l root  #disable root account, in the /etc/shadow file a '!' appears in font of the password-hash
+sudo passwd -u root  #enable root account
 OR
-sudo chsh root		#change the loginshell to /usr/sbin/nologin binary shell, you can check for it in the /etc/passwd file
-sudo nano /etc/passwd	#you have to change it back manually
+sudo chsh root         #change the loginshell to /usr/sbin/nologin binary shell, you can check for it in the /etc/passwd file
+sudo nano /etc/passwd  #you have to change it back manually
 
 #to disable motd and login messages create the .hushlogin file in the users home folder!
 touch .hushlogin
 
-# GROUP
-
-groupadd {group}	#create group
-groupdel {group}	#delete group
-file: /etc/group	#all the groups on the system, all users have a personal group
+# group -----------------------------------------------------------------------
+groupadd {group}  #create group
+groupdel {group}  #delete group
+file: /etc/group  #all the groups on the system, all users have a personal group
 
 #default groups
 	adm         Monitor system logs
@@ -52,10 +51,10 @@ file: /etc/group	#all the groups on the system, all users have a personal group
 	sambashare  Share files with the local network
 	lxd         Manage LXD server(system container manager)
 
-sudo visudo #edits the file: /etc/sudoers.tmp
+sudo visudo  #edits the file: /etc/sudoers.tmp
 
 #brute force login mitigation
 /etc/security/faillock.conf
 	# User privilige specification
-	<USER> ALL = </PATH/TO/COMMAND> #add a command that the user can use like root?????
+	<USER> ALL = </PATH/TO/COMMAND> #add a command that the user can use like root??
 

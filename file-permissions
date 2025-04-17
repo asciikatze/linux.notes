@@ -1,5 +1,4 @@
-# FILE PERMISSIONS
-
+# file permissions ------------------------------------------------------------
 "Permissions" File attributes that define who can access or change a file and wheter a file can be executed as a program.
 
 "-rwxr-xr-x" Shows file type and prmissions
@@ -33,7 +32,6 @@ The write bit allows the affected user to create, rename, or delete files within
 The read bit allows the affected user to list the files within the directory.
 The execue bit allows the affected user to enter the directory and access files and directories inside.
 
-# FILE OWNERSHIP
-
-chown <user>:<group> <filename>	#set file ownership
-chown -R <user>:<group> <directory>	#set folder ownership, -R apply to files within directory
+# file ownership --------------------------------------------------------------
+chown <user>:<group> <filename>      #set file ownership
+chown -R <user>:<group> <directory>  #set folder ownership, -R apply to files within directory
