@@ -31,6 +31,10 @@ apt list --installed                   #lists all the programs
 apt list --installed | wc -l           #number of installed packages
 apt list --installed | grep {program}  #search for a installed program
 
+# logs for apt
+/var/log/apt/history.log
+/var/log/apt/term.log
+
 # aptitude apt on steroids
 sudo aptitude
 
@@ -72,6 +76,11 @@ sudo snap enable {program}
 #pending update of snap store
 snap-store --quit
 sudo snap refresh
+
+# logs for snap
+# log empties after 1 day for succeeded changes and 7 days for faliures
+snap changes  #list recent changes
+snap tasks    #list steps involved in a change
 
 # help ------------------------------------------------------------------------
 search the manual: apropos <keyword>
