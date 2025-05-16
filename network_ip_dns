@@ -37,6 +37,11 @@ sudo nmtui
 #information about network connections managed by NetworkManager
 file: /etc/NetworkManager/system-connections/
 
+#show current connected wifi password + QR-code
+nmcli device wifi show-password
+#windows show wifi credentials
+netsh wlan show profiles
+
 # dns -------------------------------------------------------------------------
 file: /etc/hosts                        #local dns rules your system looks here first
 resolvectl status                       #dns config on each network interface
