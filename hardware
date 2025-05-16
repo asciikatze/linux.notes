@@ -1,5 +1,7 @@
 sudo shutdown now OR sudo poweroff   #shutdown
 sudo shutdown -r now OR sudo reboot  #restart
+systemctl reboot                     #this does the trick too
+systemctl poweroff
 
 uptime   #uptime
 free -h  #memory
