@@ -16,3 +16,4 @@
 /var/wtmp            #logins, reboots, can be viewd by the comamnd 'last'
 /var/btmp            #bad login attempts, can be viewd by the comamnd 'sudo lastb -adF'
 journalctl -b        #shows all syslog messages since the current boot.
+           -f        #follow syslog messages
