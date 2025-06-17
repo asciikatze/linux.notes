@@ -37,3 +37,5 @@ sudo umount /media/floppy1/
 # ffmpeg ----------------------------------------------------------------------
 #cut video from to
 ffmpeg -i video.mp4 -ss 01:24:17 -to 01:43:40 -c copy trimmed.mp4
+#take a picture
+ffmpeg -f video4linux2 -i /dev/v4l/by-id/usb-0c45_USB_camera-video-index0 -vframes 1  -video_size 640x480 test.jpeg
