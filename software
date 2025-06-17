@@ -89,3 +89,7 @@ locate programfiles: which {program} AND whereis {program}
 
 #if man pages are missing
 sudo apt install manpages man-db
+
+# if something messed up with the locale
+locale                    #see what is being used
+dpkg-reconfigure locales  #setup for locales
