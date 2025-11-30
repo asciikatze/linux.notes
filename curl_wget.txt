@@ -1,0 +1,15 @@
+# curl
+curl {url}     #download hosted file contents like the .html
+curl -I {url}  #only the header
+
+# wget
+wget -v {url.mp4}
+wget -v --input-file={file.txt}
+wget -v --limit-rate=50k {url.mp4}
+wget -v --user-agent="{user agent}" --referer={url} {url.mp4}
+
+# yt-dlp
+yt-dlp -f 'bv*[height=720]+ba' {url}
+yt-dlp -x --audio-format mp3 {url}
+#add this tag if cant find method to download: --ies Generic,HTML5
+
