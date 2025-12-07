@@ -1,0 +1,28 @@
+#screen terminal multiplexer
+
+screen      #start
+exit        #terminating active session
+Ctrl+a d    #detach it will still run in the background
+screen -ls  #list screens
+sreen -r    #reconnect, add session numer or name at the end
+
+screen -S <session name>  #you can start a session named
+screen -XS <id> quit      #terminate session by session id
+
+Ctrl+a c      #create a new screen window in session
+Ctrl+a n      #jump to next window in session
+Ctrl+a p      #jump to previous window in session
+Ctrl+a <num>  #change between the windows inside a session
+Ctrl+a |      #split screen vertically
+Ctrl+a S      #split screen horizontally
+Ctrl+a TAB    #hop between panels
+
+Ctrl+a : resize 25%  #resize panelsplit
+Ctrl+a : remove      #remove panel
+
+#logging
+screen -L  #start with logging
+Ctrl+a H   #start-stop toggle logging
+
+help: https://www.youtube.com/watch?v=ug0MWpQjvWo
+help: https://www.gnu.org/software/screen/manual/html_node/Default-Key-Bindings.html

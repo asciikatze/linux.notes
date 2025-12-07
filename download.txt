@@ -1,0 +1,19 @@
+# curl
+curl {url}     #download hosted file contents like the index.html
+curl -I {url}  #only the header
+
+# wget
+wget -v {urltofile}                   #download a file
+wget -v --input-file={file.txt}       #list with urls to multiple files
+wget -v --limit-rate=50k {urltofile}  #limit download speed
+#sometimes server wont allow whitout the referer + you can specify the user agent
+wget -v --user-agent="{useragent}" --referer={url} {urltofile}
+
+# yt-dlp
+yt-dlp -f 'bv*[height=720]+ba' {url}
+yt-dlp -x --audio-format mp3 {url}
+#add this tag if cant find method to download: --ies Generic,HTML5
+
+# git
+git clone {https://github.com/username/repository}
+

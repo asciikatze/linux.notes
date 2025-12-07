@@ -1,0 +1,80 @@
+sudo shutdown now OR sudo poweroff   #shutdown
+sudo shutdown -r now OR sudo reboot  #restart
+systemctl reboot                     #this does the trick too
+systemctl poweroff
+
+uptime   #uptime
+free -h  #memory
+df -h    #disks
+df -i    #number if inodes, if disk reported full this can be the couse
+
+lscpu, lspci, lsusb, lshw              #hardware info
+watch -d lsusb                         #see if the usb device appears in the list whenyou plug it in
+watch lsusb -t	                       #tree view
+sudo lshw -html > file.html            #takes the output and puts it in a html file
+sudo lshw -short
+sudo lshw -class network               #network interfaces
+sudo lshw -class storage               #storage interfaces
+lspci -k | grep -EA3 'VGA|3D|Display'  #show videocard and video driver
+
+sudo dmidecode	                       #extensive hardware information
+sudo dmidecode -s system-product-name  #for my macbook
+
+lsblk OR sudo fdisk -l  #disks, partitions, mountpoints
+
+# mount HDD
+sudo mkdir /mnt/sdb
+sudo mount /dev/sdb1 /mnt/sdb
+sudo umount -l /dev/sdb  #unmount
+sudo mount | grep sdb    #list down all the mounted drives and partitions.
+
+# add disk to fstab to mount it on boot
+file: /etc/fstab
+UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx /mnt/sdb ext4 defaults,nofail 0 2  #nofail means it will bott if hdd is not connected
+#help: https://wiki.archlinux.org/title/Fstab
+
+# temperature sensor: lm-sensors
+  install:  sudo apt install lm-sensors
+  setup:    sudo sensors-detect
+            sudo service kmod start
+  run:      sensors OR watch sensors
+
+# battery status
+upower -e  #list power devices
+upower -i /org/freedesktop/UPower/devices/DisplayDevice
+upower -i /org/freedesktop/UPower/devices/battery_BAT0
+
+# bios information
+sudo dmidecode -t bios -q
+
+# memory info eg speed
+sudo lshw -c memory
+
+# laptop screen on-off
+setterm --blank 1 #after 1 min the screen goes blank, press any key to come back
+setterm --blank 0 #never turn off
+
+# dd --------------------------------------------------------------------------
+# hard drive read test 
+# tries to read all the data from a drive
+dd if=/dev/sda of=/dev/null status=progress  #/dev/sda is the drive that reads from, /dev/null puts the data to nowhere
+
+# wipe a drive
+# make a file for your script
+file: wipe-sdb.sh
+EOF>
+  #!/bin/bash	
+  while true
+  do
+    ((a=a+1))
+    dd if=/dev/urandom of=/dev/sdb status=progress	
+    echo Looped $a times
+  done
+<EOF
+chmod +x wipe-sdb.sh
+sudo ./wipe-sdb.sh
+# let it run about 5 times for best result
+
+# cpu load test
+sudo dd if=/dev/random of=/dev/null  #generates random numbers the throws them to null
+

@@ -1,0 +1,29 @@
+sudo systemctl status {daemon/service}
+sudo systemctl start {daemon/service}
+sudo systemctl stop {daemon/service}
+sudo systemctl enable {daemon/service}   #start on boot
+sudo systemctl disable {daemon/service}  #not start on boot
+
+sudo systemctl reload {daemon/service}  #sometimes not enough, prefferred by webservers
+sudo systemctl restart {daemon/service}
+sudo systemctl reload-or-restart {daemon/service}  #if cant reload then restart
+
+sudo systemctl mask {daemon/service}  #prevents it from starting even if another enabled service requires it, third level of off (stop-1st, disable-2nd, mask-3rd)
+sudo systemctl unmask {daemon/service}
+#help: https://www.baeldung.com/linux/systemctl-mask-disable
+
+systemctl --type=service  #list of services
+systemctl list-unit-files --type=service
+sudo systemctl list-unit-files | grep -E 'disabled|masked'  #lists services that are disbled or masked
+sudo systemctl is-active {daemon/service}   #is it runnig
+sudo systemctl is-enabled {daemon/service}  #is it enabled
+systemctl --reverse list-dependencies {daemon/service} #lists what is dependent on this service, check before removing/masking services
+
+# systemd
+pstree
+ps -aux | grep {program}  #processes for that program
+sudo journalctl -xe       #logs for systemd stuff
+
+#if journalctl is empty there may be a problem so restart the journalctl daemon
+sudo systemctl list-units | grep journal  #to find out the daemon name for journalctl
+sudo systemctl restart systemd-journald   #restarts systemd-journald

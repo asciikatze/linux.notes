@@ -1,0 +1,57 @@
+# UFW firewall ----------------------------------------------------------------
+sudo ufw status  OR  sudo ufw status verbose
+sudo ufw enable
+sudo ufw disable
+
+#add rules
+sudo ufw default deny incoming  #exception is pings!
+sudo ufw default allow outgoing
+
+sudo ufw limit 22/tcp  #limit: some protection against brute force, ssh uses tcp
+sudo ufw deny 80/tcp   #deny: ignoring / reject: let the sender know traffic is being denied
+sudo ufw allow 443/tcp
+ufw {rule-here} comment '{comment-text-here}'  #add comment to rule
+
+#delete rules
+sudo ufw delete {rule-here}
+sudo ufw status numbered
+sudo ufw delete {number}
+sudo ufw reset  #delete all firewall rules
+
+sudo ufw app list  #config profile for applications
+sudo ufw allow "{application-name}"
+sudo ufw delete allow "{application-name}"
+
+# ufw logs --------------------------------------------------------------------
+#For ufw logging to work, rsyslog must be enabled.
+service rsyslog status
+
+sudo ufw logging on
+    off: No managed logging.
+sudo ufw logging low #Level of logging.
+    low: Logs all blocked or allowed packets by defined policies.
+    medium: Same as above, and additionally, it includes packets not matching policies.
+    high: Logs all rate-limiting and without rate limiting.
+    full: Logs all packets without rate limiting.
+
+sudo ls /var/log/ufw*;
+sudo less /var/log/ufw*
+    IN= This field shows the device for incoming traffic.
+    OUT= This field shows the device for outgoing traffic.
+    MAC= This field shows the device’s MAC address.
+    SRC= This field displays a connection source IP address.
+    DST= Displays the destination IP address of a connection.
+    LEN= This field shows the packet’s length.
+    TOS= (Type of Service) This field is used for packet classification, and it is deprecated.
+    PREC= This field shows the Precedence Type of Service.
+    TTL= This field shows Time To Live.
+    ID= This field shows a unique ID for the IP datagram, which is shared by fragments of the same packet.
+    PROTO= This field shows the used protocol.
+
+sudo tail -f /var/log/ufw.log
+    The new fields SPT and DPT, which were not explained previously, show the source and destination ports.
+
+grep -i ufw /var/log/syslog
+grep -i ufw /var/log/messages
+grep -i ufw /var/log/kern.log
+

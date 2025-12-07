@@ -1,0 +1,98 @@
+ip a            #shows network configuration
+hostname -I     #-I for only ip
+ifconfig        #shows network configuration + traffic statistics
+iwconfig        #only wireless info
+ip route        #default gateway or 'ip rout'
+route -n        #-n is for showing the ip addresses
+netstat -tunlp  #network port information, similar: ss -ltnp OR ss -tupln OR ss -atpu
+arp -a          #displays the kernels ipv4 network neighbour cache, ip-macaddress
+netstat -natup  #active internet connections
+
+#change computer name
+file: /etc/hostname  #edit this file
+file: /etc/hosts     #edit this file
+
+#renew ip
+sudo dhclient -r {network-interface}  #release current ip, windows: ipconfig /release
+sudo dhclient {network-interface}     #obtain a new ip, windows: ipconfig /renew
+
+#ping
+ping {ip OR url}              #'localhost' is a valid address, Ctrl+c to stop, with url test the dns as well
+ping -c {number} {ip}  #only sends a number of packets
+
+#traceroute
+traceroute {ip OR url}
+
+#ip information about urls
+dig @{dnsserver} {url}
+nslookup {url} {dnsserver}
+host {url} {dnsserver}
+whois
+
+#NetworkManager on the cli
+sudo nmtui
+#information about network connections managed by NetworkManager
+file: /etc/NetworkManager/system-connections/
+
+#show current connected wifi password + QR-code
+nmcli device wifi show-password
+#windows show wifi credentials
+netsh wlan show profiles
+
+# dns -------------------------------------------------------------------------
+file: /etc/hosts                        #local dns rules your system looks here first
+resolvectl status                       #dns config on each network interface
+sudo systemctl status systemd-resolved  #dns resolver status
+
+systemd-resolve --status                #what dns server is being used
+sudo systemd-resolve --flush-caches     #flush out DNS cache
+
+# where should i configure dns in debian server?
+
+# static ip -------------------------------------------------------------------
+#On ubuntu cloud(program) can manage the interface.. so find out if it does and disable it!
+file: /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg
+	network: {config: disabled}
+
+#Ubuntu desktop usually uses Network-Manager
+#Ubuntu server usually uses networkD
+#Look at the netplan configuration, you can change which to use by editing this file.
+#Set that static ip with networkD. HELP: https://netplan.io/examples/
+file: /etc/netplan/00-installer-config.yaml
+	network:
+	  ethernets:
+	    <NETWORK_INTERFACE>:
+	      addresses:
+	      - <STATIC_IP>/24
+	      gateway4: <GATEWAY_IP>
+	      nameservers:
+	        addresses:
+	        - <DNS_IP_1>
+	        - <DNS_IP_2>
+	        search: []
+	  version: 2
+
+#Check if the file configured correctly!
+sudo netplan try #Kills the network connection! You need to be at the server!
+sudo netplan apply
+sudo reboot
+
+#Set to dynamic ip.
+file: /etc/netplan/00-installer-config.yaml
+	network:
+	  ethernets:
+	    <NETWORK_INTERFACE>:
+	      dhcp4: true
+	  version: 2
+
+#static IP on Debian
+file: /etc/network/interfaces  #the dns is NOT read from here
+	# The primary network interface
+	auto <NETWORK_INTERFACE>
+	iface <NETWORK_INTERFACE> inet static
+	  address <STATIC_IP>
+	  netmask 255.255.255.0
+	  gateway <GATEWAY_IP>
+	  dns-nameservers <DNS_IP_1> <DNS_IP_2>
+
+sudo systemctl restart networking OR sudo systemctl restart networking.service
