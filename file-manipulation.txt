@@ -9,6 +9,7 @@ cd -            #previous directory
 pushd AND popd
 
 ls {directory} > file.txt  #list the files from a directory and writes it in file.txt
+ls -R {directory}          #lists all the files and the files in subdirectories too
 ls | less                  #if the output of a command is too long and you cant see it all, the | pipes it in the 'less' command, | = AltGr+w
 more AND less              #paiger app, less is more than more, if a program gives too much text just use: "| less", press q to stop
 
@@ -75,22 +76,24 @@ Alt + 6        #copy, on mac Esc + 6
 Ctrl + k       #cut
 
 # file system
-/bin        #programs
-/sbin       #super programs
-/usr
-/usr/bin    #same but more
-/usr/sbin   #same but more
-/usr/local  #command programs that the user created
-/usr/lib    #program libraries
-/boot       #boot files
-/var        #logfiles, location related files
-/tmp        #temporary files, files go away after rebbot ot something
-/lib        #shared library files, something the system needs to boot
-/home       #users home directories
-/root       #home folder for root
-/dev        #devices
-/dev/sda    #hard drives
-/etc        #configuration files
-/etc/network
-/mnt        #mount drives, manually mounted drives
-/media      #mount drives, usb drives
+bin -> usr/bin    #program files, commands
+boot              #files needed for the bootloader, initial ram files, linux kernel
+dev               #device files, connected phisical and virual devices
+etc               #configuration files, startup scripts
+home              #users home directories
+lib -> usr/lib    #shared libraries needed for multiple programs
+lost+found        #broken files after a system crash
+media             #mount point for removeable media, example: auto mounted usb drive
+mnt               #(do not need to be)temporary mounting point, example: network storage
+opt               #optional software packages, mostly for copability purposes
+proc              #information about every active process, information about system
+root              #home directory for the root user
+run               #information describing system since boot, running deamons, logins
+sbin -> usr/sbin  #system essential files, essentially same purpose as bin
+srv               #occasionly! used for files serverd by a webserver or fileserver
+sys               #info about devices, drivers, kernel features, similar to proc
+tmp               #temprary files, empties after reboot
+usr               #bulk of the programs live here
+var               #system specific variable files, logs, temporary message files, spool files, occasionly config files, webserver files
+                  #var/tmp does nor clears after reboot
+

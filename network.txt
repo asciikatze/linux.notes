@@ -6,7 +6,7 @@ ip route        #default gateway or 'ip rout'
 route -n        #-n is for showing the ip addresses
 netstat -tunlp  #network port information, similar: ss -ltnp OR ss -tupln OR ss -atpu
 arp -a          #displays the kernels ipv4 network neighbour cache, ip-macaddress
-netstat -natup  #active internet connections
+netstat -natup  #active internet connections and listening services
 
 # change computer name
 file: /etc/hostname

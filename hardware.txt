@@ -30,7 +30,7 @@ sudo mount | grep sdb    #list down all the mounted drives and partitions.
 
 # add disk to fstab to mount it on boot
 file: /etc/fstab
-UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx /mnt/sdb ext4 defaults,nofail 0 2  #nofail means it will bott if hdd is not connected
+UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx /mnt/sdb ext4 defaults,nofail 0 2  #nofail means it will boot if hdd is not connected
 #help: https://wiki.archlinux.org/title/Fstab
 
 # temperature sensor: lm-sensors

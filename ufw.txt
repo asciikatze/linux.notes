@@ -12,6 +12,8 @@ sudo ufw deny 80/tcp   #deny: ignoring / reject: let the sender know traffic is 
 sudo ufw allow 443/tcp
 ufw {rule-here} comment '{comment-text-here}'  #add comment to rule
 
+# to-do: how to deny pings?
+
 #delete rules
 sudo ufw delete {rule-here}
 sudo ufw status numbered
