@@ -1,0 +1,58 @@
+---------- ufw ---------------------------------------------------------------
+sudo ufw status  OR  sudo ufw status verbose
+sudo ufw enable
+sudo ufw disable
+
+# add rules
+sudo ufw default deny incoming  #exception is pings!
+sudo ufw default allow outgoing
+
+sudo ufw limit 22/tcp  #limit: some protection against brute force, ssh uses tcp
+sudo ufw deny 80/tcp   #deny: ignoring / reject: let the sender know traffic is being denied
+sudo ufw allow 443/tcp
+ufw {rule-here} comment '{comment-text-here}'  #add comment to rule
+
+# to-do: how to deny pings?
+
+# delete rules
+sudo ufw delete {rule-here}
+sudo ufw status numbered
+sudo ufw delete {number}
+sudo ufw reset  #delete all firewall rules
+
+# config profile for applications
+sudo ufw app list
+sudo ufw allow "{application-name}"
+sudo ufw delete allow "{application-name}"
+
+# logs
+# for ufw logging to work, rsyslog must be enabled.
+service rsyslog status
+
+sudo ufw logging on
+                 off  #no managed logging.
+
+sudo ufw logging low     #logs all blocked or allowed packets by defined policies.
+                 medium  #same as above, and additionally, it includes packets not matching policies.
+                 high    #logs all rate-limiting and without rate limiting.
+                 full    #logs all packets without rate limiting.
+
+sudo tail -f /var/log/ufw.log
+    IN    device for incoming traffic.
+    OUT   device for outgoing traffic.
+    MAC   device’s MAC address.
+    SRC   connection source IP address.
+    DST   destination IP address of a connection.
+    LEN   packet’s length.
+    TOS   (Type of Service) packet classification, it is deprecated.
+    PREC  Precedence Type of Service.
+    TTL   Time To Live.
+    ID    unique ID for the IP datagram, which is shared by fragments of the same packet.
+    PROTO the used protocol.
+    SPT   source port.
+    DPT   destination port.
+
+grep -i ufw /var/log/syslog
+grep -i ufw /var/log/messages
+grep -i ufw /var/log/kern.log
+

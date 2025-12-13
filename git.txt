@@ -1,7 +1,7 @@
 # ssh
 ssh-keygen -t ed25519 -C "{text}"  #create keypair
 ssh-add ~/.ssh/{private-keyfile}   #add pirvate key to the ssh agent
-# GO TO github.com and set the public key on github.com
+#GO TO github.com and set the public key on github.com
 ssh -T git@github.com              #test the connection
 
 file: ~/.ssh/config
@@ -12,27 +12,33 @@ file: ~/.ssh/config
 	  IdentitiesOnly yes
 
 # set up a local repository
+mkdir /home/user1/git
+#navigate to that directory
 git clone https://github.com/username/repository.git
-# change the current working directory to the local repository where you want to configure the email address that you associate with your git commits
+#set your identity
 git config user.name  AND  git config user.email  #shows what is being used
 git config user.name {name}                 #set name
 git config user.email {dummy-github-email}  #set email
+#set the remote repository
+git remote -v  #check the link to the remote repo
+git remote add origin https://github.com/username/repository.git  #add link if nothing present
+git remote set-url origin git@github.com:username/repository.git  #change link, in this case to use ssh
 
 # (1) edit your files + track/untrack/stage files
 git status
 git mv {oldfilename} {newfilename}  #rename a file. do this with git to properly be tracked!
-git diff   #show changes
-git add .  #add all the files
+git diff        #show changes
+git add {file}  #add a file to staging for commit
+git add .       #add all the files to staging for commit
 
 # (2) commit changes
-git commit -a -m "{comment}"
-git log  #show commit history
+git commit -m "{comment}"  #finalizing commit for push, -a automatically stage modified and deleted files in this step
+git log                    #show commit history
 
 # (3) push changes
-git remote -v  #check the link to the remote repo
-git remote add origin https://github.com/username/repository.git  #add link if not present
-git remote set-url origin git@github.com:username/repository.git  #change link to use ssh
 git branch -M main  #set the branch if needed
 git push -u origin main  OR  git push --all
 
 git pull
+
+# help: https://git-scm.com/docs
