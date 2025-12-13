@@ -1,16 +1,16 @@
-#enable boot menu
+# enable boot menu
 sudo nano /ect/default/grub
 	GRUB_TIMEOUT_STYLE=menu
 	GRUB_TIMEOUT=2
 sudo update-grub
 
-#display of the splash screen
+# display of the splash screen
 sudo nano /ect/default/grub
 	GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"  #hide text and show splash, default for the desktop
 	GRUB_CMDLINE_LINUX_DEFAULT="splash"        #for the splash, but the ability to show the boot messages by pressing Esc
 sudo update-grub
 
-#manual kernel module loading 
+# manual kernel module loading 
 file: /etc/modules
-#blacklist a module not to be loaded
+# blacklist a module not to be loaded
 file: /etc/modprobe.d/blacklist.conf

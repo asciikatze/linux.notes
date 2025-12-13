@@ -1,4 +1,4 @@
-# navigation ------------------------------------------------------------------
+---------- navigation ---------------------------------------------------------
 pwd             #path to working directory
 ls -la          #list the files in directory, -a hidden files, -l more info
 tree {folder}   #lists what inside all in hirearchy
@@ -12,7 +12,7 @@ ls {directory} > file.txt  #list the files from a directory and writes it in fil
 ls | less                  #if the output of a command is too long and you cant see it all, the | pipes it in the 'less' command, | = AltGr+w
 more AND less              #paiger app, less is more than more, if a program gives too much text just use: "| less", press q to stop
 
-# file manipulation -----------------------------------------------------------
+---------- file manipulation --------------------------------------------------
 touch {filename}              #make empty file OR update the timestamp on existing file, you can make more 'touch <file1> <file2>'
 mkdir {filename}              #make a directory, can make more 'mkdir <file1> <file2>'
 cp {filename} {path-to}       #copy a file to a place
@@ -47,7 +47,7 @@ cmp {file1} {file2}
 # link
 ln -s {source PATH_TO} {linkfile PATH_TO}
 
-# search ----------------------------------------------------------------------
+---------- search -------------------------------------------------------------
 find {directory} -iname f*              #search for files starting with f
 find . -iname '*STRING*'                #USE THIS!!!!!!!!!!44
 find {directory} -mtime -7              #search for files that are modified in the last 7 days
@@ -62,19 +62,19 @@ tail -f {file}     #monitor a log file, printing new additions to the file until
 
 grep "{sting}" {file} | less  #look for a string in a file
 
-# help ------------------------------------------------------------------------
-#midnight-commander filemanager
+---------- help ---------------------------------------------------------------
+# midnight-commander filemanager
  install: sudo apt install mc
  start: sudo mc
  help: https://midnight-commander.org/
 
-#nano editor
+# nano editor
 Shift + arrow  #selection
 Ctrl + u       #paste
 Alt + 6        #copy, on mac Esc + 6
 Ctrl + k       #cut
 
-#file system
+# file system
 /bin        #programs
 /sbin       #super programs
 /usr
@@ -93,4 +93,4 @@ Ctrl + k       #cut
 /etc        #configuration files
 /etc/network
 /mnt        #mount drives, manually mounted drives
-/media      #mount drives, usb drives 
+/media      #mount drives, usb drives

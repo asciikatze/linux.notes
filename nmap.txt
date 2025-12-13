@@ -1,4 +1,4 @@
-# nmap ------------------------------------------------------------------------
+---------- nmap --------------------------------------------------------------
 sudo nmap -sL 192.168.1.0/24     #list devices on network
 sudo nmap -sn 192.168.1.2        #ping, -sP does the same, no port scan
 sudo nmap -sS 192.168.1.2        #standard scan, half handshake SYN SYNACK, -sT full handshake SYN SYNACK ACK
@@ -19,14 +19,12 @@ sudo nmap -sL list.txt                     #reads ip adresses from file
 nmap {ip} -D {spoofip1},{spoofip2},{spoofip3}  #ip spoof
 nmap {ip} --spoof-mac {maacadress}             #macaddress spoof
 
-# netcat/ncat/nc --------------------------------------------------------------
-#chat
-#listener side
-nc -l -p {port}
-#client side
-nc {listenerip} {port}
+---------- netcat ncat nc ----------------------------------------------------
+# chat
+nc -l -p {port}         #listener side
+nc {listenerip} {port}  #client side
 
-#filetransfer
+# filetransfer
 receiver listens
   host2: ncat -l > outputfile
   host1: ncat --send-only host2 < inputfile
@@ -34,17 +32,17 @@ sender listens
   host1: ncat -l --send-only < inputfile
   host2: ncat host1 > outputfile
 
-#portscan + bannergrab NOT STEALTHY!
+# portscan + bannergrab NOT STEALTHY!
 nc {targetip} {targetport}
 
-#remote script execution
+# remote script execution
 nc -l -p {port} -e /bin/bash  #nc does not have the -e use ncat instead
 
-#quick webserver for a single file.html to a browser
+# quick webserver for a single file.html to a browser
 { echo -ne "HTTP/1.0 200 OK\r\n\r\n"; cat file.html; } | nc -l -p 8080
 #help: https://jameshfisher.com/2018/12/31/how-to-make-a-webserver-with-netcat-nc/
 
-# tips ------------------------------------------------------------------------
+---------- tips --------------------------------------------------------------
 #system ports are those numbered from 0 through 1023
 #registered ports are those from 1024 through 49151
 #dynamic or private ports are those from 49152 through 65535

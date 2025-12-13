@@ -1,4 +1,4 @@
-# APACHE2 webserver -----------------------------------------------------------
+---------- apache2 -----------------------------------------------------------
 # install
 sudo apt install apache2 apache2-utils
 
@@ -55,3 +55,5 @@ file: /var/www/{mywebpage}/public_html/.htaccess
   AuthUserFile /etc/apache2/.htpasswd
   Require valid-user
 
+
+# to-do: nginx

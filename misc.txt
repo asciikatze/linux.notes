@@ -1,41 +1,30 @@
-# ffmpeg ----------------------------------------------------------------------
-#cut video from to
+---------- ffmpeg ------------------------------------------------------------
+# cut video from to
 ffmpeg -i video.mp4 -ss 01:24:17 -to 01:43:40 -c copy trimmed.mp4
-#take a picture
+# take a picture
 ffmpeg -f video4linux2 -i /dev/v4l/by-id/usb-0c45_USB_camera-video-index0 -vframes 1  -video_size 640x480 test.jpeg
 
-# dosfloppy -------------------------------------------------------------------
-#create a blank floppy image
+---------- dosfloppy ---------------------------------------------------------
+# create a blank floppy image
 mkfs.msdos -C /path/imagefile.img 1440
 
-#mount
+# mount
 sudo mkdir /media/floppy1/
 sudo mount -o loop /path/imagefile.img /media/floppy1/
 sudo mount /path/imagefile.img -o umask=0 /media/floppy1/ #use this!
-#unmount
+# unmount
 sudo umount /media/floppy1/
 
-# ISO converter ---------------------------------------------------------------
-#MDF to ISO
-sudo apt install mdf2iso
-mdf2iso MyImage.mdf
+---------- ISO converter -----------------------------------------------------
+b5i2iso  #BlindWrite image to ISO image file converter
+ccd2iso  #Converter from CloneCD disc image format to standard ISO
+cdi2iso  #DiscJuggler image to ISO image file converter
+daa2iso  #The DAA files (Direct Access Archive) to ISO converting tool
+mdf2iso  #A simple utility to convert mdf to iso / cue / toc images
+nrg2iso  #Extracts ISO9660 data from Nero ".nrg" files
+pdi2iso  #Instant Copy image to ISO image file converter
+uif2iso  #converts UIF files (used by MagicISO) to ISO or other formats
 
-#BIN and CUE to ISO
-bchunk MyImage.bin MyImage.cue WhateverFilename.iso #mdftoiso works when no .cue file is present?
-
-#IMG to ISO
-sudo apt install ccd2iso
-ccd2iso MyImage.img WhateverFilename.iso
-
-#help: https://beamtic.com/convert-to-iso
-
-#more https://superuser.com/questions/43733/how-do-i-convert-cue-bin-mds-mdf-to-iso-on-ubuntu
-b5i2iso - BlindWrite image to ISO image file converter
-ccd2iso - Converter from CloneCD disc image format to standard ISO
-cdi2iso - DiscJuggler image to ISO image file converter
-daa2iso - The DAA files (Direct Access Archive) to ISO converting tool
-mdf2iso - A simple utility to convert mdf to iso / cue / toc images
-nrg2iso - Extracts ISO9660 data from Nero ".nrg" files
-pdi2iso - Instant Copy image to ISO image file converter
-uif2iso - converts UIF files (used by MagicISO) to ISO or other formats
+# help: https://beamtic.com/convert-to-iso
+# help: https://superuser.com/questions/43733/how-do-i-convert-cue-bin-mds-mdf-to-iso-on-ubuntu
 

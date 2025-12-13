@@ -1,4 +1,4 @@
-# UFW firewall ----------------------------------------------------------------
+---------- ufw firewall ------------------------------------------------------
 sudo ufw status  OR  sudo ufw status verbose
 sudo ufw enable
 sudo ufw disable
@@ -22,7 +22,7 @@ sudo ufw app list  #config profile for applications
 sudo ufw allow "{application-name}"
 sudo ufw delete allow "{application-name}"
 
-# ufw logs --------------------------------------------------------------------
+---------- ufw logs ----------------------------------------------------------
 #For ufw logging to work, rsyslog must be enabled.
 service rsyslog status
 

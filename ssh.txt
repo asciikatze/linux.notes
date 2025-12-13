@@ -1,79 +1,75 @@
-# SSH -------------------------------------------------------------------------
+ssh {user}@{serverip}
 ssh {serverip}                         #uses the client username
-ssh {user}@{serverip}                  #specify a different user
 ssh -p {portnumber} {user}@{serverip}  #specify the port, 22 is the default
 
-file: ~/.ssh/known_hosts  #Storest the servers fingerprint which you connected to before, you can delete it if you want to reset it
-file: ~/.ssh/config       #make this file. more servers can be added to this file.
+file: ~/.ssh/known_hosts  #stores the servers fingerprint which you connected to before, you can delete it if you want to reset it
+file: ~/.ssh/config       #make this file. more servers can be added to this file
 	Host {servername}
 	  Hostname {serverip}
 	  Port {portnumber}
 	  User {user}
 	  IdentityFile ~/.ssh/{private-keyfile}
-	  RemoteCommand reboot  #sends a reboot command, it does not working for me??
-ssh {servername} #now you can do this
+	  IdentitiesOnly yes
 
-#ssh key ----------------------------------------------------------------------
+ssh {servername}  #now you can do this
+
+---------- ssh keys -----------------------------------------------------------
 ssh-keygen -b 4096                          #generatig rsa keypairs by default,-b 4096 specifing the size.
 ssh-keygen -t ed25519                       #with -t specify what type of key
 ssh-keygen -t ed25519 -f ~/.ssh/{filename}  #with -f specify the filename and location.
 ssh-keygen -t ed25519 -C {comment}          #adds a comment default is your user and computrname at the end of the file, comment can be changed in file later.
 
-#best keygen practices:
-ssh-keygen -t ed25519 -a 100
-OR ssh-keygen -t rsa -b 4096 -o -a 100
+# best keygen practices:
+# passphrase is for the private key so if somebody has it they need the passphrase too to use it.
+ssh-keygen -t ed25519 -a 100  OR  ssh-keygen -t rsa -b 4096 -o -a 100
 
-#generate the public key form a private key
+# generate the public key form a private key
 ssh-keygen -y -e -f {private keyfile}
 
-#passphrase is for the private key so if somebody has it they need the passphrase too to use it.
-#add the passphrase to memory whitout a GUI.
+# add the passphrase to memory:
 ps aux | grep ssh-agent           #See if the ssh agent running.
 eval "$(ssh-agent)"               #Start the agent. If you logut the terminal the ssh agent is gone!
 ssh-add ~/.ssh/{private-keyfile}  #Unlocks and stores the key in memory as long as you are in the same terminal.
+ssh-add -l                        #list private keys currently accessible to the sshagent
 
-ssh -i ~/.ssh/{private-keyfile} {user}@{serverip}  #Connect with a specific key -i DO THIS IF YOU HAVE MORE THAN 5 KEYS !
+ssh -i ~/.ssh/{private-keyfile} {user}@{serverip}  #connect with a specific key. DO THIS IF YOU HAVE MORE THAN 5 KEYS !
 
-#ssh key/file transfer
-
+# ssh key/file transfer
 ssh-copy-id -i ~/.ssh/{keyfile.pub} {user}@{serverip}  #transfers the public key onto the server to the correct location.
 OR
 cat ~/.ssh/{keyfile.pub} | ssh {user}@{serverip} "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys"
 
-#scp --------------------------------------------------------------------------
-scp -P {port} /PATH_TO/FILE.txt {user}@{serverip}:/PATH_TO/   #copies the FILE from the client to the server. You can copy FILE from the server too!
-scp -r -P {port} /PATH_TO/FOLDER {user}@{serverip}:/PATH_TO/  #copies the FOLDER
+---------- scp ----------------------------------------------------------------
+scp {localfile} {user}@{serverip}:{path/to}           #copies file from client to server
+scp {user}@{serverip}:{path/to/remotefile} {path/to}  #copies file from server to client
+scp -r {path/to/folder} {user}@{serverip}:{path/to}   #copies folder to server
 
-#ssh SERVER -------------------------------------------------------------------
-systemctl status sshd       #See if its running, enabled means automatcally starts on startup.
-apt install openssh-server  #If you need to install it.
+---------- ssh server ---------------------------------------------------------
+systemctl status sshd       #see if its running, enabled means automatcally starts on startup.
+apt install openssh-server  #if you need to install it.
 systemctl start sshd
-systemctl enable ssh        #Starts on boot, on ubuntu and debian its not sshd its ssh!
-systemctl restart sshd      #Restarts the service.
-systemctls stop sshd        #Not terminates current connections!
+systemctl enable ssh        #starts on boot, on ubuntu and debian its not sshd its ssh!
+systemctl stop sshd         #this does not terminates current connections!
+systemctl disable sshd      #disable ssh alltogether
 
-#Disable password logins on server, disable root login, change default port.
+# disable password logins on server, disable root login, change default port.
 file: /etc/ssh/sshd_config
-     Port 22                    #Change it for security
-     AddressFamily any          #Change to 'inet' to use only ipv4 .
-     PermitRootLogin no         #Make sure ther is another user!
-     PasswordAuthentication no  #Set up keyauthentication first!
+     Port 22                    #change it for security
+     AddressFamily any          #change to 'inet' to use only ipv4
+     PermitRootLogin no         #make sure there is another user!
+     PasswordAuthentication no  #set up keyauthentication first!
 sudo systemctl restart sshd
 
 # DO NOT LOCK YOURSELF OUT! DO NOT LOG OUT UNTIL YOU SURE THAT YOU CAN LOG BACK IN!
 
-tail -f /var/log/auth.log  #Monitor the connections, good for troubleshooting.
-OR journalctl -fu ssh      #on some distributions its sshd.
+tail -f /var/log/auth.log  #monitor the connections, good for troubleshooting
+OR journalctl -fu ssh      #on some distributions its sshd
 
-#SSH message before login. It really works if you have password login enabled!
+# ssh message before login. It really works if you have password login enabled!
 file: /etc/ssh/sshd_config
-     Banner /etc/issue.net #Remove the comment symbol.
-file: /etc/issue.net #Edit the message in this file.
+     Banner /etc/issue.net  #remove the comment symbol
+file: /etc/issue.net  #edit the message in this file
 service ssh restart OR /etc/init.d/sshd restart
-
-#disable ssh alltogether
-sudo systemctl stop sshd
-sudo systemctl disable sshd
 
 # allow or deny users
 file: /etc/ssh/sshd_config  #at the end of this file add:
@@ -82,40 +78,18 @@ file: /etc/ssh/sshd_config  #at the end of this file add:
      AllowGroups administrators
      DenyGroups accountants
 
-# debug ERRORS ----------------------------------------------------------------
-ssh -v {user}@{serverip} #for debug information
+---------- debug errors -------------------------------------------------------
+ssh -v {user}@{serverip}   #for debug information
 
-#hung ssh session window 
-press ENTER then ~ then . #this will terminates the connection
+# hung ssh session window 
+press ENTER then ~ then .  #this will terminates the connection
 
-#kill ssh session on server
-ps aux | grep sshd: #first number after the username is the process ID, kill that
+# kill ssh session on server
+ps aux | grep sshd:        #first number after the username is the process ID, kill that
 
-#ssh permission denied due to 'Permissions 0644'
-#the private keys permissions are messed up
-chmod 400 <privatekey> #this sets it to read only by you
-
-#Common problem is the file permissions on client are not correct!
+# common problem is the file permissions on client are not correct!
   .ssh        drwx------
   privatekey  -rw-------
 
-#help: https://www.ssh.com/academy/ssh
-
-# send command via ssh --------------------------------------------------------
-ssh {user}@{hostip} '{command}'
-#send multiple commands
-ssh {user}@{hostip} '{command1}; {command2}'
-OR
-ssh {user}@{hostip} '{command1} | {command2}'
-OR
-ssh {user}@{hostip} << EOF
-{command1}
-{command2}
-EOF
-
-#send a script
-ssh {user}@{hostip} 'bash -s' < {scriptfile.sh}
-
-#reboot via ssh
-ssh -t {user}@{hostip} 'sudo reboot'
-
+# help: https://www.ssh.com/academy/ssh
+# to-do: send a command via ssh

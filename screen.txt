@@ -1,4 +1,4 @@
-#screen terminal multiplexer
+# screen terminal multiplexer
 
 screen      #start
 exit        #terminating active session
@@ -20,9 +20,12 @@ Ctrl+a TAB    #hop between panels
 Ctrl+a : resize 25%  #resize panelsplit
 Ctrl+a : remove      #remove panel
 
-#logging
+# logging
 screen -L  #start with logging
 Ctrl+a H   #start-stop toggle logging
 
 help: https://www.youtube.com/watch?v=ug0MWpQjvWo
 help: https://www.gnu.org/software/screen/manual/html_node/Default-Key-Bindings.html
+
+
+# to-do: tmux

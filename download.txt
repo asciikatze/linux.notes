@@ -13,7 +13,3 @@ wget -v --user-agent="{useragent}" --referer={url} {urltofile}
 yt-dlp -f 'bv*[height=720]+ba' {url}
 yt-dlp -x --audio-format mp3 {url}
 #add this tag if cant find method to download: --ies Generic,HTML5
-
-# git
-git clone {https://github.com/username/repository}
-

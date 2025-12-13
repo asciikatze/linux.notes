@@ -54,7 +54,7 @@ sudo lshw -c memory
 setterm --blank 1 #after 1 min the screen goes blank, press any key to come back
 setterm --blank 0 #never turn off
 
-# dd --------------------------------------------------------------------------
+---------- dd -----------------------------------------------------------------
 # hard drive read test 
 # tries to read all the data from a drive
 dd if=/dev/sda of=/dev/null status=progress  #/dev/sda is the drive that reads from, /dev/null puts the data to nowhere

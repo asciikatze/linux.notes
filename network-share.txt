@@ -1,20 +1,18 @@
-# ftp -------------------------------------------------------------------------
-#ftp server
-install: sudo apt install vsftpd
-setup:	sudo systemctl enable vsftpd
-	sudo systemctl status vsftpd
-	sudo systemctl restart vsftpd
-config: sudo nano /etc/vsftpd.conf
-	for free access change: anonymus_enable=NO to anonymus_enable=YES
-stop from autostart with computer: sudo update-rc.d vsftpd disable
-basically update-rc.d will modify existing runlevel links for the script /etc/init.d/vsftpd by renaming start links to stop links 
+---------- ftp ---------------------------------------------------------------
+sudo apt install vsftpd
+sudo systemctl enable vsftpd
+sudo systemctl status vsftpd
+
+file: /etc/vsftpd.conf
+#for free access change: anonymus_enable=NO to anonymus_enable=YES
+#stop from autostart with computer: sudo update-rc.d vsftpd disable
+#basically update-rc.d will modify existing runlevel links for the script /etc/init.d/vsftpd by renaming start links to stop links 
 start/stop:	sudo service vsftpd start
 		sudo service vsftpd stop
 ftp directory: /srv/ftp/
 help: https://help.ubuntu.com/lts/serverguide/ftp-server.html
 
-# SMB samba share -------------------------------------------------------------
-#install
+---------- samba share (smb) -------------------------------------------------
 sudo apt install samba
 
 #setup
@@ -32,11 +30,11 @@ sudo ufw allow samba
 #username used must belong to a system account
 sudo smbpasswd -a username
 
-# to disable/enable samba use systemctl on:
+#to disable/enable samba use systemctl on:
 smbd AND nmbd
 
 help: https://www.youtube.com/watch?v=7Q0mnAT1MRg
 
-# nfs -------------------------------------------------------------------------
-?
+
+# to-do: nfs file sharing
 

@@ -3,7 +3,7 @@ uname -sr            #kernelversion
 cat /etc/os-release  #shows info about the os
 date                 #shows the current date and time
 
-# apt -------------------------------------------------------------------------
+---------- apt ---------------------------------------------------------------
 sudo apt update   #reads the repo list
 sudo apt upgrade  #download and install
 sudo apt update && sudo apt upgrade -y
@@ -56,7 +56,7 @@ sudo dpkg -r {programname}     #remove
 #you need to install the dependencies too
 sudo apt --fix-broken install  #apt helps you
 
-# snap ------------------------------------------------------------------------
+---------- snap --------------------------------------------------------------
 snap list                    #show installed snaps
 sudo snap install {program}  #install a snap
 sudo snap refresh {program}  #update a specific snap
@@ -82,12 +82,12 @@ sudo snap refresh
 snap changes     #list recent changes
 snap tasks {id}  #list steps involved in a change
 
-# help ------------------------------------------------------------------------
+---------- help --------------------------------------------------------------
 search the manual: apropos <keyword>
 info on a command: info, man, help, whatis, --help, command -v {program}
 locate programfiles: which {program} AND whereis {program}
 
-#if man pages are missing
+# if man pages are missing
 sudo apt install manpages man-db
 
 # if something messed up with the locale

@@ -10,7 +10,7 @@ sudo systemctl reload-or-restart {daemon/service}  #if cant reload then restart
 
 sudo systemctl mask {daemon/service}  #prevents it from starting even if another enabled service requires it, third level of off (stop-1st, disable-2nd, mask-3rd)
 sudo systemctl unmask {daemon/service}
-#help: https://www.baeldung.com/linux/systemctl-mask-disable
+# help: https://www.baeldung.com/linux/systemctl-mask-disable
 
 systemctl --type=service  #list of services
 systemctl list-unit-files --type=service

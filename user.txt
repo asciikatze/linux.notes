@@ -1,4 +1,4 @@
-# user ------------------------------------------------------------------------
+---------- user --------------------------------------------------------------
 useradd {user} -m -s /bin/bash  #-m create home folder, -s add login shell
 OR  adduser {user}
 passwd {user}                   #add/change password
@@ -45,7 +45,7 @@ file: /etc/security/faillock.conf
 	# User privilige specification
 	<USER> ALL = </PATH/TO/COMMAND> #add a command that the user can use like root??
 
-# group -----------------------------------------------------------------------
+---------- group -------------------------------------------------------------
 groupadd {group}  #create group
 groupdel {group}  #delete group
 file: /etc/group  #all the groups on the system, all users have a personal group
