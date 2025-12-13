@@ -27,10 +27,12 @@ ssh-keygen -t ed25519 -a 100  OR  ssh-keygen -t rsa -b 4096 -o -a 100
 ssh-keygen -y -e -f {private keyfile}
 
 # add the passphrase to memory:
-ps aux | grep ssh-agent           #See if the ssh agent running.
-eval "$(ssh-agent)"               #Start the agent. If you logut the terminal the ssh agent is gone!
-ssh-add ~/.ssh/{private-keyfile}  #Unlocks and stores the key in memory as long as you are in the same terminal.
-ssh-add -l                        #list private keys currently accessible to the sshagent
+ps aux | grep ssh-agent              #See if the ssh agent running.
+eval "$(ssh-agent)"                  #Start the agent. If you logut the terminal the ssh agent is gone!
+ssh-add -l                           #list private keys currently accessible to the sshagent
+ssh-add ~/.ssh/{private-keyfile}     #Unlocks and stores the key in memory as long as you are in the same terminal.
+ssh-add -d ~/.ssh/{private-keyfile}  #remove key from agent
+ssh-add -D                           #remove all keys
 
 ssh -i ~/.ssh/{private-keyfile} {user}@{serverip}  #connect with a specific key. DO THIS IF YOU HAVE MORE THAN 5 KEYS !
 
