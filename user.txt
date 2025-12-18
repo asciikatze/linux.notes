@@ -35,15 +35,16 @@ OR
 sudo chsh root         #change the loginshell to /usr/sbin/nologin binary shell, you can check for it in the /etc/passwd file
 sudo nano /etc/passwd  #you have to change it back manually
 
-#to disable motd and login messages create the .hushlogin file in the users home folder!
-touch .hushlogin
+#to disable motd and login messages
+touch /home/user1/.hushlogin
 
 sudo visudo  #edits the file: /etc/sudoers.tmp
 
-#brute force login mitigation
-file: /etc/security/faillock.conf
-	# User privilige specification
-	<USER> ALL = </PATH/TO/COMMAND> #add a command that the user can use like root??
+#brute force login mitigation with faillock
+file: /etc/security/faillock.conf    
+file: /var/run/faillock/*            #logs per user
+sudo faillock --user {user}          #show failed attempts, see if account locked
+sudo faillock --user {user} --reset  #unlock account
 
 ---------- group -------------------------------------------------------------
 groupadd {group}  #create group

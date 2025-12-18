@@ -1,7 +1,7 @@
 # ssh
 ssh-keygen -t ed25519 -C "{text}"  #create keypair
 ssh-add ~/.ssh/{private-keyfile}   #add pirvate key to the ssh agent
-#GO TO github.com and set the public key on github.com
+#GO TO github.com and upload your public key
 ssh -T git@github.com              #test the connection
 
 file: ~/.ssh/config

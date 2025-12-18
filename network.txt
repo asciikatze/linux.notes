@@ -34,10 +34,9 @@ sudo nmtui
 # information about network connections managed by NetworkManager
 file: /etc/NetworkManager/system-connections/
 
-# show current connected wifi password + QR-code
-nmcli device wifi show-password
-# windows show wifi credentials
-netsh wlan show profiles
+nmcli device wifi                #show available wifi networks
+nmcli device wifi show-password  #show current connected wifi password + QR-code
+netsh wlan show profiles         #windows show wifi credentials
 
 ---------- dns ---------------------------------------------------------------
 file: /etc/hosts                        #local dns rules your system looks here first
@@ -48,16 +47,16 @@ systemd-resolve --status                #what dns server is being used
 sudo systemd-resolve --flush-caches     #flush out DNS cache
 
 # to-do: where should i configure dns in debian server?
+# help: https://www.tecmint.com/set-permanent-dns-nameservers-in-ubuntu-debian/
 
 ---------- static ip ---------------------------------------------------------
-# On ubuntu cloud(program) can manage the interface.. so find out if it does and disable it!
+# on ubuntu cloud(program) can manage the interface.. so find out if it does and disable it!
 file: /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg
 	network: {config: disabled}
 
-# Ubuntu desktop usually uses Network-Manager
-# Ubuntu server usually uses networkD
-# Look at the netplan configuration, you can change which to use by editing this file.
-# Set that static ip with networkD. HELP: https://netplan.io/examples/
+# Ubuntu server usually uses networkD, desktop uses Network-Manager
+# look at the netplan configuration, you can change which to use by editing this file.
+# set that static ip with networkD. help: https://netplan.io/examples/
 file: /etc/netplan/00-installer-config.yaml
 	network:
 	  ethernets:
@@ -72,8 +71,8 @@ file: /etc/netplan/00-installer-config.yaml
 	        search: []
 	  version: 2
 
-# Check if the file configured correctly!
-sudo netplan try  #Kills the network connection! You need to be at the server!
+#check if the file configured correctly!
+sudo netplan try  #kills the network connection! you need to be at the server!
 sudo netplan apply
 sudo reboot
 

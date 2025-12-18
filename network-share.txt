@@ -10,7 +10,8 @@ file: /etc/vsftpd.conf
 start/stop:	sudo service vsftpd start
 		sudo service vsftpd stop
 ftp directory: /srv/ftp/
-help: https://help.ubuntu.com/lts/serverguide/ftp-server.html
+
+# help: https://help.ubuntu.com/lts/serverguide/ftp-server.html
 
 ---------- samba share (smb) -------------------------------------------------
 sudo apt install samba
@@ -33,8 +34,14 @@ sudo smbpasswd -a username
 #to disable/enable samba use systemctl on:
 smbd AND nmbd
 
-help: https://www.youtube.com/watch?v=7Q0mnAT1MRg
+# help: https://www.youtube.com/watch?v=7Q0mnAT1MRg
+# help: https://www.youtube.com/watch?v=p0Ty00aG1ag
 
 
 # to-do: nfs file sharing
+# help: https://www.youtube.com/watch?v=Na_jKeVWzrc
+# help: https://www.youtube.com/watch?v=zgGp6RM7kgo
+
+# to-do: rsync
+# help: https://www.youtube.com/watch?v=QKCIi-NxJEo
 

@@ -57,6 +57,9 @@ find {directory} -mtime -7 -size +10M   #search for files that are modified in t
 find {directory} -size +10M | grep txt  #narrows the list to contain txt in the filenames
 sudo find / -name {filename}            #search for a specific filename on the whole computer
 
+#find in current directory all jpg and png files that are modified in the last year and copies it to the Pictures folder
+find . \( -name '*.jpg' -o -name '*.png' \) -mtime -365 -exec cp {} /home/user1/Pictures \;
+
 head -n 15 {file}  #view the first 15 lines of a file
 tail -n 15 {file}  #view the last 15
 tail -f {file}     #monitor a log file, printing new additions to the file until you stop it (Ctrl + C)

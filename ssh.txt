@@ -27,12 +27,12 @@ ssh-keygen -t ed25519 -a 100  OR  ssh-keygen -t rsa -b 4096 -o -a 100
 ssh-keygen -y -e -f {private keyfile}
 
 # add the passphrase to memory:
-ps aux | grep ssh-agent              #See if the ssh agent running.
-eval "$(ssh-agent)"                  #Start the agent. If you logut the terminal the ssh agent is gone!
+ps aux | grep ssh-agent              #see if the ssh agent running.
+eval "$(ssh-agent)"                  #start the agent. If you logut the terminal the ssh agent is gone!
 ssh-add -l                           #list private keys currently accessible to the sshagent
-ssh-add ~/.ssh/{private-keyfile}     #Unlocks and stores the key in memory as long as you are in the same terminal.
-ssh-add -d ~/.ssh/{private-keyfile}  #remove key from agent
-ssh-add -D                           #remove all keys
+ssh-add ~/.ssh/{private-keyfile}     #add passphrase for private key to ssh agent
+ssh-add -d ~/.ssh/{private-keyfile}  #remove passphrase from agent
+ssh-add -D                           #remove all key passphrase
 
 ssh -i ~/.ssh/{private-keyfile} {user}@{serverip}  #connect with a specific key. DO THIS IF YOU HAVE MORE THAN 5 KEYS !
 
@@ -54,12 +54,17 @@ systemctl enable ssh        #starts on boot, on ubuntu and debian its not sshd i
 systemctl stop sshd         #this does not terminates current connections!
 systemctl disable sshd      #disable ssh alltogether
 
-# disable password logins on server, disable root login, change default port.
+# configuration file, make backup before edit!
 file: /etc/ssh/sshd_config
      Port 22                    #change it for security
      AddressFamily any          #change to 'inet' to use only ipv4
      PermitRootLogin no         #make sure there is another user!
      PasswordAuthentication no  #set up keyauthentication first!
+#allow or deny users, at the end of this file add:
+     AllowUsers {user} {user}
+     DenyUsers {user} {user}
+     AllowGroups {group} {group}
+     DenyGroups {group} {group}
 sudo systemctl restart sshd
 
 # DO NOT LOCK YOURSELF OUT! DO NOT LOG OUT UNTIL YOU SURE THAT YOU CAN LOG BACK IN!
@@ -71,14 +76,7 @@ OR journalctl -fu ssh      #on some distributions its sshd
 file: /etc/ssh/sshd_config
      Banner /etc/issue.net  #remove the comment symbol
 file: /etc/issue.net  #edit the message in this file
-service ssh restart OR /etc/init.d/sshd restart
-
-# allow or deny users
-file: /etc/ssh/sshd_config  #at the end of this file add:
-     AllowUsers user1 user2 user3
-     DenyUsers user1 user2 user3
-     AllowGroups administrators
-     DenyGroups accountants
+service ssh restart  OR  /etc/init.d/sshd restart
 
 ---------- debug errors -------------------------------------------------------
 ssh -v {user}@{serverip}   #for debug information
