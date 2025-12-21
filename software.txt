@@ -94,3 +94,5 @@ sudo apt install manpages man-db
 locale                    #see what is being used
 dpkg-reconfigure locales  #setup for locales
 
+# environment variables
+printenv  OR  env  #list all

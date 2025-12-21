@@ -37,16 +37,37 @@ cat {file1} >> {file2}         #adds file1 to the end of file2
 echo "random text" > file.txt   #replaces the text in the file
 echo "random text" >> file.txt  #adds to the end of the file
 
+---------- about files --------------------------------------------------------
 file {file}    #information about file
-stat {file}    #information about file
+stat {file}    #information about file, inode number and metadata
+
+# files have: 1.file name, 2.inode/metadata, 3.file contents
+# file name points to inode, inode points to file contents
+# directory points to filenames and correspondign inodes
+
+# hardlink: links to same inode
+ln {sourcefile} {newsamefile}
+# they have the same inode ergo they are the same file
+# both files are the same no real file bullshit here
+# has to be on the same device; devicenumber identifies the filesystem
+
+# symlink: not the same file, different inode
+ln -s {sourcefile} {newlinkfile}
+# symlink points to a path to a file
+# on symlinks use lstat for the linkfile information
+# stat follows where the link follows through
+
+# a directory has minimum 2 links to it
+# the parent directory links to it and itself hardlinked to itself, the ./ hidden file in a directory is that
+# if there are more links those are subdirectories linked to it by default ../
+# the root directory's ./ and ../ are the same 
+# user can not make hard links to a directory
+
 du -sh {file}  #size of a file or folder
 du -sh *       #size of the current working directory
 
 diff {file1} {file2}  #compares the two files shows whats different
-cmp {file1} {file2}
-
-# link
-ln -s {source PATH_TO} {linkfile PATH_TO}
+cmp {file1} {file2}   #compares byte by byte
 
 ---------- search -------------------------------------------------------------
 find {directory} -iname f*              #search for files starting with f
