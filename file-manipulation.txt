@@ -89,9 +89,10 @@ grep "{sting}" {file} | less  #look for a string in a file
 
 ---------- help ---------------------------------------------------------------
 # midnight-commander filemanager
- install: sudo apt install mc
- start: sudo mc
- help: https://midnight-commander.org/
+# help: https://midnight-commander.org/
+# help: https://www.youtube.com/watch?v=fJOkuaihAek
+  install: sudo apt install mc
+  start: sudo mc
 
 # nano editor
 Shift + arrow  #selection
