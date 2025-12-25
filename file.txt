@@ -37,6 +37,28 @@ cat {file1} >> {file2}         #adds file1 to the end of file2
 echo "random text" > file.txt   #replaces the text in the file
 echo "random text" >> file.txt  #adds to the end of the file
 
+---------- file ownership -----------------------------------------------------
+chown {user}:{group} {filename}      #set file ownership
+chown -R {user}:{group} {directory}  #set folder ownership, -R apply to files within directory
+chown -h {user}:{group} {linkfile}   #change the owner of a symbolic link
+
+---------- file permissions ---------------------------------------------------
+chmod 755 {filename}  #set a file to be executable and readable by everyone but only writable by you
+chmod +x {filename}   #set execute bit without changing other permissions
+
+# file type d--------- :  regular file=-  directory=d  link=l
+# octal values:  read=4  write=2  execute=1
+
+  permission  octal  field
+  -rwx------  700    User
+  ----rwx---  070    Group
+  -------rwx  007    Other
+
+# when applying permissions to directories the permission bits have different meanings than on regular files.
+# write bit allows the affected user to create, rename, or delete files within the directory, and modify the directory's attributes.
+# read bit allows the affected user to list the files within the directory.
+# execue bit allows the affected user to enter the directory and access files and directories inside.
+
 ---------- about files --------------------------------------------------------
 file {file}    #information about file
 stat {file}    #information about file, inode number and metadata
@@ -120,5 +142,5 @@ sys               #info about devices, drivers, kernel features, similar to proc
 tmp               #temprary files, empties after reboot
 usr               #bulk of the programs live here
 var               #system specific variable files, logs, temporary message files, spool files, occasionly config files, webserver files
-                  #var/tmp does nor clears after reboot
+                  #var/tmp does not clears after reboot
 
