@@ -1,32 +1,33 @@
 ---------- navigation ---------------------------------------------------------
 pwd             #path to working directory
-ls -la          #list the files in directory, -a hidden files, -l more info
+ls -lah         #list the files in directory, -a hidden files, -l more info, -h human readable sizes
 tree {folder}   #lists what inside all in hirearchy
 cd {directory}  #change directory
 cd ..           #move up on the directory tree
-cd ~            #jump to /home/user/ directory
+cd ~  OR  cd    #jump to /home/user/ directory
 cd -            #previous directory
 pushd AND popd
 
 ls {directory} > file.txt  #list the files from a directory and writes it in file.txt
 ls -R {directory}          #lists all the files and the files in subdirectories too
 ls | less                  #if the output of a command is too long and you cant see it all, the | pipes it in the 'less' command, | = AltGr+w
-more AND less              #paiger app, less is more than more, if a program gives too much text just use: "| less", press q to stop
+more AND less              #paiger apps, less is more than more
 
 ---------- file manipulation --------------------------------------------------
-touch {filename}              #make empty file OR update the timestamp on existing file, you can make more 'touch <file1> <file2>'
-mkdir {filename}              #make a directory, can make more 'mkdir <file1> <file2>'
-cp {filename} {path-to}       #copy a file to a place
-cp *.* {path-to}              #copy all the files
-cp -r {filename} {path-to}    #copy a folder with its contents
-cp -a                         #archive keep the file informatin owner etc
-mv {filename} {path-to}       #move a file to a place
-mv {filename} {new-filename}  #rename with mv
-mv -n                         #no overwrite -v #verbose -i #ask to do things good for rm -I #asks once if there is more files
-rm {filename}                 #delete a file
-rm f*                         #delete every file thats name starts with the letter f
-rm -r                         #delete a directory
-rmdir {directory}             #delete empty directory
+touch {filename}            #make empty file OR update the timestamp on existing file, you can make more: touch file1.txt file2.txt
+mkdir {directory}           #make a directory, can make more: mkdir folder1 folder2
+rmdir {directory}           #delete empty directory
+cp {filename} {path-to}     #copy a file to a place
+cp *.* {path-to}            #copy all the files
+cp -r {filename} {path-to}  #copy a folder with its contents
+cp -a                       #archive keep the file informatin owner etc
+mv {filename} {path-to}     #move a file to a place
+mv {filename} {newname}     #rename with mv
+mv -n                       #-n no overwrite, -v verbose
+rm {filename}               #delete a file
+rm -I                       #prompt once before removing more than three files. -i prompt before every removal
+rm f*                       #delete every file thats name starts with the letter f
+rm -r                       #delete directory
 
 cat {file}                     #lists what is in a file, can show more files back to back 'cat {file1} {file2}'
 cat > {file}                   #writes keyboard input into a file, Ctrl+d to stop, stop on empty line, this will overwrite the file!
@@ -34,8 +35,8 @@ cat >> {file}                  #adds more text to the end of the file
 cat {file1} {file2} > {file3}  #takes file1 and file2 and adds them together into file3
 cat {file1} >> {file2}         #adds file1 to the end of file2
 
-echo "random text" > file.txt   #replaces the text in the file
-echo "random text" >> file.txt  #adds to the end of the file
+echo "{randomtext}" > file.txt   #replaces the text in the file
+echo "{randomtext}" >> file.txt  #adds to the end of the file
 
 ---------- file ownership -----------------------------------------------------
 chown {user}:{group} {filename}      #set file ownership
@@ -111,10 +112,8 @@ grep "{sting}" {file} | less  #look for a string in a file
 
 ---------- help ---------------------------------------------------------------
 # midnight-commander filemanager
-# help: https://midnight-commander.org/
 # help: https://www.youtube.com/watch?v=fJOkuaihAek
-  install: sudo apt install mc
-  start: sudo mc
+sudo apt install mc
 
 # nano editor
 Shift + arrow  #selection

@@ -76,5 +76,9 @@ sudo ./wipe-sdb.sh
 # let it run about 5 times for best result
 
 # cpu load test
-sudo dd if=/dev/random of=/dev/null  #generates random numbers the throws them to null
+sudo dd if=/dev/random of=/dev/null  #generates random numbers then throws them to null
+
+# random data from the Linux kernel random number generator function:
+/dev/random   #produces high-quality randomness, can halt process execution when it runs out of entropy
+/dev/urandom  #not care about entropy, may not produce true randomness
 

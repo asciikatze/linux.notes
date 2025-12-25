@@ -36,7 +36,9 @@ file: /etc/NetworkManager/system-connections/
 
 nmcli device wifi                #show available wifi networks
 nmcli device wifi show-password  #show current connected wifi password + QR-code
-netsh wlan show profiles         #windows show wifi credentials
+netsh wlan show profiles         #show known wifi networks in windows
+
+watch 'nmcli device wifi | grep -E "IN-USE|{networkname}|{networkname}"'  #monitor two networks
 
 ---------- dns ---------------------------------------------------------------
 file: /etc/hosts                        #local dns rules your system looks here first

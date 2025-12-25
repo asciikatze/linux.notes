@@ -17,7 +17,7 @@ sudo nmap -sL 192.168.1.0/24 > list.txt    #writes the output to a file
 sudo nmap -sL list.txt                     #reads ip adresses from file
 
 nmap {ip} -D {spoofip1},{spoofip2},{spoofip3}  #ip spoof
-nmap {ip} --spoof-mac {maacadress}             #macaddress spoof
+nmap {ip} --spoof-mac {macaddress}             #mac spoof
 
 ---------- netcat ncat nc ----------------------------------------------------
 # chat
