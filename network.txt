@@ -99,7 +99,7 @@ file: /etc/network/interfaces  #the dns is NOT read from here
 sudo systemctl restart networking  OR  sudo systemctl restart networking.service
 
 ---------- lan cable ---------------------------------------------------------
-# looking from the bottom, cable towards you, on the left is pin-1 on the right is pin-8
+# looking at the bottom, cable towards you, on the left is pin-1 on the right is pin-8
 # both end needs to be the same, but B is the most common method
 
 RJ45 T568 A        RJ45 T568 B     #USE THE B VERSION!
