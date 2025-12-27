@@ -11,23 +11,28 @@ pushd AND popd
 ls {directory} > file.txt  #list the files from a directory and writes it in file.txt
 ls -R {directory}          #lists all the files and the files in subdirectories too
 ls | less                  #if the output of a command is too long and you cant see it all, the | pipes it in the 'less' command, | = AltGr+w
-more AND less              #paiger apps, less is more than more
+
+more  AND  less    #paiger apps, less is more than more
+less -N {file}     #scroll through a file contents, every line is numbered
+head -n 15 {file}  #view the first 15 lines of a file
+tail -n 15 {file}  #view the last 15
+tail -f {file}     #monitor a log file, printing new additions to the file until you stop it (Ctrl + C)
 
 ---------- file manipulation --------------------------------------------------
 touch {filename}            #make empty file OR update the timestamp on existing file, you can make more: touch file1.txt file2.txt
 mkdir {directory}           #make a directory, can make more: mkdir folder1 folder2
 rmdir {directory}           #delete empty directory
-cp {filename} {path-to}     #copy a file to a place
+cp {filename} {path-to}     #copy
 cp *.* {path-to}            #copy all the files
-cp -r {filename} {path-to}  #copy a folder with its contents
+cp -r {folder} {path-to}    #copy a folder with its contents
 cp -a                       #archive keep the file informatin owner etc
-mv {filename} {path-to}     #move a file to a place
-mv {filename} {newname}     #rename with mv
+mv {filename} {path-to}     #move
+mv {filename} {newname}     #rename
 mv -n                       #-n no overwrite, -v verbose
 rm {filename}               #delete a file
 rm -I                       #prompt once before removing more than three files. -i prompt before every removal
-rm f*                       #delete every file thats name starts with the letter f
-rm -r                       #delete directory
+rm a*                       #delete every file thats name starts with the letter a
+rm -r {directory}           #delete directory along whith its contents
 
 cat {file}                     #lists what is in a file, can show more files back to back 'cat {file1} {file2}'
 cat > {file}                   #writes keyboard input into a file, Ctrl+d to stop, stop on empty line, this will overwrite the file!
@@ -38,14 +43,28 @@ cat {file1} >> {file2}         #adds file1 to the end of file2
 echo "{randomtext}" > file.txt   #replaces the text in the file
 echo "{randomtext}" >> file.txt  #adds to the end of the file
 
----------- file ownership -----------------------------------------------------
+---------- search -------------------------------------------------------------
+# grep is for finding text in a file
+grep "{sting}" {file}  #look for a string in a file, you can add multiple files
+grep -r "{sting}" .    #look for a string in all the files in the current directory
+
+# find is for finding files
+find {directory} -iname a*              #search for files starting with a or A. case insensitive search
+find {directory} -name a*               #search for files starting with a
+find . -iname "{string}"                #USE THIS!
+find {directory} -mtime -7              #search for files that are modified in the last 7 days
+find {directory} -mmin -7               #search for files that are modified in the last 7 minutes
+find {directory} -mtime -7 -size +10M   #search for files that are modified in the last 7 days and bigger than 10Mb, you can us '-' for smaller
+find {directory} -size +10M | grep txt  #narrows the list to contain txt in the filenames
+sudo find / -name {filename}            #search for a specific filename on the whole computer
+
+#find in current directory all jpg and png files that are modified in the last year and copies it to the Pictures folder
+find . \( -name '*.jpg' -o -name '*.png' \) -mtime -365 -exec cp {} /home/user1/Pictures \;
+
+---------- file permissions ---------------------------------------------------
 chown {user}:{group} {filename}      #set file ownership
 chown -R {user}:{group} {directory}  #set folder ownership, -R apply to files within directory
 chown -h {user}:{group} {linkfile}   #change the owner of a symbolic link
-
----------- file permissions ---------------------------------------------------
-chmod 755 {filename}  #set a file to be executable and readable by everyone but only writable by you
-chmod +x {filename}   #set execute bit without changing other permissions
 
 # file type d--------- :  regular file=-  directory=d  link=l
 # octal values:  read=4  write=2  execute=1
@@ -59,6 +78,10 @@ chmod +x {filename}   #set execute bit without changing other permissions
 # write bit allows the affected user to create, rename, or delete files within the directory, and modify the directory's attributes.
 # read bit allows the affected user to list the files within the directory.
 # execue bit allows the affected user to enter the directory and access files and directories inside.
+
+chmod 755 {filename}              #set a file to be executable and readable by everyone but only writable by you
+chmod +x {filename}               #set execute bit without changing other permissions, -x removes it
+chmod -R u=rwx,g=,o= {directory}  #set permissions for folder and its contents
 
 ---------- about files --------------------------------------------------------
 file {file}    #information about file
@@ -91,24 +114,6 @@ du -sh *       #size of the current working directory
 
 diff {file1} {file2}  #compares the two files shows whats different
 cmp {file1} {file2}   #compares byte by byte
-
----------- search -------------------------------------------------------------
-find {directory} -iname f*              #search for files starting with f
-find . -iname '*STRING*'                #USE THIS!!!!!!!!!!44
-find {directory} -mtime -7              #search for files that are modified in the last 7 days
-find {directory} -mmin -7               #search for files that are modified in the last 7 minutes
-find {directory} -mtime -7 -size +10M   #search for files that are modified in the last 7 days and bigger than 10Mb, you can us '-' for smaller
-find {directory} -size +10M | grep txt  #narrows the list to contain txt in the filenames
-sudo find / -name {filename}            #search for a specific filename on the whole computer
-
-#find in current directory all jpg and png files that are modified in the last year and copies it to the Pictures folder
-find . \( -name '*.jpg' -o -name '*.png' \) -mtime -365 -exec cp {} /home/user1/Pictures \;
-
-head -n 15 {file}  #view the first 15 lines of a file
-tail -n 15 {file}  #view the last 15
-tail -f {file}     #monitor a log file, printing new additions to the file until you stop it (Ctrl + C)
-
-grep "{sting}" {file} | less  #look for a string in a file
 
 ---------- help ---------------------------------------------------------------
 # midnight-commander filemanager
@@ -143,3 +148,7 @@ usr               #bulk of the programs live here
 var               #system specific variable files, logs, temporary message files, spool files, occasionly config files, webserver files
                   #var/tmp does not clears after reboot
 
+# check file integrity
+sha256sum {file}
+md5sum {file}
+sha256sum {file} | grep {thevaluethatyouwanttocompareto}

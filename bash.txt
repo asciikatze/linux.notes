@@ -1,0 +1,11 @@
+# terminal: device that sends data from input to a computer and renders data on a screen from a computer
+# terminal emulator: virtual device that runs in a window and does the same. a program like the gnome terminal or zsh
+# virtual terminal is a full-screen terminal which doesn't run inside an X window. in ubuntu:
+Ctrl+Alt+F1     #GUI login screen
+Ctrl+Alt+F2     #GUI desktop
+Ctrl+Alt+F3-F7  #command lines
+# shell: interpet the commands you type and execute them. read -> evaulate -> print -> loop. this is the bash
+
+Ctrl+Alt+t         #open bash terminal window
+exit  OR  Ctrl+d   #exit terminal
+clear  OR  Ctrl+l  #clears the screen
