@@ -1,16 +1,3 @@
-# ssh
-ssh-keygen -t ed25519 -C "{text}"  #create keypair
-ssh-add ~/.ssh/{private-keyfile}   #add pirvate key to the ssh agent
-#GO TO github.com and upload your public key
-ssh -T git@github.com              #test the connection
-
-file: ~/.ssh/config
-	Host github-personal
-	  Hostname github.com
-	  User git
-	  IdentityFile ~/.ssh/{private-keyfile}
-	  IdentitiesOnly yes
-
 # set up a local repository
 mkdir /home/user1/git
 #navigate to that directory
@@ -25,6 +12,17 @@ git config user.email {dummy-github-email}  #set email
 git remote -v  #check the link to the remote repo
 git remote add origin https://github.com/username/repository.git  #add link if nothing present
 git remote set-url origin git@github.com:username/repository.git  #change link, in this case to use ssh
+
+# use your best practices for generating and managing ssh keys
+# GO TO https://github.com LOG IN and upload your public key
+ssh -T git@github.com  #test the connection
+
+file: ~/.ssh/config
+  Host github-personal
+    Hostname github.com
+    User git
+    IdentityFile ~/.ssh/{private-keyfile}
+    IdentitiesOnly yes
 
 # (1) edit your files
 git mv {oldfilename} {newfilename}  #rename a file. do this with git to properly be tracked!
@@ -54,4 +52,3 @@ git push -u origin main  OR  git push --all
 git pull
 
 # help: https://git-scm.com/docs
-# help: https://www.youtube.com/watch?v=Ala6PHlYjmw

@@ -4,16 +4,16 @@ ssh -p {portnumber} {user}@{serverip}  #specify the port, 22 is the default
 
 file: ~/.ssh/known_hosts  #stores the servers fingerprint which you connected to before, you can delete it if you want to reset it
 file: ~/.ssh/config       #make this file. more servers can be added to this file
-	Host {servername}
-	  Hostname {serverip}
-	  Port {portnumber}
-	  User {user}
-	  IdentityFile ~/.ssh/{private-keyfile}
-	  IdentitiesOnly yes
+  Host {servername}
+    Hostname {serverip}
+    Port {portnumber}
+    User {user}
+    IdentityFile ~/.ssh/{private-keyfile}
+    IdentitiesOnly yes
 
 ssh {servername}  #now you can do this
 
----------- ssh keys -----------------------------------------------------------
+-+-+-+-+-+-+ ssh keys -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ssh-keygen -b 4096                          #generatig rsa keypairs by default,-b 4096 specifing the size.
 ssh-keygen -t ed25519                       #with -t specify what type of key
 ssh-keygen -t ed25519 -f ~/.ssh/{filename}  #with -f specify the filename and location.
@@ -27,8 +27,6 @@ ssh-keygen -t ed25519 -a 100  OR  ssh-keygen -t rsa -b 4096 -o -a 100
 ssh-keygen -y -e -f {private keyfile}
 
 # add the passphrase to memory:
-ps aux | grep ssh-agent              #see if the ssh agent running.
-eval "$(ssh-agent)"                  #start the agent. If you logut the terminal the ssh agent is gone!
 ssh-add -l                           #list private keys currently accessible to the sshagent
 ssh-add ~/.ssh/{private-keyfile}     #add passphrase for private key to ssh agent
 ssh-add -d ~/.ssh/{private-keyfile}  #remove passphrase from agent
@@ -41,45 +39,55 @@ ssh-copy-id -i ~/.ssh/{keyfile.pub} {user}@{serverip}  #transfers the public key
 OR
 cat ~/.ssh/{keyfile.pub} | ssh {user}@{serverip} "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys"
 
----------- scp ----------------------------------------------------------------
+-+-+-+-+-+-+ scp +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 scp {localfile} {user}@{serverip}:{path/to}           #copies file from client to server
 scp {user}@{serverip}:{path/to/remotefile} {path/to}  #copies file from server to client
 scp -r {path/to/folder} {user}@{serverip}:{path/to}   #copies folder to server
 
----------- ssh server ---------------------------------------------------------
-systemctl status sshd       #see if its running, enabled means automatcally starts on startup.
-apt install openssh-server  #if you need to install it.
+-+-+-+-+-+-+ ssh server -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+apt install openssh-server  #install if missing
+
+systemctl status sshd       #see if its running, enabled means automatcally starts on startup
 systemctl start sshd
-systemctl enable ssh        #starts on boot, on ubuntu and debian its not sshd its ssh!
-systemctl stop sshd         #this does not terminates current connections!
+systemctl enable ssh        #starts on boot. Ubuntu and Debian its ssh not sshd ?
+systemctl stop sshd         #relax this does not terminates current connections!
 systemctl disable sshd      #disable ssh alltogether
 
 # configuration file, make backup before edit!
 file: /etc/ssh/sshd_config
-     Port 22                    #change it for security
-     AddressFamily any          #change to 'inet' to use only ipv4
-     PermitRootLogin no         #make sure there is another user!
-     PasswordAuthentication no  #set up keyauthentication first!
-#allow or deny users, at the end of this file add:
-     AllowUsers {user} {user}
-     DenyUsers {user} {user}
-     AllowGroups {group} {group}
-     DenyGroups {group} {group}
+  Port 22                    #change for security through obscurity
+  AddressFamily inet         #only ipv4 allowed
+  PermitRootLogin no         #make sure there is another user!
+  PasswordAuthentication no  #set up keyauthentication first!
+
+# allow or deny users, add to the end
+file: /etc/ssh/sshd_config
+  AllowUsers {user} {user}
+  DenyUsers {user} {user}
+  AllowGroups {group} {group}
+  DenyGroups {group} {group}
+
+# after editing file: /etc/ssh/sshd_config
 sudo systemctl restart sshd
 
-# DO NOT LOCK YOURSELF OUT! DO NOT LOG OUT UNTIL YOU SURE THAT YOU CAN LOG BACK IN!
+# DO NOT LOCK YOURSELF OUT ! DO NOT LOG OUT UNTIL YOU SURE THAT YOU CAN LOG BACK IN !
 
 tail -f /var/log/auth.log  #monitor the connections, good for troubleshooting
 OR journalctl -fu ssh      #on some distributions its sshd
 
-# ssh message before login. It really works if you have password login enabled!
+# ssh message before login. it really works if you have password login enabled!
+# edit the message in this file: /etc/issue.net
+# enable the showing of the message
 file: /etc/ssh/sshd_config
-     Banner /etc/issue.net  #remove the comment symbol
-file: /etc/issue.net  #edit the message in this file
+  Banner /etc/issue.net
+
 service ssh restart  OR  /etc/init.d/sshd restart
 
----------- debug errors -------------------------------------------------------
+-+-+-+-+-+-+ debug errors -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ssh -v {user}@{serverip}   #for debug information
+
+ps aux | grep ssh-agent    #see if the ssh agent running.
+eval "$(ssh-agent)"        #start the agent. if you logout the terminal the ssh agent is gone !
 
 # hung ssh session window 
 press ENTER then ~ then .  #this will terminates the connection

@@ -1,26 +1,45 @@
-sudo shutdown now OR sudo poweroff   #shutdown
-sudo shutdown -r now OR sudo reboot  #restart
-systemctl reboot                     #this does the trick too
+sudo shutdown now  OR  sudo poweroff   #shutdown
+sudo shutdown -r now  OR  sudo reboot  #reboot
+OR
 systemctl poweroff
+systemctl reboot
 
 uptime   #uptime
 free -h  #memory
 df -h    #disks
 df -i    #number if inodes, if disk reported full this can be the couse
 
-lscpu, lspci, lsusb, lshw              #hardware info
-watch -d lsusb                         #see if the usb device appears in the list whenyou plug it in
-watch lsusb -t	                       #tree view
-sudo lshw -html > file.html            #takes the output and puts it in a html file
+lscpu, lspci, lsusb, lshw    #hardware info
+watch -d lsusb               #see if the usb device appears in the list whenyou plug it in
+watch lsusb -t	             #tree view
 sudo lshw -short
-sudo lshw -class network               #network interfaces
-sudo lshw -class storage               #storage interfaces
+sudo lshw -html > file.html  #takes the output and puts it in a html file
+sudo lshw -class network     #network interfaces
+sudo lshw -class storage     #storage interfaces
+sudo lshw -c memory          #memory info eg speed
 lspci -k | grep -EA3 'VGA|3D|Display'  #show videocard and video driver
 
-sudo dmidecode	                       #extensive hardware information
+sudo dmidecode	           #extensive hardware information
+sudo dmidecode -t bios -q  #bios information
 sudo dmidecode -s system-product-name  #for my macbook
 
-lsblk OR sudo fdisk -l  #disks, partitions, mountpoints
+# battery status
+upower -e  #list power devices
+upower -i /org/freedesktop/UPower/devices/DisplayDevice
+upower -i /org/freedesktop/UPower/devices/battery_BAT0
+
+# laptop screen on-off
+setterm --blank 1 #after 1 min the screen goes blank, press any key to come back
+setterm --blank 0 #never turn off
+
+# temperature sensor: lm-sensors
+  install:  sudo apt install lm-sensors
+  setup:    sudo sensors-detect
+            sudo service kmod start
+  run:      sensors OR watch sensors
+
+-+-+-+-+-+-+ data storage device +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+lsblk  OR  sudo fdisk -l  #disks, partitions, mountpoints
 
 # mount HDD
 sudo mkdir /mnt/sdb
@@ -31,38 +50,18 @@ sudo mount | grep sdb    #list down all the mounted drives and partitions.
 # add disk to fstab to mount it on boot
 file: /etc/fstab
 UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx /mnt/sdb ext4 defaults,nofail 0 2  #nofail means it will boot if hdd is not connected
-#help: https://wiki.archlinux.org/title/Fstab
+# help: https://wiki.archlinux.org/title/Fstab
 
-# temperature sensor: lm-sensors
-  install:  sudo apt install lm-sensors
-  setup:    sudo sensors-detect
-            sudo service kmod start
-  run:      sensors OR watch sensors
-
-# battery status
-upower -e  #list power devices
-upower -i /org/freedesktop/UPower/devices/DisplayDevice
-upower -i /org/freedesktop/UPower/devices/battery_BAT0
-
-# bios information
-sudo dmidecode -t bios -q
-
-# memory info eg speed
-sudo lshw -c memory
-
-# laptop screen on-off
-setterm --blank 1 #after 1 min the screen goes blank, press any key to come back
-setterm --blank 0 #never turn off
-
----------- dd -----------------------------------------------------------------
+-+-+-+-+-+-+ dd -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # hard drive read test 
-# tries to read all the data from a drive
-dd if=/dev/sda of=/dev/null status=progress  #/dev/sda is the drive that reads from, /dev/null puts the data to nowhere
+dd if=/dev/sda of=/dev/null status=progress  #tries to read all the data from dev/sda drive
+
+# cpu load test
+sudo dd if=/dev/random of=/dev/null  #generates random numbers then throws them to null
+yes  #repeatedly writes y to standard input/output, if you let it run it eats cpu
 
 # wipe a drive
-# make a file for your script
-file: wipe-sdb.sh
-EOF>
+#make a script file: wipe-sdb.sh
   #!/bin/bash	
   while true
   do
@@ -70,15 +69,9 @@ EOF>
     dd if=/dev/urandom of=/dev/sdb status=progress	
     echo Looped $a times
   done
-<EOF
-chmod +x wipe-sdb.sh
-sudo ./wipe-sdb.sh
-# let it run about 5 times for best result
-
-# cpu load test
-sudo dd if=/dev/random of=/dev/null  #generates random numbers then throws them to null
+#let it run about 5 times for best result
 
 # random data from the Linux kernel random number generator function:
 /dev/random   #produces high-quality randomness, can halt process execution when it runs out of entropy
 /dev/urandom  #not care about entropy, may not produce true randomness
-
+/dev/null     #everything you put here gets discarded

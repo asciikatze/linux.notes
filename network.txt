@@ -17,7 +17,7 @@ sudo dhclient -r {network-interface}  #release current ip, windows: ipconfig /re
 sudo dhclient {network-interface}     #obtain a new ip, windows: ipconfig /renew
 
 # ping
-ping {ip OR url}       #'localhost' is a valid address, Ctrl+c to stop, with url test the dns as well
+ping {ip OR url}       #localhost is a valid address, Ctrl+c to stop, with url test the dns as well
 ping -c {number} {ip}  #only sends a number of packets
 
 # traceroute
@@ -40,65 +40,66 @@ netsh wlan show profiles         #show known wifi networks in windows
 
 watch 'nmcli device wifi | grep -E "IN-USE|{networkname}|{networkname}"'  #monitor two wifi networks
 
----------- dns ---------------------------------------------------------------
-file: /etc/hosts                        #local dns rules your system looks here first
-resolvectl status                       #dns config on each network interface
-sudo systemctl status systemd-resolved  #dns resolver status
+-+-+-+-+-+-+ dns +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+file: /etc/hosts                        #local dns rules. your system looks here first
 
+resolvectl status                       #dns config on each network interface
 systemd-resolve --status                #what dns server is being used
+sudo systemctl status systemd-resolved  #dns resolver status
 sudo systemd-resolve --flush-caches     #flush out DNS cache
 
 # to-do: where should i configure dns in debian server?
 # help: https://www.tecmint.com/set-permanent-dns-nameservers-in-ubuntu-debian/
 
----------- static ip ---------------------------------------------------------
-# on ubuntu cloud(program) can manage the interface.. so find out if it does and disable it!
-file: /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg
-	network: {config: disabled}
-
+-+-+-+-+-+-+ static ip +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # Ubuntu server usually uses networkD, desktop uses Network-Manager
-# look at the netplan configuration, you can change which to use by editing this file.
-# set that static ip with networkD. help: https://netplan.io/examples/
+# set that static ip with networkD:
 file: /etc/netplan/00-installer-config.yaml
-	network:
-	  ethernets:
-	    <NETWORK_INTERFACE>:
-	      addresses:
-	      - <STATIC_IP>/24
-	      gateway4: <GATEWAY_IP>
-	      nameservers:
-	        addresses:
-	        - <DNS_IP_1>
-	        - <DNS_IP_2>
-	        search: []
-	  version: 2
+  network:
+    ethernets:
+      <NETWORK_INTERFACE>:
+        addresses:
+        - <STATIC_IP>/24
+        gateway4: <GATEWAY_IP>
+        nameservers:
+          addresses:
+          - <DNS_IP>
+          - <DNS_IP>
+          search: []
+    version: 2
+# help: https://netplan.io/examples/
 
 #check if the file configured correctly!
 sudo netplan try  #kills the network connection! you need to be at the server!
 sudo netplan apply
 sudo reboot
 
-# Set to dynamic ip.
+# set to dynamic ip with networkD:
 file: /etc/netplan/00-installer-config.yaml
-	network:
-	  ethernets:
-	    <NETWORK_INTERFACE>:
-	      dhcp4: true
-	  version: 2
+  network:
+    ethernets:
+      <NETWORK_INTERFACE>:
+        dhcp4: true
+    version: 2
 
-# static IP on Debian
-file: /etc/network/interfaces  #the dns is NOT read from here
-	# The primary network interface
-	auto <NETWORK_INTERFACE>
-	iface <NETWORK_INTERFACE> inet static
-	  address <STATIC_IP>
-	  netmask 255.255.255.0
-	  gateway <GATEWAY_IP>
-	  dns-nameservers <DNS_IP_1> <DNS_IP_2>
+# on Ubuntu cloud-init can manage the interface.. so find out if it does and disable it!
+file: /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg
+  network: {config: disabled}
+# help: https://cloudinit.readthedocs.io/en/latest/reference/network-config.html
+
+# static ip on Debian
+file: /etc/network/interfaces  #dns is NOT set from here !
+  # The primary network interface
+  auto <NETWORK_INTERFACE>
+  iface <NETWORK_INTERFACE> inet static
+    address <STATIC_IP>
+    netmask 255.255.255.0
+    gateway <GATEWAY_IP>
+    dns-nameservers <DNS_IP> <DNS_IP>
 
 sudo systemctl restart networking  OR  sudo systemctl restart networking.service
 
----------- lan cable ---------------------------------------------------------
+-+-+-+-+-+-+ lan cable +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # looking at the bottom, cable towards you, on the left is pin-1 on the right is pin-8
 # both end needs to be the same, but B is the most common method
 

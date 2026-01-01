@@ -3,16 +3,22 @@ uname -sr            #kernelversion
 cat /etc/os-release  #shows info about the os
 date                 #shows the current date and time
 
-apropos {keyword}     #search the manual
-info {program}
 man {program}         #manual pages
+which {program}       #locate programfile
+whereis {program}     #locate programfiles
+info {program}
+apropos {keyword}     #search the manual
 whatis {program}      #simple description
 help {command}        #info on bash commands
 command -v {program}  #shows what runs exactly
-which {program}       #locate programfile
-whereis {program}     #locate programfiles
 
----------- apt ---------------------------------------------------------------
+# for help try:
+{program} --help  OR  {program} -h  OR  {program} help
+
+# search inside man
+# with less type / then type {what-you-searching-for} ENTER then press n for next result and press N for previous result
+
+-+-+-+-+-+-+ apt +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 sudo apt update   #reads the repo list
 sudo apt upgrade  #download and install updated packages
 sudo apt update && sudo apt upgrade -y
@@ -66,7 +72,7 @@ sudo systemctls status unattended-upgrades #check if its running
 # aptitude apt with ui
 sudo aptitude
 
----------- snap --------------------------------------------------------------
+-+-+-+-+-+-+ snap -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 snap list                    #show installed snaps
 sudo snap install {program}  #install a snap
 sudo snap refresh {program}  #update a specific snap
@@ -92,13 +98,10 @@ sudo snap refresh
 snap changes     #list recent changes
 snap tasks {id}  #list steps involved in a change
 
----------- help --------------------------------------------------------------
+-+-+-+-+-+-+ help -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # if man pages are missing
 sudo apt install manpages man-db
 
 # if something messed up with the locale
 locale                    #see what is being used
 dpkg-reconfigure locales  #setup for locales
-
-# environment variables
-printenv  OR  env  #list all

@@ -1,13 +1,73 @@
-# terminal: device that sends data from input to a computer and renders data on a screen from a computer
-# terminal emulator: virtual device that runs in a window and does the same. a program like the gnome terminal or alacritty
-# virtual terminal is a full-screen terminal which doesn't run inside an X window. in ubuntu:
-Ctrl+Alt+F1     #GUI login screen
-Ctrl+Alt+F2     #GUI desktop
-Ctrl+Alt+F3-F7  #command lines
-# shell: interpet the commands you type and execute them. read -> evaulate -> print -> loop. this is the bash or zsh
+# terminal/console: device that sends data from input to a computer and renders data on a screen from a computer
+# virtual terminal is a full-screen terminal which doesn't run inside an X window. tty session
+Ubuntu: Ctrl+Alt+F3-F7  F1-GUIlogin  F2-GUIdesktop 
+Fedora: Alt+F1-F6  F7-GUI
+Apple : Fn+Ctrl+Alt+F1-F6  F7-GUI
+# terminal emulator: virtual device that runs in a window and does the same. a program like the gnome terminal or ptyxis. pts sessions
+# shell: interpet the commands you type and execute them. read->evaulate->print->loop. this is the bash or zsh or powershell
+# sh is the original unix one. bash and zsh adds extra functionalty on top of it
+# fish is a non POSIX-compliant shell meaning it uses different syntax
+
+# tty: TeleTYpe virtual terminal. text based. physical access
+# pts: Pseudo Terminal Slave. runs in a window. emulated by another program. + remote login sessions
+w    #shows who runs what session
+tty  #shows your session device type and number. device: /dev/tty{number} or dev/pts/{number}
+echo "{text}" > /dev/pts/3  #writes a text to standard output on device dev/pts/3
 
 Ctrl+Alt+t         #open bash terminal window
+echo $0  OR  echo $SHELL  #shows what shell you are running
+cat /etc/shells    #list of valid login shells
 exit  OR  Ctrl+d   #exit terminal
 clear  OR  Ctrl+l  #clears the screen
+history            #lists all previously entered commands
 
-history  #lists all previously entered commands
+# environment variables: universally avaiable values by programs in your session
+printenv  OR  env                 #list all environment variables
+{VARIEABLE}="{value}"             #create a varieable with value: echo {VARIEABLE} prints out the {value}
+export {VARIEABLE}="{value}"      #use export to add to the env
+echo $PATH                        #shows where bash looks for programfiles
+export PATH="$PATH:/path/to/new"  #adds the /path/to/new directory to your $PATH in your envitoment
+# add the previous line to your .bashrc file to be permanent
+source .bashrc  #initialize the .bashrc file again
+
+# help: https://linuxconfig.org/sudo-install-usage-and-sudoers-config-file-basics
+sudo -i
+sudo -s
+sudo bash
+
+# program management
+
+./{program} &  #starts the program and puts it in the background
+jobs           #list of running processes in current session with [JOBID]
+bg [JOBID]     #puts it in the backgroung, you cant interact with it
+fg [JOBID]     #puts it in the foreground
+
+top                        #show processes by system resource usage
+ps                         #lists what is running in the current terminal session
+ps -u {user}               #processes run by user
+pgrep {program}            #shows PID for a program
+ps aux | grep "{program}"  #find yout the PID number of a process. in the results you coud find the grep command too that is not what you looking for!
+
+Ctrl+c                 #try to close it, sends SIGINT signal. ! COPY: Shift+Ctrl+c, PASTE: Shift+Ctrl+v !
+Ctrl+z                 #pause running process SIGSTOP
+kill -l                #shows killsignal list
+kill {PID}             #termiante program by PID number, default signal: SIGTERM
+kill -9 {PID}          #force kill program SIGKILL
+pkill {programname}    #uses programname instead of PID, can kill multiple processes by same name
+killall {programname}  #uses programname instead of PID, can kill multiple processes by same name
+
+lsof -p {PID},{PID}  #list all open files for listed processes
+
+# scripting
+echo $?  #shows the exit code of the last command: 0 means sucess everything else is not
+
+{command} 2> /tmp/error.txt  #if the command fails with an error message it redirects it to the error.txt file in the temporary folder that will be reset
+
+# standard input
+read {VARIEABLE}  #the script waits for your input{value} and then stores that input in the VARIEABLE
+
+#put tracing on your script for troubleshhoting: #!/bin/bash -x
+#while writing scripts you can break the line with : \ then press Enter(AltGr + q)
+
+sleep 10 && echo "hello"  #terminal sleeps for 10 seconds then writes out hello
+

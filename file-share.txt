@@ -1,19 +1,25 @@
----------- ftp ---------------------------------------------------------------
+-+-+-+-+-+-+ ftp +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 sudo apt install vsftpd
 sudo systemctl enable vsftpd
 sudo systemctl status vsftpd
 
+#for free access change:
 file: /etc/vsftpd.conf
-#for free access change: anonymus_enable=NO to anonymus_enable=YES
-#stop from autostart with computer: sudo update-rc.d vsftpd disable
+  anonymus_enable=NO to anonymus_enable=YES
+
+#stop from autostart with computer:
 #basically update-rc.d will modify existing runlevel links for the script /etc/init.d/vsftpd by renaming start links to stop links 
-start/stop:	sudo service vsftpd start
-		sudo service vsftpd stop
-ftp directory: /srv/ftp/
+sudo update-rc.d vsftpd disable
+
+#start/stop
+sudo service vsftpd start
+sudo service vsftpd stop
+
+#ftp directory: /srv/ftp/
 
 # help: https://help.ubuntu.com/lts/serverguide/ftp-server.html
 
----------- samba share (smb) -------------------------------------------------
+-+-+-+-+-+-+ samba share (smb) +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 sudo apt install samba
 
 #setup

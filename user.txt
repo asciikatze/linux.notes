@@ -1,63 +1,108 @@
----------- user --------------------------------------------------------------
+-+-+-+-+-+-+ user -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+whoami             #current user
+users OR who OR w  #users currently logged in
+id                 #current users UID(username) and member of groups=GID(groupname)
+id -u {user}       #shows only user UID
+
+su - {user}  #switch to user. the - or -l loads the $PATH variables for the user
+su -         #switch to root
+
+adduser {user}  #creates user with every important settings. if you want to specify things see useradd
+OR
 useradd {user} -m -s /bin/bash  #-m create home folder, -s add login shell
-OR  adduser {user}
 passwd {user}                   #add/change password
 userdel {user}                  #delete user
 
-#set the requirements for user passwords
-file: /etc/pam.d/common-password
-
-id -u {username}  #shows user id UID
-
-usermod -l {users-newname} {user}     #change username
-usermod -c "{user real name}" {user}  #change user real name, name can be seen in file: /etc/passwd
-usermod {user} --shell /bin/bash      #add bash shell to user
-
-groups {user}               #list groups user is in
-usermod -aG {group} {user}  #add user to group
-gpasswd -d {user} {group}   #remove user from group
+usermod -l {newname} {user}       #change username
+usermod -c "{real-name}" {user}   #change user real name. see file: /etc/passwd
+usermod {user} --shell /bin/bash  #add bash shell to user
 
 file: /etc/passwd  #all the users on the system
-	<username>:x:<userid>:<groupid>:<info,>:<homedirectory>:<whatshelltheuseruses>  #x means the password stored in /etc/shadow
+  <username>:x:<userid>:<groupid>:<info,>:<homedirectory>:<whatshelltheuseruses>  #x means the password stored in /etc/shadow
 file: /etc/shadow  #user passwords
 
-users OR who OR w  #users currently logged in
-whoami             #current user
-id                 #current users group ids
-
-su -l {user}  #switch to user
-su -l         #switch to root, -l loads the $PATH variables for the user
-
-#limit root account(this does not disable ssh access for root)
-sudo passwd -l root  #disable root account, in the /etc/shadow file a '!' appears in font of the password-hash
-sudo passwd -u root  #enable root account
+# limit root account. this does not disable ssh access for root!
+sudo passwd -l root    #disable root account. in the /etc/shadow file a ! appears in front of the password-hash
+sudo passwd -u root    #enable root account
 OR
 sudo chsh root         #change the loginshell to /usr/sbin/nologin binary shell, you can check for it in the /etc/passwd file
 sudo nano /etc/passwd  #you have to change it back manually
 
-#to disable motd and login messages
-touch /home/user1/.hushlogin
-
-sudo visudo  #edits the file: /etc/sudoers.tmp
-
-#brute force login mitigation with faillock
+# brute force login mitigation with faillock
 file: /etc/security/faillock.conf    
-file: /var/run/faillock/*            #logs per user
+file: /var/run/faillock/{user}       #logs per user
 sudo faillock --user {user}          #show failed attempts, see if account locked
 sudo faillock --user {user} --reset  #unlock account
 
----------- group -------------------------------------------------------------
-groupadd {group}  #create group
-groupdel {group}  #delete group
-file: /etc/group  #all the groups on the system, all users have a personal group
+#set the requirements for user passwords
+file: /etc/pam.d/common-password
+
+#to disable motd and login messages
+touch /home/user1/.hushlogin
+
+-+-+-+-+-+-+ group +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+groups {user}               #list groups user is in
+usermod -aG {group} {user}  #add user to group
+gpasswd -d {user} {group}   #remove user from group
+
+groupadd {group}            #create group
+groupdel {group}            #delete group
+file: /etc/group            #all the groups on the system, all users have a personal group
 
 #default groups
-  adm         Monitor system logs
-  cdrom       Use CD-ROM drives
-  sudo        administer the system, ...
-  dip         Connect to the Internet using a modem
-  plugdev     Access external storage devices
-  lpadmin     Configure printers
-  sambashare  Share files with the local network
-  lxd         Manage LXD server(system container manager)
+  adm            monitor system logs
+  cdrom          use CD-ROM drives
+  sudo or wheel  administer the system
+  dip            connect to the Internet using a modem
+  plugdev        access external storage devices
+  lpadmin        configure printers
+  sambashare     share files with the local network
+  lxd            manage LXD server(system container manager)
+
+-+-+-+-+-+-+ sudo -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+sudo !!  #runs most recent command as sudo
+sudo -l  #show sudo privileges for user. -ll more readable
+
+# sudo privileges  WHO WHERE=(ASWHO) WHAT
+# ALL ALL=(ALL) ALL grants full sudo privileges to all users on all hosts for all commands 
+# ALL in the first field specifying that the configuration implements to all users
+# ALL in the second field specifies that the configuration implements to all hosts
+# (ALL) in the third field specifies that the user can run commands as any user.  (ALL:ALL) and (ALL) means the same
+# ALL in the fourth field specifies that the user can run any command with administrative privileges
+
+# rules are read from: /etc/sudoers  AND  /etc/sudoers.d/*  files
+{user} ALL=(ALL:ALL) /usr/bin/apt,/usr/bin/rm  #user can only run apt and rm with sudo
+{user} ALL=(ALL:ALL) NOPASSWD: /usr/bin/apt    #no password for running apt updates
+{user} ALL=(ALL) NOPASSWD:ALL                  #no password prompt
+%{group} ALL=(ALL:ALL) ALL                     #set group privileges
+
+# sudo timeout for password prompt
+# value can be 0-99 units are in minutes. default is 5 minutes
+Defaults timestamp_timeout=0         #always ask for password
+Defaults timestamp_timeout=-1        #ask once per session for password
+Defaults:{user} timestamp_timeout=0  #user specific rule
+
+# add sudo privileges to a user
+usermod -aG sudo {user}  #logout then login for the change to take effect
+#the group could be called wheel OR sudo depends on linuxdistro
+OR
+sudo visudo  #edits file: /etc/sudoers  IT IS POSSIBLE TO FUCK THIS UP ! DONT FUCK THIs UP !
+#if visudo catches an error after editing
+What now? e  #back to the editor
+What now? x  #discard changes
+What now? Q  #save changes  DONT DO IT !
+OR
+nano /etc/sudoers.d/{user}  #add rules to a file here
+#best practice to have a file for each user with user specific rules
+chmod 440 /etc/sudoers.d/{user}
+
+# sudo logs
+# help: https://www.youtube.com/watch?v=ZBfZs-gqRcc
+Fedora, CentOS: /var/log/secure
+Debian, Ubuntu: /var/log/auth.log
+
+# view sudo logs
+journalctl /usr/bin/sudo  #--no-pager wraps the lines and prints all for clearer view
+#to see every log entry user needs to be in adm or systemd-journal groups
+grep -e adm -e systemd-journal /etc/group  #users in adm and systemd-journal groups
 

@@ -1,28 +1,41 @@
-sudo systemctl status {daemon/service}
-sudo systemctl start {daemon/service}
-sudo systemctl stop {daemon/service}
-sudo systemctl enable {daemon/service}   #start on boot
-sudo systemctl disable {daemon/service}  #not start on boot
+# systemd is a system and service manager for Linux that initializes and manages system processes
+# systemctl is the command-line tool used to control and manage systemd services and units
+pstree
 
-sudo systemctl reload {daemon/service}  #sometimes not enough, prefferred by webservers
-sudo systemctl restart {daemon/service}
-sudo systemctl reload-or-restart {daemon/service}  #if cant reload then restart
+# service vs daemon: for all intents and purposes they are the same. all daemons are services, but not all services are daemons
+# daemon: background process running continuously
+# service: managed background program that may run continuously or be triggered as needed
 
-sudo systemctl mask {daemon/service}  #prevents it from starting even if another enabled service requires it, third level of off (stop-1st, disable-2nd, mask-3rd)
-sudo systemctl unmask {daemon/service}
+# help: https://www.ditig.com/systemd-cheat-sheet
+
+-+-+-+-+-+-+ manage -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+sudo systemctl status {service}   #information about the service
+sudo systemctl start {service}
+sudo systemctl stop {service}     #level1 of off: stops for now
+
+sudo systemctl reload {service}   #sometimes not enough. prefferred by webservers
+sudo systemctl restart {service}
+sudo systemctl reload-or-restart {service}  #if cant reload then restart
+
+sudo systemctl enable {service}   #enabled to start on boot
+sudo systemctl disable {service}  #level2 of off: do not start on boot
+
+sudo systemctl mask {service}     #level3 of off: prevents it from starting even if another enabled service requires it
+sudo systemctl unmask {service}
 # help: https://www.baeldung.com/linux/systemctl-mask-disable
 
+-+-+-+-+-+-+ search queries -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 systemctl --type=service  #list of services
 systemctl list-unit-files --type=service
 sudo systemctl list-unit-files | grep -E 'disabled|masked'  #lists services that are disbled or masked
-sudo systemctl is-active {daemon/service}   #is it runnig
-sudo systemctl is-enabled {daemon/service}  #is it enabled
-systemctl --reverse list-dependencies {daemon/service} #lists what is dependent on this service, check before removing/masking services
+sudo systemctl is-active {service}  #is it runnig
+sudo systemctl is-enabled {service}  #is it enabled
+systemctl --reverse list-dependencies {service}  #lists what is dependent on this service, check before removing/masking services
 
-# systemd
-pstree
-ps -aux | grep {program}  #processes for that program
-sudo journalctl -xe       #logs for systemd stuff
+-+-+-+-+-+-+ journal logs -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# journalctl allows you to query and display logs collected by the systemd journal
+sudo journalctl -xe             #logs for systemd stuff
+sudo journalctl -feu {program}  #logs for a program
 
 #if journalctl is empty there may be a problem so restart the journalctl daemon
 sudo systemctl list-units | grep journal  #to find out the daemon name for journalctl

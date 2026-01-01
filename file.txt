@@ -1,24 +1,23 @@
----------- navigation ---------------------------------------------------------
-pwd             #path to working directory
-ls -lah         #list the files in directory, -a hidden files, -l more info, -h human readable sizes
-tree {folder}   #lists what inside all in hirearchy
-cd {directory}  #change directory
-cd ..           #move up on the directory tree
-cd ~  OR  cd    #jump to /home/user/ directory
-cd -            #previous directory
-pushd AND popd
+-+-+-+-+-+-+ navigation -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+pwd                #path to working directory
+ls -lah            #list the files in directory, -a hidden files, -l more info, -h human readable sizes
+ls -R {directory}  #lists all the files and the files in subdirectories too
+tree {folder}      #lists what inside with hirearchy
+cd {directory}     #change directory
+cd ..              #move up on the directory tree
+cd ~  OR  cd       #jump to /home/user/ directory
+cd -               #previous directory
+pushd  AND  popd
 
-ls {directory} > file.txt  #list the files from a directory and writes it in file.txt
-ls -R {directory}          #lists all the files and the files in subdirectories too
-ls | less                  #if the output of a command is too long and you cant see it all, the | pipes it in the 'less' command, | = AltGr+w
-
-more  AND  less    #paiger apps, less is more than more
+more  AND  less    #paiger programs, less is more than more
+# if the output of a command is too long and you cant see it all, then | pipe it in the 'less' command, | = AltGr+w
+# with less type / then type {what-you-searching-for} ENTER then press n for next result and press N for previous result
 less -N {file}     #scroll through a file contents, every line is numbered
 head -n 15 {file}  #view the first 15 lines of a file
 tail -n 15 {file}  #view the last 15
 tail -f {file}     #monitor a log file, printing new additions to the file until you stop it (Ctrl + C)
 
----------- file manipulation --------------------------------------------------
+-+-+-+-+-+-+ file manipulation +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 touch {filename}            #make empty file OR update the timestamp on existing file, you can make more: touch file1.txt file2.txt
 mkdir {directory}           #make a directory, can make more: mkdir folder1 folder2
 rmdir {directory}           #delete empty directory
@@ -43,7 +42,7 @@ cat {file1} >> {file2}         #adds file1 to the end of file2
 echo "{randomtext}" > file.txt   #replaces the text in the file
 echo "{randomtext}" >> file.txt  #adds to the end of the file
 
----------- search -------------------------------------------------------------
+-+-+-+-+-+-+ search -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # grep is for finding text in a file
 grep "{sting}" {file}  #look for a string in a file, you can add multiple files
 grep -r "{sting}" .    #look for a string in all the files in the current directory
@@ -61,7 +60,7 @@ sudo find / -name {filename}            #search for a specific filename on the w
 #find in current directory all jpg and png files that are modified in the last year and copies it to the Pictures folder
 find . \( -name '*.jpg' -o -name '*.png' \) -mtime -365 -exec cp {} /home/user1/Pictures \;
 
----------- file permissions ---------------------------------------------------
+-+-+-+-+-+-+ file permissions -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 chown {user}:{group} {filename}      #set file ownership
 chown -R {user}:{group} {directory}  #set folder ownership, -R apply to files within directory
 chown -h {user}:{group} {linkfile}   #change the owner of a symbolic link
@@ -83,7 +82,7 @@ chmod 755 {filename}              #set a file to be executable and readable by e
 chmod +x {filename}               #set execute bit without changing other permissions, -x removes it
 chmod -R u=rwx,g=,o= {directory}  #set permissions for folder and its contents
 
----------- about files --------------------------------------------------------
+-+-+-+-+-+-+ about files +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 file {file}    #information about file
 stat {file}    #information about file, inode number and metadata
 
@@ -114,10 +113,10 @@ du -sh *       #size of the current working directory
 
 diff {file1} {file2}  #compares the two files shows whats different
 cmp {file1} {file2}   #compares byte by byte
+wc {file}             #counts new lines, words and bytes in a file
 
----------- help ---------------------------------------------------------------
+-+-+-+-+-+-+ help -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # midnight-commander filemanager
-# help: https://www.youtube.com/watch?v=fJOkuaihAek
 sudo apt install mc
 
 # nano editor

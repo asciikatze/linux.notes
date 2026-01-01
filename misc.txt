@@ -1,10 +1,10 @@
----------- ffmpeg ------------------------------------------------------------
+-+-+-+-+-+-+ ffmpeg -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # cut video from to
 ffmpeg -i video.mp4 -ss 01:24:17 -to 01:43:40 -c copy trimmed.mp4
 # take a picture
 ffmpeg -f video4linux2 -i /dev/v4l/by-id/usb-0c45_USB_camera-video-index0 -vframes 1  -video_size 640x480 test.jpeg
 
----------- dosfloppy ---------------------------------------------------------
+-+-+-+-+-+-+ dosfloppy +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # create a blank floppy image
 mkfs.msdos -C /path/imagefile.img 1440
 
@@ -15,7 +15,7 @@ sudo mount /path/imagefile.img -o umask=0 /media/floppy1/ #use this!
 # unmount
 sudo umount /media/floppy1/
 
----------- ISO converter -----------------------------------------------------
+-+-+-+-+-+ ISO converter +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 b5i2iso  #BlindWrite image to ISO image file converter
 ccd2iso  #Converter from CloneCD disc image format to standard ISO
 cdi2iso  #DiscJuggler image to ISO image file converter
