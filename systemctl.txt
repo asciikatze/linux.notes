@@ -40,3 +40,6 @@ sudo journalctl -feu {program}  #logs for a program
 #if journalctl is empty there may be a problem so restart the journalctl daemon
 sudo systemctl list-units | grep journal  #to find out the daemon name for journalctl
 sudo systemctl restart systemd-journald   #restarts systemd-journald
+
+
+# to-do: strace

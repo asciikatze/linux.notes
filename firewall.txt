@@ -4,7 +4,7 @@ sudo ufw enable
 sudo ufw disable
 
 # add rules
-sudo ufw default deny incoming  #exception is pings!
+sudo ufw default deny incoming  #deny all incoming traffic EXCEPt PINGS !
 sudo ufw default allow outgoing
 
 sudo ufw limit 22/tcp  #limit: some protection against brute force, ssh uses tcp

@@ -1,4 +1,4 @@
----------- screen ------------------------------------------------------------
+-+-+-+-+-+-+ screen -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 screen      #start
 exit        #terminating active session
 Ctrl+a d    #detach it will still run in the background

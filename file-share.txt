@@ -19,7 +19,7 @@ sudo service vsftpd stop
 
 # help: https://help.ubuntu.com/lts/serverguide/ftp-server.html
 
--+-+-+-+-+-+ samba share (smb) +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+-+-+-+-+-+-+ smb : samba share +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 sudo apt install samba
 
 #setup
@@ -42,6 +42,31 @@ smbd AND nmbd
 
 # help: https://www.youtube.com/watch?v=7Q0mnAT1MRg
 # help: https://www.youtube.com/watch?v=p0Ty00aG1ag
+
+-+-+-+-+-+-+ rygel +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# media server DLNA UPnP
+rygel  #start server instance
+file: /etc/rygel.conf  #global config
+  [general]
+  ipv6=false
+  friendly_name=MyMediaServer
+  [MediaExport]
+  uris=/home/user1/Music;/home/user1/Videos;/home/user1/Pictures
+  media_types=audio/mpeg,video/mp4,image/jpeg  #type of media file you want to share
+
+file: home/user1/.config/rygel.conf  #user specific config
+
+#make sure that the firewall allows it
+#media streaming ports can vary but often fall within the range of 49152 to 65535
+sudo ufw allow 1900/udp  #UPnP discovery SSDP
+
+#run as a service
+#the --user flag indicates that this is a user-level service. recommended for desktop environments
+systemctl --user start rygel
+systemctl --user enable rygel
+systemctl --user status rygel
+systemctl --user restart rygel      #after config change
+journalctl --user -u rygel.service  #troubleshooting
 
 
 # to-do: nfs file sharing

@@ -6,10 +6,11 @@ date                 #shows the current date and time
 man {program}         #manual pages
 which {program}       #locate programfile
 whereis {program}     #locate programfiles
-info {program}
+info {program}        #advanced than man but less program
 apropos {keyword}     #search the manual
 whatis {program}      #simple description
 help {command}        #info on bash commands
+type {command}        #simple info
 command -v {program}  #shows what runs exactly
 
 # for help try:
@@ -52,6 +53,7 @@ file: /etc/apt/sources.list.d/            #contains program specific repos
 /var/log/apt/term.log
 
 # dpkg package manager for .deb debian packages
+dpkg -s {programname}          #information on programs if installed
 sudo dpkg -i {file.deb}        #install
 sudo dpkg -r {programname}     #remove
 #you need to install the dependencies too

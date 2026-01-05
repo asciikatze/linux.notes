@@ -46,7 +46,7 @@ file: /etc/hosts                        #local dns rules. your system looks here
 resolvectl status                       #dns config on each network interface
 systemd-resolve --status                #what dns server is being used
 sudo systemctl status systemd-resolved  #dns resolver status
-sudo systemd-resolve --flush-caches     #flush out DNS cache
+sudo systemd-resolve --flush-caches     #clear DNS cache
 
 # to-do: where should i configure dns in debian server?
 # help: https://www.tecmint.com/set-permanent-dns-nameservers-in-ubuntu-debian/
@@ -57,14 +57,14 @@ sudo systemd-resolve --flush-caches     #flush out DNS cache
 file: /etc/netplan/00-installer-config.yaml
   network:
     ethernets:
-      <NETWORK_INTERFACE>:
+      {NETWORK_INTERFACE}:
         addresses:
-        - <STATIC_IP>/24
-        gateway4: <GATEWAY_IP>
+        - {STATIC_IP}/24
+        gateway4: {GATEWAY_IP}
         nameservers:
           addresses:
-          - <DNS_IP>
-          - <DNS_IP>
+          - {DNS_IP}
+          - {DNS_IP}
           search: []
     version: 2
 # help: https://netplan.io/examples/
@@ -78,7 +78,7 @@ sudo reboot
 file: /etc/netplan/00-installer-config.yaml
   network:
     ethernets:
-      <NETWORK_INTERFACE>:
+      {NETWORK_INTERFACE}:
         dhcp4: true
     version: 2
 
@@ -90,12 +90,12 @@ file: /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg
 # static ip on Debian
 file: /etc/network/interfaces  #dns is NOT set from here !
   # The primary network interface
-  auto <NETWORK_INTERFACE>
-  iface <NETWORK_INTERFACE> inet static
-    address <STATIC_IP>
+  auto {NETWORK_INTERFACE}
+  iface {NETWORK_INTERFACE} inet static
+    address {STATIC_IP}
     netmask 255.255.255.0
-    gateway <GATEWAY_IP>
-    dns-nameservers <DNS_IP> <DNS_IP>
+    gateway {GATEWAY_IP}
+    dns-nameservers {DNS_IP} {DNS_IP}
 
 sudo systemctl restart networking  OR  sudo systemctl restart networking.service
 

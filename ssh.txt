@@ -86,8 +86,8 @@ service ssh restart  OR  /etc/init.d/sshd restart
 -+-+-+-+-+-+ debug errors -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ssh -v {user}@{serverip}   #for debug information
 
-ps aux | grep ssh-agent    #see if the ssh agent running.
-eval "$(ssh-agent)"        #start the agent. if you logout the terminal the ssh agent is gone !
+ps aux | grep ssh-agent    #see if the ssh agent running
+eval "$(ssh-agent)"        #start agent for current session
 
 # hung ssh session window 
 press ENTER then ~ then .  #this will terminates the connection

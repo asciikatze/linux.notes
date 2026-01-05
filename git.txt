@@ -29,19 +29,20 @@ git mv {oldfilename} {newfilename}  #rename a file. do this with git to properly
 git rm {file}           #delete a file + add the deletion to staging
 git rm -r {folder}      #delete a folder + add the deletion to staging
 git rm --cached {file}  #removes + untracks the file but does not delete it
-git diff                #show changes
 
-# (2) staging for commit
-# here you can review, adjust, remove changes
+# (2) staging. review, adjust, remove changes
+#review
 git status      #keep an eye on working files, set what files git tracks
+git diff        #show changes
+git reset       #removes everything from staging
+
 git add {file}  #add a file to staging for commit. this can work: git add *.txt
 git add --all   #add the entire project to staging  OR -A
 git add .       #add all the files in current working directory and subdirectories to staging
 git add *       #stages new and modified files but NOT deleted ones
-git reset       #removes everything from staging
 
 # (3) commit changes
-git commit -m "{comment}"  #finalizing commit for push, -a automatically stage modified and deleted files in this step
+git commit -m "{title}" -m "{description}"  #finalizing commit for push, -a automatically stage modified and deleted files in this step
 git log                    #show commit history
 git reset HEAD~            #undo the last commit set everything back to before previous stage
 
