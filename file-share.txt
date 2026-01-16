@@ -19,29 +19,91 @@ sudo service vsftpd stop
 
 # help: https://help.ubuntu.com/lts/serverguide/ftp-server.html
 
--+-+-+-+-+-+ smb : samba share +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+-+-+-+-+-+-+ samba +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 sudo apt install samba
+# active directory service can fail during installation if you not in active directory. that is ok
+sudo systemctl status smbd
+sudo systemctl stop smbd
 
-#setup
-mkdir /home/{username}/sambashare/
-file: /etc/samba/smb.conf  #at the bottom of the file, add the following lines
-[sambashare]
-    comment = Samba on Ubuntu
-    path = /home/username/sambashare
-    read only = no
-    browsable = yes
-sudo service smbd restart
-sudo ufw allow samba
+# to disable/enable samba
+# fedora, centos, redhat, arch? : calls it smb and nmb
+sudo systemctl enable --now smbd  AND  sudo systemctl enable --now nmbd
 
-#samba doesnt use the system account password
-#username used must belong to a system account
-sudo smbpasswd -a username
+file: /etc/samba/smb.conf  #archive this file and create a fresh smb.conf file
+  [global]
+  server string = {SERVER-NAME}
+  workgroup = WORKGROUP             #use your workgroup name for windows machines on your network
+  security = user                   #user asked to log-on on connection
+  map to guest = bad user           #user account will not be required for connection. set it to 'never' to disable guest access
+  name resolve order = bcast host   #where to look up host names: broatcast first hosts file second
+  include = /etc/samba/shares.conf  #include another config file OPTIONAL: you can keep writing here !
 
-#to disable/enable samba use systemctl on:
-smbd AND nmbd
+  hosts allow = 192.168.0.0/16      #only local clients allowed to connect. security for public share
+  hosts deny = 0.0.0.0/0            #denys everything else
 
-# help: https://www.youtube.com/watch?v=7Q0mnAT1MRg
-# help: https://www.youtube.com/watch?v=p0Ty00aG1ag
+  log file = /var/log/samba/log.%m
+  max log size = 1000
+  logging = file
+
+file: /etc/samba/shares.conf
+  [Public Files]                    #the share name
+  path = /share/public              #directory of your shared files
+  force user = smbuser              #owner of the files when you upload
+  force group = smbgroup
+  create mask = 0664                #set the permissions for new files
+  force create mode = 0664          #set the permissions for uploaded files
+  directory mask = 0775             #with directories you have to have execute to open them
+  force directory mode = 0775
+  public = yes                      #same as:  guest ok = yes
+  writable = yes                    #set to no for to have only downloadeable files. read-only = no  option basically the same thing
+
+  comment = {COMMENT}               #you can add comment for clarity
+  write list = @smbgroup            #members of the samba group can write 
+
+sudo testparm /etc/samba/smb.conf  #checks the config file for errors
+sudo systemctl restart smbd        #always restart after editing configuration !
+
+# create a general user and group for the public share
+sudo groupadd --system smbgroup
+sudo useradd --system --no-create-home --group smbgroup -s /bin/false smbuser
+# set the shared directory owner
+sudo chown -R smbuser:smbgroup /share
+sudo chmod -R 775 /share
+
+# samba user
+file: /var/lib/samba/private/passdb.tdb  #sambausers passwordfile
+# samba version 4.x and later, samba has the ability to run as an AD Domain Controller
+# you dont need to have a standard linux user for every samba user
+samba-tool user add {SAMBAUSERNAME}
+# username used belong to a system account
+sudo usermod -aG smbgroup user1  #add user to samba group
+sudo smbpasswd -a user1          #add to samba users. samba doesnt use the system account password.
+sudo smbpasswd user1             #reset password
+sudo smbpasswd -x user1          #delete samba user
+
+# user specific rules
+file: /etc/samba/shares.conf
+  [user1-share]
+  path = /home/user1/share
+  valid users = user1
+  public = no
+  writeable = yes
+  browsable = no           #share is hidden from available shares list. use: smb://{ip}/{sharename}
+
+  valid users = @smbgroup  #smbgroup users have access
+
+# firewall rules
+sudo ufw allow 445/tcp
+sudo ufw allow 139/tcp  #for netbios legacy support
+
+# troubleshoot
+# help: https://www.samba.org/samba/docs/current/man-html/smb.conf.5.html
+# on windows client samba could be disabled. windows features -> smb and cifs file sharing support enable
+sudo testparm -v  #for troubleshooting purposes
+# problem with connection try:  min protocol = SMB2  or SMB3 in [global]
+
+# to-do: mount a smb network share. cifs https://www.youtube.com/watch?v=v2WMnZoiGog  https://youtu.be/2IJ-t81l9jc?t=581
+# to-do: cli https://youtu.be/p0Ty00aG1ag?t=1069
 
 -+-+-+-+-+-+ rygel +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # media server DLNA UPnP
@@ -64,15 +126,10 @@ sudo ufw allow 1900/udp  #UPnP discovery SSDP
 #the --user flag indicates that this is a user-level service. recommended for desktop environments
 systemctl --user start rygel
 systemctl --user enable rygel
-systemctl --user status rygel
 systemctl --user restart rygel      #after config change
 journalctl --user -u rygel.service  #troubleshooting
 
 
-# to-do: nfs file sharing
-# help: https://www.youtube.com/watch?v=Na_jKeVWzrc
-# help: https://www.youtube.com/watch?v=zgGp6RM7kgo
-
-# to-do: rsync
-# help: https://www.youtube.com/watch?v=QKCIi-NxJEo
+# to-do: nfs  help: https://www.youtube.com/watch?v=Na_jKeVWzrc  https://www.youtube.com/watch?v=zgGp6RM7kgo
+# to-do: rsync  help: https://www.youtube.com/watch?v=QKCIi-NxJEo
 

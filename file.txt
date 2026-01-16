@@ -18,20 +18,25 @@ tail -n 15 {file}  #view the last 15
 tail -f {file}     #monitor a log file, printing new additions to the file until you stop it (Ctrl + C)
 
 -+-+-+-+-+-+ file manipulation +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-touch {filename}            #make empty file OR update the timestamp on existing file, you can make more: touch file1.txt file2.txt
-mkdir {directory}           #make a directory, can make more: mkdir folder1 folder2
-rmdir {directory}           #delete empty directory
-cp {filename} {path-to}     #copy
-cp *.* {path-to}            #copy all the files
-cp -r {folder} {path-to}    #copy a folder with its contents
-cp -a                       #archive keep the file informatin owner etc
-mv {filename} {path-to}     #move
-mv {filename} {newname}     #rename
-mv -n                       #-n no overwrite, -v verbose
-rm {filename}               #delete a file
-rm -I                       #prompt once before removing more than three files. -i prompt before every removal
-rm a*                       #delete every file thats name starts with the letter a
-rm -r {directory}           #delete directory along whith its contents
+touch {filename}  #make empty file OR update the timestamp on existing file, you can make more: touch file1.txt file2.txt
+
+mkdir {directory}             #make a directory, can make more: mkdir folder1 folder2
+mkdir -p {dir/subdir/subdir}  #make parent directorieds as needed
+rmdir {directory}             #delete empty directory
+
+cp {filename} {path-to}   #copy
+cp *.* {path-to}          #copy all the files
+cp -r {folder} {path-to}  #copy a folder with its contents
+cp -a                     #archive keep the file informatin owner etc
+
+mv {filename} {path-to}  #move
+mv {filename} {newname}  #rename
+mv -n                    #-n no overwrite, -v verbose
+
+rm {filename}      #delete a file
+rm -I              #prompt once before removing more than three files. -i prompt before every removal
+rm a*              #delete every file thats name starts with the letter a
+rm -r {directory}  #delete directory along whith its contents
 
 cat {file}                     #lists what is in a file, can show more files back to back 'cat {file1} {file2}'
 cat > {file}                   #writes keyboard input into a file, Ctrl+d to stop, stop on empty line, this will overwrite the file!
@@ -41,24 +46,6 @@ cat {file1} >> {file2}         #adds file1 to the end of file2
 
 echo "{randomtext}" > file.txt   #replaces the text in the file
 echo "{randomtext}" >> file.txt  #adds to the end of the file
-
--+-+-+-+-+-+ search -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-# grep is for finding text in a file
-grep "{sting}" {file}  #look for a string in a file, you can add multiple files
-grep -r "{sting}" .    #look for a string in all the files in the current directory
-
-# find is for finding files
-find {directory} -iname a*              #search for files starting with a or A. case insensitive search
-find {directory} -name a*               #search for files starting with a
-find . -iname "{string}"                #USE THIS!
-find {directory} -mtime -7              #search for files that are modified in the last 7 days
-find {directory} -mmin -7               #search for files that are modified in the last 7 minutes
-find {directory} -mtime -7 -size +10M   #search for files that are modified in the last 7 days and bigger than 10Mb, you can us '-' for smaller
-find {directory} -size +10M | grep txt  #narrows the list to contain txt in the filenames
-sudo find / -name {filename}            #search for a specific filename on the whole computer
-
-#find in current directory all jpg and png files that are modified in the last year and copies it to the Pictures folder
-find . \( -name '*.jpg' -o -name '*.png' \) -mtime -365 -exec cp {} /home/user1/Pictures \;
 
 -+-+-+-+-+-+ file permissions -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 chown {user}:{group} {filename}      #set file ownership
@@ -83,8 +70,8 @@ chmod +x {filename}               #set execute bit without changing other permis
 chmod -R u=rwx,g=,o= {directory}  #set permissions for folder and its contents
 
 -+-+-+-+-+-+ about files +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-file {file}    #information about file
-stat {file}    #information about file, inode number and metadata
+file {file}   #information about file
+stat {file}   #information about file, inode number and metadata
 
 # files have: 1.file name, 2.inode/metadata, 3.file contents
 # file name points to inode, inode points to file contents
@@ -108,12 +95,30 @@ ln -s {sourcefile} {newlinkfile}
 # the root directory's ./ and ../ are the same 
 # user can not make hard links to a directory
 
-du -sh {file}  #size of a file or folder
-du -sh *       #size of the current working directory
+du -hs {file}  #size of a file or folder
+du -hs *       #size of the current working directory
 
 diff {file1} {file2}  #compares the two files shows whats different
 cmp {file1} {file2}   #compares byte by byte
 wc {file}             #counts new lines, words and bytes in a file
+
+-+-+-+-+-+-+ search -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# grep is for finding text in a file
+grep "{sting}" {file}  #look for a string in a file, you can add multiple files
+grep -r "{sting}" .    #look for a string in all the files in the current directory
+
+# find is for finding files
+find {directory} -iname a*              #search for files starting with a or A. case insensitive search
+find {directory} -name a*               #search for files starting with a
+find . -iname "{string}"                #USE THIS!
+find {directory} -mtime -7              #search for files that are modified in the last 7 days
+find {directory} -mmin -7               #search for files that are modified in the last 7 minutes
+find {directory} -mtime -7 -size +10M   #search for files that are modified in the last 7 days and bigger than 10Mb, you can us '-' for smaller
+find {directory} -size +10M | grep txt  #narrows the list to contain txt in the filenames
+sudo find / -name {filename}            #search for a specific filename on the whole computer
+
+#find in current directory all jpg and png files that are modified in the last year and copies it to the Pictures folder
+find . \( -name '*.jpg' -o -name '*.png' \) -mtime -365 -exec cp {} /home/user1/Pictures \;
 
 -+-+-+-+-+-+ help -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # midnight-commander filemanager
@@ -151,3 +156,6 @@ var               #system specific variable files, logs, temporary message files
 sha256sum {file}
 md5sum {file}
 sha256sum {file} | grep {thevaluethatyouwanttocompareto}
+
+
+# to-do: chcon SELinux

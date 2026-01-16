@@ -1,8 +1,10 @@
 # curl
+# download contents of files
 curl {url}     #download hosted file contents like the index.html
 curl -I {url}  #only the header
 
 # wget
+# download files
 wget -v {urltofile}                   #download a file
 wget -v --input-file={file.txt}       #list with urls to multiple files
 wget -v --limit-rate=50k {urltofile}  #limit download speed
@@ -10,6 +12,7 @@ wget -v --limit-rate=50k {urltofile}  #limit download speed
 wget -v --user-agent="{useragent}" --referer={url} {urltofile}
 
 # yt-dlp
+# download hosted media
 yt-dlp -f 'bv*[height=720]+ba' {url}
 yt-dlp -x --audio-format mp3 {url}
-#add this tag if cant find method to download: --ies Generic,HTML5
+#add this tag if cant find method to download:  --ies Generic,HTML5

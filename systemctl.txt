@@ -24,6 +24,9 @@ sudo systemctl mask {service}     #level3 of off: prevents it from starting even
 sudo systemctl unmask {service}
 # help: https://www.baeldung.com/linux/systemctl-mask-disable
 
+# you can manage more than one service
+sudo systemctl status {service1,service2}  #the {} are needed in this case !
+
 -+-+-+-+-+-+ search queries -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 systemctl --type=service  #list of services
 systemctl list-unit-files --type=service

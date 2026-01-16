@@ -58,7 +58,7 @@ killall {programname}  #uses programname instead of PID, can kill multiple proce
 
 lsof -p {PID},{PID}  #list all open files for listed processes
 
-# scripting
+-+-+-+-+-+-+ script -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 echo $?  #shows the exit code of the last command: 0 means sucess everything else is not. 0-255
 
 # data streams

@@ -12,6 +12,7 @@ OR
 useradd {user} -m -s /bin/bash  #-m create home folder, -s add login shell
 passwd {user}                   #add/change password
 userdel {user}                  #delete user
+userdel -r {user}               #delete user + delete users home directory
 
 usermod -l {newname} {user}       #change username
 usermod -c "{real-name}" {user}   #change user real name. see file: /etc/passwd
@@ -48,6 +49,7 @@ gpasswd -d {user} {group}   #remove user from group
 groupadd {group}            #create group
 groupdel {group}            #delete group
 file: /etc/group            #all the groups on the system, all users have a personal group
+grep '^{group}:.*$' /etc/group | cut -d: -f4  #members of a group
 
 #default groups
   adm            monitor system logs

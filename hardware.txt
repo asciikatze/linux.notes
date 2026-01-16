@@ -38,18 +38,24 @@ setterm --blank 0 #never turn off
             sudo service kmod start
   run:      sensors OR watch sensors
 
--+-+-+-+-+-+ data storage device +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+-+-+-+-+-+-+ data storage -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 lsblk  OR  sudo fdisk -l  #disks, partitions, mountpoints
+# sda usually means the first hdd device with the system on it mounted in /
+# sdb usually means the second connected hdd device. nvme drives use different designations for the devices
+# sdb1 and sdb2 refrence the partitions on the disk
 
 # mount HDD
-sudo mkdir /mnt/sdb
-sudo mount /dev/sdb1 /mnt/sdb
-sudo umount -l /dev/sdb  #unmount
-sudo mount | grep sdb    #list down all the mounted drives and partitions.
+sudo mkdir /mnt/disk2           #make a directory to be mounted to
+sudo mount /dev/sdb /mnt/disk2  #in this example the hdd will be mounted under the folder: disk2/
+sudo umount -l /dev/sdb         #unmount
+sudo mount | grep sdb           #list down all the mounted drives and partitions.
 
 # add disk to fstab to mount it on boot
 file: /etc/fstab
-UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx /mnt/sdb ext4 defaults,nofail 0 2  #nofail means it will boot if hdd is not connected
+  UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx /mnt/disk2 ext4 defaults,nofail 0 2  #nofail means it will boot if hdd is not connected
+sudo systemctl daemon-reload  OR  sudo mount -a  #if changes happened and need to reload the fstab file
+sudo dmesg                                       #if there are issues look here
+
 # help: https://wiki.archlinux.org/title/Fstab
 
 -+-+-+-+-+-+ dd -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

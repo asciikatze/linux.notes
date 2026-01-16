@@ -13,8 +13,10 @@ file: /etc/hostname
 file: /etc/hosts
 
 # renew ip
-sudo dhclient -r {network-interface}  #release current ip, windows: ipconfig /release
-sudo dhclient {network-interface}     #obtain a new ip, windows: ipconfig /renew
+sudo dhclient -r {network-interface}  #release current ip
+ipconfig /release                     #in windows
+sudo dhclient {network-interface}     #obtain a new ip 
+ipconfig /renew                       #in windows
 
 # ping
 ping {ip OR url}       #localhost is a valid address, Ctrl+c to stop, with url test the dns as well
@@ -36,7 +38,7 @@ file: /etc/NetworkManager/system-connections/
 
 nmcli device wifi                #show available wifi networks
 nmcli device wifi show-password  #show current connected wifi password + QR-code
-netsh wlan show profiles         #show known wifi networks in windows
+netsh wlan show profile * key=clear  #show known wifi networks in windows
 
 watch 'nmcli device wifi | grep -E "IN-USE|{networkname}|{networkname}"'  #monitor two wifi networks
 
@@ -47,6 +49,7 @@ resolvectl status                       #dns config on each network interface
 systemd-resolve --status                #what dns server is being used
 sudo systemctl status systemd-resolved  #dns resolver status
 sudo systemd-resolve --flush-caches     #clear DNS cache
+ipconfig /flushdns                      #clear DNS cache in windows
 
 # to-do: where should i configure dns in debian server?
 # help: https://www.tecmint.com/set-permanent-dns-nameservers-in-ubuntu-debian/

@@ -101,3 +101,4 @@ ps aux | grep sshd:        #first number after the username is the process ID, k
 
 # help: https://www.ssh.com/academy/ssh
 # to-do: send a command via ssh
+ssh -t {user}@{server} 'sudo reboot'
