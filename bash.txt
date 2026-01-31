@@ -56,7 +56,14 @@ kill -9 {PID}          #force kill program SIGKILL
 pkill {programname}    #uses programname instead of PID, can kill multiple processes by same name
 killall {programname}  #uses programname instead of PID, can kill multiple processes by same name
 
+# list open files
+# cwd: current working directory | DIR: directory | REG: regular file
 lsof -p {PID},{PID}  #list all open files for listed processes
+sudo lsof -c {program}  #open files by programname
+lsof {file}          #lists which program has that file open
+lsof -u {user}       #open files by user
+lsof +d {directory}  #open files in a directory by program. +D shows child processes too
+lsof +d . -a -c nano  #in the current directory open files by the program nano. -a add another searchterm
 
 -+-+-+-+-+-+ script -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 echo $?  #shows the exit code of the last command: 0 means sucess everything else is not. 0-255

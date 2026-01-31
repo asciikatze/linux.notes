@@ -1,9 +1,33 @@
-# curl
+-+-+-+-+-+-+ curl -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # download contents of files
-curl {url}     #download hosted file contents like the index.html
-curl -I {url}  #only the header
+# basically can do anything that a webbrowser can + talk to web api-s + with libcurl you can write programs with it for autoamtion
+curl {https://url}  #content. like the index.html filecontent. HTTP GET is default if you dont specify
+curl -I {url}       #header. HEAD method is default
+curl -i {url}       #header + content
 
-# wget
+curl -I {url} -X GET  #-X change the method. use only if default is not what you want !
+
+curl -o {file} {url}      #writes to a file
+cirl -O {url/index.html}  #downloads a specific file
+
+# curl needs the protocol because http is the default. you may run into 300 redirect with default http
+curl -L {url}  #follows the redirect
+
+curl -v {url}  #good for troubleshooting where a connection faliled
+curl -k {url}  #you can ignore untrusted ssl connection to a website. self signed or bad cert
+
+curl -s {url} -o /dev/null -w '%{response_code}'  #-s not show progress or error. -w write out a specific data {} is needed: in this case http response code
+# %{speed_download}  %{remote_ip}  %{local_ip}  %{content_type}
+
+curl {url} -H "User-agent:"  #-H add things to or change the header. in this case remove user agent information from header. "User-agent;" blank field with;
+
+# to-do: interact with api  https://www.youtube.com/watch?v=Q3_3saEQiSA
+# to-do: send email with curl
+
+# help: https://www.youtube.com/watch?v=I6id1Y0YuNk
+# help: https://curl.se/  https://everything.curl.dev/
+
+-+-+-+-+-+-+ wget -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # download files
 wget -v {urltofile}                   #download a file
 wget -v --input-file={file.txt}       #list with urls to multiple files
@@ -11,7 +35,7 @@ wget -v --limit-rate=50k {urltofile}  #limit download speed
 #sometimes server wont allow whitout the referer + you can specify the user agent
 wget -v --user-agent="{useragent}" --referer={url} {urltofile}
 
-# yt-dlp
+-+-+-+-+-+-+ yt-dlp -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # download hosted media
 yt-dlp -f 'bv*[height=720]+ba' {url}
 yt-dlp -x --audio-format mp3 {url}

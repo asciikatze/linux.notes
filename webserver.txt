@@ -48,7 +48,7 @@ file: /var/www/{mywebpage}/public_html/{folder}/.htaccess
 
 # password protection on site
 sudo apt install apache2-utils
-sudo htpasswd -c /etc/apache2/.htpasswd {loginname}
+sudo htpasswd -c /etc/apache2/.htpasswd {loginname}  #set password for loginname
 file: /var/www/{mywebpage}/public_html/.htaccess
   AuthType Basic
   AuthName "{messagethatshowsup}"

@@ -34,6 +34,8 @@ sudo apt install {program}  #apt update before install!
 sudo apt remove {program}
 sudo apt purge {program}
 
+sudo apt --fix-broken install  #fix broken install and installs missing dependencies
+
 apt search {program}                    #searches the repos for the program package
 apt search --names-only {package_name}  #search for name not description
 apt show {program}                      #info about program package
@@ -56,8 +58,7 @@ file: /etc/apt/sources.list.d/            #contains program specific repos
 dpkg -s {programname}          #information on programs if installed
 sudo dpkg -i {file.deb}        #install
 sudo dpkg -r {programname}     #remove
-#you need to install the dependencies too
-sudo apt --fix-broken install  #apt helps you
+#you need to install the dependencies too:  apt --fix-broken install
 
 # automatic updates
 apt install unattended-upgrades

@@ -88,6 +88,7 @@ ln -s {sourcefile} {newlinkfile}
 # symlink points to a path to a file
 # on symlinks use lstat for the linkfile information
 # stat follows where the link follows through
+chown -h {user}:{group} {linkfile}  #change owner of the linkfile. whitout the -h the owner of the sourcefile will change
 
 # a directory has minimum 2 links to it
 # the parent directory links to it and itself hardlinked to itself, the ./ hidden file in a directory is that

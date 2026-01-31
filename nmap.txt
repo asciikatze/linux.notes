@@ -1,16 +1,21 @@
 -+-+-+-+-+-+ nmap -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-sudo nmap -sL 192.168.1.0/24     #list devices on network
-sudo nmap -sn 192.168.1.2        #ping, -sP does the same, no port scan
-sudo nmap -sS 192.168.1.2        #standard scan, half handshake SYN SYNACK, -sT full handshake SYN SYNACK ACK
-sudo nmap -sS -v 192.168.1.2     #verbose mode
+sudo nmap -sL 192.168.1.0/24  #list devices on network
+sudo nmap -sS 192.168.1.2     #DEFAULT SCAN dont need to add -sS . half handshake SYN SYNACK
+sudo nmap -sT 192.168.1.2     #full handshake SYN SYNACK ACK
+sudo nmap -sV 192.168.1.2     #tries to guess service and version
+sudo nmap -O 192.168.1.2      #tries to guess the operating system
+sudo nmap -A 192.168.1.2      #agressive scan
+sudo nmap -sn 192.168.1.2     #ping: ICMP echo. -sP is the same
+
+sudo nmap scanme.nmap.org  #scan a domain
+sudo nmap -p- localhost    #selfscan
+
+sudo nmap -sS -v 192.168.1.2                       #verbose mode
 sudo nmap -sS 192.168.1.2-6 --exclude 192.168.1.4  #scan range of ips + exclusion
-sudo nmap -sV 192.168.1.2        #tries to guess service version on ports
-sudo nmap -O 192.168.1.2         #tries to guess the operating system
-sudo nmap -A 192.168.1.2         #agressive scan
-sudo nmap scanme.nmap.org        #scan a domain
-sudo nmap -p22 192.168.1.2       #scan a port
-sudo nmap -p1-65535 192.168.1.2  #scan the whole port range
-sudo nmap -p- 192.168.1.2        #scan all the ports
+
+# by default nmap scans 1000 most common ports
+sudo nmap -p22 192.168.1.2       #scan a specific port
+sudo nmap -p1-65535 192.168.1.2  #scan the whole port range. -p- scan all ports
 
 sudo nmap -sL 192.168.1.0/24 -oN list.txt  #writes the output to a file, -oX provides xml output
 sudo nmap -sL 192.168.1.0/24 > list.txt    #writes the output to a file
@@ -18,6 +23,12 @@ sudo nmap -sL list.txt                     #reads ip adresses from file
 
 nmap {ip} -D {spoofip1},{spoofip2},{spoofip3}  #ip spoof
 nmap {ip} --spoof-mac {macaddress}             #mac spoof
+
+# filtered   : nmap cant tell if open or closed its been behind some kind of firewall
+# unfiltered : acessable but again nmap cant determine if open
+# open|filtered  closed|filtered : same
+
+# while scan runs press ? for interactive keyboard commands
 
 -+-+-+-+-+-+ netcat/ncat/nc -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # chat
