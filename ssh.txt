@@ -99,6 +99,11 @@ ps aux | grep sshd:        #first number after the username is the process ID, k
   .ssh        drwx------
   privatekey  -rw-------
 
+# connecting to my old macintosh gives error:  no matching host key type found. Their offer: ssh-rsa,ssh-dss
+# add this option:  -oHostKeyAlgorithms=+ssh-rsa
+# source:  https://www.openssh.org/legacy.html
+ssh -oHostKeyAlgorithms=+ssh-rsa {user}@{serverip}
+
 # help: https://www.ssh.com/academy/ssh
 # to-do: send a command via ssh
 ssh -t {user}@{server} 'sudo reboot'

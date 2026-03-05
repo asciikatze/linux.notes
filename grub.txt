@@ -14,3 +14,9 @@ sudo update-grub
 file: /etc/modules
 # blacklist a module not to be loaded
 file: /etc/modprobe.d/blacklist.conf
+
+# boot sequence: bios/uefi -> grub/grub2 -> vmlinux/vmlinuz(initrd,initramFS) -> full kernel with modules
+# /boot is where the vmlinuz(compressed kernel file) and initrd memtest lives System.map(where the modules are) config(configs when the kernel compiled)
+# /lib/modules here are the moduls the System.map looks for
+# to-do: how to roll back to a previous kernel version (how to delete/reinstall a kernel version)(how to deal with kernel panic)
+# to-do: kernel modules adding and removing

@@ -47,6 +47,7 @@ ps                         #lists what is running in the current terminal sessio
 ps -u {user}               #processes run by user
 pgrep {program}            #shows PID for a program
 ps aux | grep "{program}"  #find the PID number of a process. grep is in the results that is not what you looking for!
+ps -Flww -p {PID}          #more info about program behind a pid
 
 Ctrl+c                 #try to close it, sends SIGINT signal. ! COPY: Shift+Ctrl+c, PASTE: Shift+Ctrl+v !
 Ctrl+z                 #pause running process SIGSTOP

@@ -108,3 +108,7 @@ sudo apt install manpages man-db
 # if something messed up with the locale
 locale                    #see what is being used
 dpkg-reconfigure locales  #setup for locales
+# or try this
+apt install locales
+nano /etc/locale.gen  #uncomment the one you want
+locale-gen

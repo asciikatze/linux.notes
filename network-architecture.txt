@@ -1,0 +1,90 @@
+# network layers
+layer1 physical  : the wires
+layer2 data link : defines format of data, simple switches routing by mac address
+layer3 network   : physical path, routers and layer3 switchews, routing by ip address, vlans opereate here
+layer4 transport : transmission protocols tcp and udp
+layer5 session
+layer6 presentation
+layer7 application
+
+# tcp: reliable and ordered delivery of data packets 
+# udp: faster data transmission without error-checking
+
+-+-+-+-+-+-+ lan cable +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# looking at the bottom, cable towards you, on the left is pin-1 on the right is pin-8
+# both end needs to be the same, but B is the most common method
+
+RJ45 T568 A        RJ45 T568 B     #USE THE B VERSION!
+1 white-green      1 white-orange
+2 green            2 orange
+3 white-orange     3 white-green
+4 blue             4 blue
+5 white-blue       5 white-blue
+6 orange           6 green
+7 white-brown      7 white-brown
+8 brown            8 brown
+
+# legacy hardware may need crossover cable for point to point connection: one end is A other is B
+# but the need for it is very unlikely most old hardware work with straight through cable in that case
+# different crossover methods exist, always good practice to read the documentation
+
+-+-+-+-+-+-+ ip address -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# ip ranges by classification
+class a :   1.0.0.0-126.255.255.255  /8   ~16777216 hosts
+class b : 128.0.0.0-191.255.255.255  /16  ~65536 hosts
+class c : 192.0.0.0-223.255.255.255  /24  ~256 hosts
+class d : 224-239 multicast
+class e : 240-255 experimental
+
+# private ip ranges
+class a :    10.0.0.0-10.255.255.255   /8
+class b :  172.16.0.0-172.31.255.255   /24
+class c : 192.168.0.0-192.168.255.255  /24
+
+# loopback  127.0.0.0-127.255.255.255  /8
+to your own computer usually  127.0.0.1 loaclhost
+# broadcast to all devices on local network  255.255.255.255
+
+# binary numbers
+2^7 2^6 2^5 2^4 2^3 2^2 2^1 2^0
+ 1   1   1   1   1   1   1   1
+128 64  32  16   8   4   2   1
+
+# subnetting is to make a big subnet into smaller subnets
+# subnet mask indicates network and host bits
+192.168.1.0/24 -> 11111111.11111111.11111111.|00000000 -> network|host
+24x1 masking the network portion, 8x0 shows available for hosts
+
+# example: 10.29.32.0/27
+00001010.00011101.00100000.000|00000
+00001010.00011101.00100000.000|00000  network|host -> network address 10.29.32.0 
+00001010.00011101.00100000.000|11111  -> broadcast address 10.29.32.31
+usable range -> 10.29.32.1-10.29.32.30
+usable ips -> 30
+
+# example: 192.168.1.54/28
+11000000.10101000.00000001.0011|0110
+11000000.10101000.00000001.0011|0000  network|host -> 192.168.1.48 network address
+11000000.10101000.00000001.0011|1111  -> broadcast address 192.168.1.63
+usable range -> from network to broacast address : 192.168.1.49-192.168.1.62
+usable ips -> cant address the network and the broadcast address therefore : 14 ips
+
+# right after the broadcast address starts the next network
+# for different sizes go from biggest to smallest as you segment the ip range
+
+# quick calc
+32 -subnet mask = number of host bits
+2 to the power of the number of host bits -2 = number of usable ips
+
+# help: https://www.youtube.com/watch?v=Oe8Vd12m4H4
+# help: https://www.calculator.net/ip-subnet-calculator.html
+
+-+-+-+-+-+-+ network bonding +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# using more than one network interface to increase bandwith
+mode0 between 2 servers
+mode4 if your swich suppoerts it
+mode6 if your switch does not support it
+mode1 active backup
+
+# to-do: how to set these up in ubuntu networkd
+

@@ -2,6 +2,7 @@
 pwd                #path to working directory
 ls -lah            #list the files in directory, -a hidden files, -l more info, -h human readable sizes
 ls -R {directory}  #lists all the files and the files in subdirectories too
+ls -d */           #list only directories
 tree {folder}      #lists what inside with hirearchy
 cd {directory}     #change directory
 cd ..              #move up on the directory tree
