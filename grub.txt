@@ -15,7 +15,8 @@ file: /etc/modules
 # blacklist a module not to be loaded
 file: /etc/modprobe.d/blacklist.conf
 
-# boot sequence: bios/uefi -> grub/grub2 -> vmlinux/vmlinuz(initrd,initramFS) -> full kernel with modules
+# boot sequence: bios/uefi -> grub/grub2 -> vmlinux/vmlinuz(initrd,initramfs) -> full kernel with modules
+# initramfs is a whole operating system, very small, loaded from a compressed archive file in /boot and run from memory
 # /boot is where the vmlinuz(compressed kernel file) and initrd memtest lives System.map(where the modules are) config(configs when the kernel compiled)
 # /lib/modules here are the moduls the System.map looks for
 # to-do: how to roll back to a previous kernel version (how to delete/reinstall a kernel version)(how to deal with kernel panic)

@@ -2,7 +2,7 @@ ip a            #shows network configuration
 hostname -I     #shows ip
 ifconfig        #shows network configuration + traffic statistics
 iwconfig        #only wireless info
-ip route        #default gateway or 'ip rout'
+ip route        #default gateway. same as  ip rout
 route -n        #-n is for showing the ip addresses
 arp -a          #displays the kernels ipv4 network neighbour cache, ip-macaddress
 netstat -tunlp  #network port information, similar: ss -ltnp OR ss -tupln OR ss -atpu 
@@ -51,6 +51,8 @@ netsh wlan show profile * key=clear  #show known wifi networks in windows
 
 watch 'nmcli device wifi | grep -E "IN-USE|{networkname}|{networkname}"'  #monitor two wifi networks
 
+ethtool {networkinterface} | grep Speed  #shows speed of ethernet
+
 -+-+-+-+-+-+ dns +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 file: /etc/hosts                        #local dns rules. your system looks here first
 
@@ -68,21 +70,22 @@ ipconfig /flushdns                      #clear DNS cache in windows
 # set that static ip with networkD:
 file: /etc/netplan/00-installer-config.yaml
   network:
-    ethernets:
-      {NETWORK_INTERFACE}:
-        addresses:
-        - {STATIC_IP}/24
-        gateway4: {GATEWAY_IP}
-        nameservers:
-          addresses:
-          - {DNS_IP}
-          - {DNS_IP}
-          search: []
     version: 2
-# help: https://netplan.io/examples/
-
-#check if the file configured correctly!
-sudo netplan try  #kills the network connection! you need to be at the server!
+    renderer: networkd
+    ethernets:
+      {networkinterface}:
+        addresses:
+          - {staticip}/24
+        nameservers:
+          search: []
+          addresses: [{dnsip1}, {dnsip2}]
+        routes:
+          - to: default
+            via: {defaultgatewayip}
+# help: https://github.com/canonical/netplan/tree/main/examples  OR  https://netplan.io/examples/
+# check if the file configured correctly!
+sudo chmod 600 00-installer-config.yaml  #check if file permissions are correct
+sudo netplan try  #KILLS THE NETWORK CONNECTION! YOU NEED TO BE AT THE sERVER!
 sudo netplan apply
 sudo reboot
 
@@ -108,8 +111,9 @@ file: /etc/network/interfaces  #dns is NOT set from here !
     netmask 255.255.255.0
     gateway {GATEWAY_IP}
     dns-nameservers {DNS_IP} {DNS_IP}
-
+# restart networking.service  kicks you out of session!
 sudo systemctl restart networking  OR  sudo systemctl restart networking.service
 
 -+-+-+-+-+-+ help -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 sudo strace -p {PID} -e network  #shows whtat the program doing on the network
+sudo apt install net-tools  #if you dont have netstat ifconfig +more cool tools

@@ -55,6 +55,8 @@ chown -h {user}:{group} {linkfile}   #change the owner of a symbolic link
 
 # file type d--------- :  regular file=-  directory=d  link=l
 # octal values:  read=4  write=2  execute=1
+  421 421 421
+  rwx rwx rwx
 
   permission  octal  field
   -rwx------  700    User

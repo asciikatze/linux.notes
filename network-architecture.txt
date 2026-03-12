@@ -88,3 +88,55 @@ mode1 active backup
 
 # to-do: how to set these up in ubuntu networkd
 
+-+-+-+-+-+-+ gateway vs balancer vs proxy -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# forward proxy
+  filtering web
+  masking you
+
+# reverse proxy
+  forwards traffic
+
+  front of servers never see behind it
+  ssl termination(hw intesive)
+  caching
+  security
+  compression of traffic
+
+  nginx apache haproxy caddy
+  forwards traffic based on rules does not care about what is the traffic
+
+# load balancer
+  distributes traffic
+
+  request distribution to multiple backends
+  scalability and availability
+  failover
+
+  round robin: one after the other
+  least connectipons:
+  ip hash: same client always routes to same server, sessions (stateless architecture better)
+  weighted: powerful servers handle more requests
+
+  layer4(transport) balancing: sees ips and port does not see http content, fast but limited
+  layer7(application) balancing: understands http protocol and route accordingly
+
+# api gateway
+  manages apis
+    api aware reverse proxy with features designed specifically for managinf, securing and monitoring apis
+
+  authentiation and authorization
+  rate limiting
+  request and response transformation
+    transforms format differerences between client and server eg: json to xml
+    backend returns data that needs to be stripped from the response
+  api versioning
+    keeps the client and backend versions compatible with each other older versions vs newer versions of the application
+  analytics and monitoring
+
+  makes sense with loads of microservices
+
+# these used mixed together the inportatnt thing is what capabilities you need tool have mixed features between these categories
+  complementary
+  match the architecture to actual requirements
+
+# help: https://www.youtube.com/watch?v=DVR0zvDYJgY

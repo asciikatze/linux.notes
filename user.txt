@@ -45,6 +45,7 @@ touch /home/user1/.hushlogin
 groups {user}               #list groups user is in
 usermod -aG {group} {user}  #add user to group
 gpasswd -d {user} {group}   #remove user from group
+# group memberships are red on login so you might need to logout login to take effect
 
 groupadd {group}            #create group
 groupdel {group}            #delete group

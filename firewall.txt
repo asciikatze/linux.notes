@@ -1,4 +1,5 @@
 -+-+-+-+-+-+ ufw +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# help: https://help.ubuntu.com/community/UFW
 sudo ufw status  OR  sudo ufw status verbose
 sudo ufw enable
 sudo ufw disable
@@ -12,6 +13,8 @@ sudo ufw deny 80/tcp   #deny: ignoring / reject: let the sender know traffic is 
 sudo ufw allow 443/tcp
 ufw {rule-here} comment '{comment-text-here}'  #add comment to rule
 
+sudo ufw limit from 192.168.1.0/24 to any port 22 proto tcp  #ssh access on port 22 from local address
+
 # delete rules
 sudo ufw delete {rule-here}
 sudo ufw status numbered
@@ -23,9 +26,28 @@ sudo ufw app list
 sudo ufw allow "{application-name}"
 sudo ufw delete allow "{application-name}"
 
+# deny pings
+file: sudo nano /etc/ufw/before.rules
+#add before the icmp lines in the file
+  # block icmp echo requests
+  -A ufw-before-input -p icmp --icmp-type echo-request -j DROP
+OR AND
+#change ACCEPT to DROP  OR  comment# out the lines
+  # ok icmp codes for INPUT
+  -A ufw-before-input -p icmp --icmp-type destination-unreachable -j ACCEPT
+  -A ufw-before-input -p icmp --icmp-type time-exceeded -j ACCEPT
+  -A ufw-before-input -p icmp --icmp-type parameter-problem -j ACCEPT
+  -A ufw-before-input -p icmp --icmp-type echo-request -j ACCEPT
+  # ok icmp code for FORWARD
+  -A ufw-before-forward -p icmp --icmp-type destination-unreachable -j ACCEPT
+  -A ufw-before-forward -p icmp --icmp-type time-exceeded -j ACCEPT
+  -A ufw-before-forward -p icmp --icmp-type parameter-problem -j ACCEPT
+  -A ufw-before-forward -p icmp --icmp-type echo-request -j ACCEPT
+#on local network the resulting behavior is not the same as pinging a unused ip !
+#instead of "Destination Host Unreachable" error it is silence.
+
 # logs
-# for ufw logging to work, rsyslog must be enabled.
-service rsyslog status
+service rsyslog status  #for ufw logging to work, rsyslog must be enabled.
 
 sudo ufw logging on
                  off  #no managed logging.
@@ -54,5 +76,3 @@ grep -i ufw /var/log/syslog
 grep -i ufw /var/log/messages
 grep -i ufw /var/log/kern.log
 
-
-# to-do: how to deny pings?

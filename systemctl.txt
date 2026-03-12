@@ -38,7 +38,7 @@ systemctl --reverse list-dependencies {service}  #lists what is dependent on thi
 -+-+-+-+-+-+ journal logs -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # journalctl allows you to query and display logs collected by the systemd journal
 sudo journalctl -xe             #logs for systemd stuff
-sudo journalctl -feu {program}  #logs for a program
+sudo journalctl -u {service}    #logs for a service. -f follow -e jump to end
 
 #if journalctl is empty there may be a problem so restart the journalctl daemon
 sudo systemctl list-units | grep journal  #to find out the daemon name for journalctl

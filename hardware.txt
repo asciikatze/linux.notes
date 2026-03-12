@@ -6,10 +6,9 @@ systemctl reboot
 
 uptime   #uptime
 free -h  #memory
-df -h    #disks
-df -i    #number of inodes, if disk reported full this can be the couse
 
 lscpu, lspci, lsusb, lshw    #hardware info
+lscpu --extended             #info on cpu cores
 watch -d lsusb               #see if the usb device appears in the list whenyou plug it in
 watch lsusb -t	             #tree view
 sudo lshw -short
@@ -25,12 +24,14 @@ sudo dmidecode -s system-product-name  #for my macbook
 
 # battery status
 upower -e  #list power devices
+upower -d  #all the info
 upower -i /org/freedesktop/UPower/devices/DisplayDevice
 upower -i /org/freedesktop/UPower/devices/battery_BAT0
 
 # laptop screen on-off
-setterm --blank 1 #after 1 min the screen goes blank, press any key to come back
+setterm --blank 1 #after 1 min the screen goes blank. press any key to come back
 setterm --blank 0 #never turn off
+# does not work via ssh you must run it locally if you get the error:  setterm: terminal xterm-256color does not support --blank
 
 # temperature sensor: lm-sensors
   install:  sudo apt install lm-sensors
@@ -39,24 +40,51 @@ setterm --blank 0 #never turn off
   run:      sensors OR watch sensors
 
 -+-+-+-+-+-+ data storage -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-lsblk  OR  sudo fdisk -l  #disks, partitions, mountpoints
+df -h          #disk partition mountpoint usage
+df -i          #number of inodes. if disk reported full this can be the couse of it!
+lsblk          #disk partition mountpoint
+lsblk -f       #type label uuid.  use this!
+sudo fdisk -l  #disk partition mountpoint
+
 # sda usually means the first hdd device with the system on it mounted in /
-# sdb usually means the second connected hdd device. nvme drives use different designations for the devices
-# sdb1 and sdb2 refrence the partitions on the disk
+# sdb usually means the second connected hdd device
+# sdb1 and sdb2 refrence the partitions on the disk sdb
+# in these examples i'll use sdX where X represents the drive (sdX can be a valid drive)
+# NOT always gonna be sdX something! sdX is just the common SCSI disk designation
+# nvme and other drives can use different designations for the devices!
+
+# partitioning and formatting
+sudo cfdisk /dev/sdX  #partition editing tui tool
+sudo fdisk /dev/sdX   #follow the menu
+
+sudo mkfs.ext4 /dev/sdX        #format ext4
+sudo mkfs.ntfs /dev/sdX        #format ntfs
+sudo mkfs.vfat -F 32 /dev/sdX  #format fat32
+
+sudo wipefs /dev/sdX*    #prints info about all partitions on sdX
+sudo wipefs -a /dev/sdX  #erase all filesystem raid pratition signatures
+# to-do: how to use fdisk and parted
 
 # mount HDD
 sudo mkdir /mnt/disk2           #make a directory to be mounted to
-sudo mount /dev/sdb /mnt/disk2  #in this example the hdd will be mounted under the folder: disk2/
-sudo umount -l /dev/sdb         #unmount
-sudo mount | grep sdb           #list down all the mounted drives and partitions.
+sudo mount /dev/sdX /mnt/disk2  #in this example the hdd will be mounted under the folder: disk2/
+sudo umount -l /dev/sdX         #unmount
+sudo mount | grep sdX           #list down all the mounted drives and partitions.
 
 # add disk to fstab to mount it on boot
+# help: https://wiki.archlinux.org/title/Fstab
+lsblk -f  #shows devices with UUIDs
 file: /etc/fstab
   UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx /mnt/disk2 ext4 defaults,nofail 0 2  #nofail means it will boot if hdd is not connected
 sudo systemctl daemon-reload  OR  sudo mount -a  #if changes happened and need to reload the fstab file
 sudo dmesg                                       #if there are issues look here
 
-# help: https://wiki.archlinux.org/title/Fstab
+# disk health
+sudo badblocks -sv /dev/sdX  #-s displays progress, -v verbose mode
+sudo badblocks /dev/sdX      #non-destructive read-only test
+sudo badblocks -n /dev/sdX   #non-destructive read-write test
+sudo badblocks -w /dev/sdX   #destructive write test
+sudo badblocks -o {file.txt} -w /dev/sdX  #destructive and output found blocks to a file
 
 -+-+-+-+-+-+ dd -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # hard drive read test 
@@ -67,12 +95,12 @@ sudo dd if=/dev/random of=/dev/null  #generates random numbers then throws them 
 yes  #repeatedly writes y to standard input/output, if you let it run it eats cpu
 
 # wipe a drive
-#make a script file: wipe-sdb.sh
+#make a script file: wipe-sdX.sh
   #!/bin/bash	
   while true
   do
     ((a=a+1))
-    dd if=/dev/urandom of=/dev/sdb status=progress	
+    dd if=/dev/urandom of=/dev/sdX status=progress	
     echo Looped $a times
   done
 #let it run about 5 times for best result
@@ -81,3 +109,6 @@ yes  #repeatedly writes y to standard input/output, if you let it run it eats cp
 /dev/random   #produces high-quality randomness, can halt process execution when it runs out of entropy
 /dev/urandom  #not care about entropy, may not produce true randomness
 /dev/null     #everything you put here gets discarded
+
+# make a usb installer
+sudo dd if={installerfile.iso} of=/dev/sdX bs=4M status=progress

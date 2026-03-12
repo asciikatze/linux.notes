@@ -1,0 +1,155 @@
+# uses qemu for vms and lxc for containers
+# vms have their own kernel, containers share the kernel with the host machine
+# lxd manages the vms lxc interacts with the vms
+# lxd can be run nested under lxd
+# incus is the community driven version of lxd. incusOS is a debian based linuxOS.
+# help: https://www.youtube.com/playlist?list=PLDbRgZ0OOEpX_uqK_hAq98ltdc4DP-D34
+# help: https://documentation.ubuntu.com/lxd/latest/
+
+# install and setup
+snap install lxd
+lxd init     #pay attention to the pool and network setup!
+lxc version  #client-version=lxc  server-version=lxd
+
+# create vm and container
+lxc remote list                #available remote vm image servers
+lxc image list images: debian  #lists all the debian images on the server called images
+# the repository called images: https://images.lxd.canonical.com/
+# difference between default and cloud images is that cloud images are work with cloudinit
+lxc image list  #available images locally
+
+lxc launch --vm {image} {vmname}  #whitout the --vm it will launch a container instead of a vm
+# for image you can specify a repository from remote list
+lxc launch --vm images:ubuntu/23.04 MyFirstVM  #uses ubuntu 23.04 from the repo called images
+
+lxc list             #list of containers/vms
+lxc list -c n,s,4,image.description:image  #you can edit what the list shows
+lxc info {vmname}    #status. created/used times. disk cpu ram usage. ip. +available snapshots and more
+lxc stop {vmname}    #stops the vm. stop  AND  start  AND  restart  are all valid
+lxc delete {nvmame}  #you need to stop it first. you can add --force at the end
+lxc copy {nvmame} {newnvmame}
+
+# interact with vm and container
+lxc exec --help                 #help for exec command
+lxc exec {vmname} -- {command}  #run a command against the vm
+lxc exec {vmname} -- bash       #hop in the vm terminal. can be bash or sh or whatever available on the vm
+# help: https://documentation.ubuntu.com/lxd/latest/reference/manpages/lxc/file/#lxc-file-md
+lxc file push {file} {vmname}/{pathtofile}  #copy file to vm. push ssh keys this way
+lxc file pull {vmname}/{pathtofile} {file}  #copy from vm
+lxc file edit {vmname}/{pathtofile}         #edit file on vm
+
+-+-+-+-+-+-+ configure instances +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# default config is 1GiB memory, 1cpu core, 10GiB root hdd
+
+# memory and cpu
+lxc config set {vmname} limits.memory={value}  #resize memory vm needs to be stopped
+lxc config set {vmname} limits.cpu={value}     #add/remove cpu cores vm can run during this. hot pluggable
+# you can pin a specific core to a vm but that is not hot pluggable
+# cpu will be in offline mode after you add one
+lxc exec {vmname} -- lscpu --extended             #see which core is offline
+lxc exec {vmname} -- chcpu --enable {corenumber}  #enable new core on vm
+# example with different cpu andd memory limits:
+lxc launch --vm --config limits.cpu=2 --config limits.memory=3GiB images:ubuntu/23.04 MyFirstVM
+
+# root disk and data disk
+lxc launch --vm --device root,size=25GiB images:ubuntu/23.04 MyFirstVM  #create vm with bigger root disk
+# resize the vm root disk
+lxc config device override {vmname} root size=50GiB  #reboot the vm or edit while it stopped
+lxc exec {vmname} -- cfdisk  #resize the partition with the method you like
+# create additional 10GiB data disk then attach(hot pluggable) it to a vm:
+lxc storage volume create --type=block {poolname} {newdiskname} size=10GiB
+lxc storage volume show {poolname} {diskname}  #informaton about the datadisk
+lxc storage volume attach {poolname} {diskname} {vmname} {devicenameforvm}  #device name for vm is not manadtory
+lxc storage volume delete {poolname} {diskname}  #detach from vm before deletion!
+# the data disk can be on a different pool than the vm root disk
+
+# edit configuration
+lxc config show {vmname}             #show vm configuration
+lxc config show --expanded {vmname}  #show vm configuration + device information network disk
+# two ways to edit vm configuration:
+lxc config edit {vmname}  #edit the vms configuration file
+lxc config set {vmname} {configurations changes listed here one by one}  #set more configs with lxc command
+
+# help: https://documentation.ubuntu.com/lxd/stable-5.0/reference/instance_options/
+lxc config set {vmname} boot.autostart=ture               #automatically boots when host boots
+lxc config set {vmname} boot.autostart.priority={number}  #starting with the highest 
+lxc config set {vmname} boot.autostart.delay=10           #add this to each vm for a 10 second sequenced boot
+
+lxc config get {vmname} {configuration}  #see one specific configuration setting
+
+-+-+-+-+-+-+ storage pools +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# storage pool types: Dir Btrfs Lvm Zfs-default Ceph-remote
+# simple Dir: you can just point to an empty directory on host system disk
+lxc storage create {poolname} {pooltype}  #create a storage pool
+
+# example for Dir type pool:
+mkdir -p /home/lxdadm/lxdpool-2                                 #make a directory for your dir pool
+lxc storage create lxdpool-2 dir source=/home/lxdadm/lxdpool-2  #creates a dir type pool in a folder
+
+lxc storage list                          #shows available storage pools
+lxc storage volume list {poolname}        #shows contents of a storage pool. image vm datadisk
+lxc launch --storage={poolname} --vm {image} {vmname}  #create a vm on a specific storage pool
+
+-+-+-+-+-+-+ snapshots +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+lxc snapshot {vmname} {snapshotname}  #takes a snapshot. snapshotname is not required
+lxc info {vmname}                     #available snapshots
+lxc restore {vmname} {snapshotname}
+# zfs pool LIMITATION ! you can onyl restore the latest snapshot
+# workaround 1 delete snapshots until what you want is the latest
+# workaround 2 create a new vm from an older snapshot
+lxc copy {vmname}/{snapshotname} {newvmname}  #create a new vm from snapshot
+lxc delete {vmname}/{snapshotname}            #delete a snapshot
+
+# help: https://documentation.ubuntu.com/lxd/latest/howto/instances_backup/#instances-snapshots
+# schedule periodic vm snapshots
+# automatically snapshot a stopped vm
+# set default snapshot naming pattern
+
+# set expiration time period for snapshots
+file: lxc config edit {vmname}
+config:
+  snapshots.exiry: {time}  #time format: 1M 2H 3d 4w 5m 6y
+OR lxc config set {vmname} snapshots.exiry={time}
+
+-+-+-+-+-+-+ firewall on host -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# configure the host firewall ufw. applies to managed bridge networks only !
+# help: https://documentation.ubuntu.com/lxd/latest/howto/network_bridge_firewalld/
+
+# disable lxd firewall rules
+lxc network set lxdbr0 ipv4.firewall false
+lxc network set lxdbr0 ipv6.firewall false
+
+# quick and dirty
+sudo ufw allow in on lxdbr0
+sudo ufw route allow in on lxdbr0
+sudo ufw route allow out on lxdbr0
+
+# more restrictive firewall rules
+# limit access from the guests to the host to only DHCP and DNS and allow all outbound connections.
+# allow the guest to get an IP from the LXD host
+sudo ufw allow in on lxdbr0 to any port 67 proto udp
+sudo ufw allow in on lxdbr0 to any port 547 proto udp
+# allow the guest to resolve host names from the LXD host
+sudo ufw allow in on lxdbr0 to any port 53
+# allow the guest to have access to outbound connections
+lxc network get lxdbr0 ipv4.address  #show the lxd network
+lxc network get lxdbr0 ipv6.address
+sudo ufw route allow in on lxdbr0 from {lxd network}
+
+-+-+-+-+-+-+ help -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+sudo apt install snapd  #if snap is not installed
+#if lxc command not found after install logout-login to update env varieables
+sudo usermod -aG lxd {username}  #add user so you dont need sudo to interact with lxd lxc
+
+# error incompatible with secureboot appears during vm creation add:  --config security.secureboot=false
+lxc launch --config security.secureboot=false --vm images:alpine/3.15 MyAlpineVM
+# if you already made the vm:
+lxc config edit MyAlpineVm
+  config:
+    security.secureboot: false
+OR
+lxc config set MyAlpineVm security.secureboot=false
+
+# to-do: https://documentation.ubuntu.com/lxd/latest/howto/server_expose/
+         https://documentation.ubuntu.com/lxd/latest/howto/access_ui/#access-ui
+

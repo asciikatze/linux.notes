@@ -1,6 +1,7 @@
 uname -a             #systeminfo
 uname -sr            #kernelversion
-cat /etc/os-release  #shows info about the os
+cat /etc/os-release  #os info
+lsb_release --all    #os info
 date                 #shows the current date and time
 
 man {program}         #manual pages
@@ -22,7 +23,7 @@ command -v {program}  #shows what runs exactly
 -+-+-+-+-+-+ apt +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 sudo apt update   #reads the repo list
 sudo apt upgrade  #download and install updated packages
-sudo apt update && sudo apt upgrade -y
+sudo apt update && sudo apt upgrade -y  OR  apt update; apt upgrade --yes
 
 sudo apt full-upgrade
 sudo apt dist-upgrade
@@ -76,18 +77,23 @@ sudo systemctls status unattended-upgrades #check if its running
 sudo aptitude
 
 -+-+-+-+-+-+ snap -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-snap list                    #show installed snaps
+which snap              #see if its installed
+sudo apt install snapd  #if snap is not installed
+
 sudo snap install {program}  #install a snap
-sudo snap refresh {program}  #update a specific snap
 sudo snap remove {program}   #remove a snap
+snap list                    #show installed snaps
+
+snap find {program} OR snap search {program}  #looking for program in the snap repository
+snap info {program}  #look for the release channels here for a specific version of a program
+snap install {program} --channel={version}  #install a specific version of a program
 
 sudo snap refresh                               #update all snaps
+sudo snap refresh {program}                     #update a specific snap
 snap refresh --time                             #when its going to update automtically
 sudo snap refresh --hold=48h {program}          #not updates the program for 48hours, --hold=forever
 sudo snap set system refresh.timer=00:00-05:00  #it runs the updates in a specific time window
 
-snap find {program} OR snap search {program}
-snap info --verbose {program}
 sudo snap logs {program}
 sudo snap disable {program}
 sudo snap enable {program}
@@ -100,6 +106,8 @@ sudo snap refresh
 # log empties after 1 day for succeeded changes and 7 days for faliures
 snap changes     #list recent changes
 snap tasks {id}  #list steps involved in a change
+
+# help: https://snapcraft.io/docs/
 
 -+-+-+-+-+-+ help -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # if man pages are missing
