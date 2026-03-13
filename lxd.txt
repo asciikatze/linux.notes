@@ -1,4 +1,5 @@
 # uses qemu for vms and lxc for containers
+# cgroups for resource allocation and namespaces for isolation
 # vms have their own kernel, containers share the kernel with the host machine
 # lxd manages the vms lxc interacts with the vms
 # lxd can be run nested under lxd
@@ -12,8 +13,9 @@ lxd init     #pay attention to the pool and network setup!
 lxc version  #client-version=lxc  server-version=lxd
 
 # create vm and container
-lxc remote list                #available remote vm image servers
-lxc image list images: debian  #lists all the debian images on the server called images
+lxc remote list                      #available remote vm image servers
+lxc image list images: debian        #lists all the debian images on the remote server called images
+lxc image info images:{fingerprint}  #shows the more aliases for it + more info about it
 # the repository called images: https://images.lxd.canonical.com/
 # difference between default and cloud images is that cloud images are work with cloudinit
 lxc image list  #available images locally
@@ -30,9 +32,12 @@ lxc delete {nvmame}  #you need to stop it first. you can add --force at the end
 lxc copy {nvmame} {newnvmame}
 
 # interact with vm and container
-lxc exec --help                 #help for exec command
+lxc exec --help                 #help for exec command. --help helps with all commands!
 lxc exec {vmname} -- {command}  #run a command against the vm
 lxc exec {vmname} -- bash       #hop in the vm terminal. can be bash or sh or whatever available on the vm
+# help: https://documentation.ubuntu.com/lxd/latest/howto/instances_console/
+# to-do: access the graphical interface on host server? rdp for remote?
+lxc console {vmname}            #open the console for the vm
 # help: https://documentation.ubuntu.com/lxd/latest/reference/manpages/lxc/file/#lxc-file-md
 lxc file push {file} {vmname}/{pathtofile}  #copy file to vm. push ssh keys this way
 lxc file pull {vmname}/{pathtofile} {file}  #copy from vm
@@ -57,10 +62,10 @@ lxc launch --vm --device root,size=25GiB images:ubuntu/23.04 MyFirstVM  #create 
 lxc config device override {vmname} root size=50GiB  #reboot the vm or edit while it stopped
 lxc exec {vmname} -- cfdisk  #resize the partition with the method you like
 # create additional 10GiB data disk then attach(hot pluggable) it to a vm:
-lxc storage volume create --type=block {poolname} {newdiskname} size=10GiB
-lxc storage volume show {poolname} {diskname}  #informaton about the datadisk
-lxc storage volume attach {poolname} {diskname} {vmname} {devicenameforvm}  #device name for vm is not manadtory
-lxc storage volume delete {poolname} {diskname}  #detach from vm before deletion!
+lxc storage volume create --type=block {poolname} {newdiskvolume} size=10GiB
+lxc storage volume show {poolname} {diskvolume}  #informaton about the datadisk
+lxc storage volume attach {poolname} {diskvolume} {vmname} {devicenameforvm}  #device name for vm is not manadtory
+lxc storage volume delete {poolname} {diskvolume}  #detach from vm before deletion!
 # the data disk can be on a different pool than the vm root disk
 
 # edit configuration
@@ -77,18 +82,27 @@ lxc config set {vmname} boot.autostart.delay=10           #add this to each vm f
 
 lxc config get {vmname} {configuration}  #see one specific configuration setting
 
--+-+-+-+-+-+ storage pools +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-# storage pool types: Dir Btrfs Lvm Zfs-default Ceph-remote
-# simple Dir: you can just point to an empty directory on host system disk
-lxc storage create {poolname} {pooltype}  #create a storage pool
+-+-+-+-+-+-+ configuration profiles -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# default profile applied when creating a vm if not instructed otherwise
+# with profiles you can pre set: root disk size, target storage pool, etc..
 
-# example for Dir type pool:
-mkdir -p /home/lxdadm/lxdpool-2                                 #make a directory for your dir pool
-lxc storage create lxdpool-2 dir source=/home/lxdadm/lxdpool-2  #creates a dir type pool in a folder
+lxc profile list
+lxc profile create {profilename}
+lxc profile show {profilename}
 
-lxc storage list                          #shows available storage pools
-lxc storage volume list {poolname}        #shows contents of a storage pool. image vm datadisk
-lxc launch --storage={poolname} --vm {image} {vmname}  #create a vm on a specific storage pool
+lxc profile set {profilename} {parameters and values}  #edit profile by command
+OR
+lxc profile edit {profilename}  #edit by text editor
+
+lxc profile add {vmname} {profilename}  #you can append more than one profile to a vm
+# profile settings conflicts settled by profile assign order! the last profiles setting apply
+lxc profile assign {vmname} {profilename},{profilename}  #you can change profile order with this?
+# when you edit a profile that is in use the new config applies to the vms that use that profile!
+# most cases reboot or manual configuration still needed when applied to vms in use!
+
+lxc launch --vm --profile default --profile {profilename} {image} {vmname}  #applied 2 profiles at creation
+
+# to-do: see profile order for vm.
 
 -+-+-+-+-+-+ snapshots +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 lxc snapshot {vmname} {snapshotname}  #takes a snapshot. snapshotname is not required
@@ -111,6 +125,90 @@ config:
   snapshots.exiry: {time}  #time format: 1M 2H 3d 4w 5m 6y
 OR lxc config set {vmname} snapshots.exiry={time}
 
+-+-+-+-+-+-+ backups +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# backups are simpler to use for migrating
+# help: https://documentation.ubuntu.com/lxd/latest/howto/instances_backup/#use-export-files-for-instance-backup
+
+# use exprt command while the vm is shut down
+lxc export {vmname} {filename} --compression="gzip -1"  #filename and compression not required
+# level of compression: 1 fast with less compression - 9 slow with more compression
+# makes the file on the host filesystem where you issued the command
+
+lxc import {filename} {newvmname}  #newvmname is not required
+lxc import {filename} {newvmname} --storage={poolname}
+# after import manage the hostname and fingerprints and other identifiers because those will be the same
+# you made the setup on your laptop then you push it to your lxd server:
+lxc import {targetremotelxdserver} {filename} {newvmname}
+
+# to-do: cron-job to make a backup or snapshot and upload it offsite
+# to-do: https://documentation.ubuntu.com/lxd/latest/backup/#secondary-backup-server
+# to-do: https://documentation.ubuntu.com/lxd/latest/howto/instances_migrate/#howto-instances-migrate
+
+-+-+-+-+-+-+ storage pools +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# storage pool types: Dir Btrfs Lvm Zfs-default Ceph-remote
+# simple Dir: you can just point to an empty directory on host system disk
+# location for default dir type pool: /var/snap/lxd/common/lxd/storage-pools/default/
+lxc storage create {poolname} {pooltype}  #create a storage pool
+
+# example for Dir type pool:
+mkdir -p /home/lxdadm/lxdpool-2                                 #make a directory for your dir pool
+lxc storage create lxdpool-2 dir source=/home/lxdadm/lxdpool-2  #creates a dir type pool in a folder
+
+lxc storage list                          #shows available storage pools
+lxc storage volume list {poolname}        #shows contents of a storage pool. image vm datadisk
+lxc launch --storage={poolname} --vm {image} {vmname}  #create a vm on a specific storage pool
+
+-+-+-+-+-+-+ image sources +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# there are publicly available image servers SimpleStreams servers
+# another lxd host server can act as a vm image server
+# lxd caches images that you download for vms
+# default location for cached images is on the host system /var/snap/lxd/common/lxd/images/
+
+# pre cache(download) image from remote server. the vm and container images are different
+lxc image copy --vm images:{imageid} local:  #imageid can be the fingerprint(12char) or alias
+
+lxc publish {vmname} {you can specify a remote to publish it to}  # make an image from a vm
+lxc image list  #available images locally
+lxc image delete {fingerprint}
+
+# change default location for cached images in lxd config:
+# QUESTION? what kind of volume do i need for image storage? type? size? etc what is the default size for new volumes?
+lxc config set storage.images_volume={poolname}/{diskvolume}
+OR
+lxc config edit
+config:
+  storage.images_volume: {poolname}/{diskvolume}
+
+# add a new remote image server
+lxc remote add --protocol simplestreams {remotename} {remoteurl}  #protocol can be simplestreams or lxd
+
+# lxd automatically creates an image storage volume (to unpach the image) on the same pool where the vm is created
+# you can delete it or it will be deleted 10days after the last use of it
+
+# to-do: turn off automatic refresh on specific images. manually refresh a image
+
+-+-+-+-+-+-+ virtual network +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# default bridge network 10.x.x.x/24 for the vms. host connects to it through lxdbr0 virtual interface
+# vm can route through the host. other machines from outside can not route to the vm
+lxc network list  #available networks on host
+
+# bridged network forward one of the hosts port to vm port
+# help: https://documentation.ubuntu.com/lxd/latest/howto/network_forwards/
+lxc network forward create {lxdbr0} {hostip}
+lxc network forward port add {lxdbr0} {hostip} {tcp|udp} {hostport} {vmip} {vmport}
+
+# forward a secondary ip host ip to a vm
+sudo ip address add {new2ndhostip/24} dev {eth0}  #configure secondary address for host(del for delete)
+lxc network forward create {lxdbr0} {new2ndhostip} target_address={vmip}  #ip forward rule
+
+lxc network forward list {lxdbr0}  #list network forwards for interface
+lxc network forward show {lxdbr0} {hostip}
+lxc network forward edit {lxdbr0} {hostip}
+lxc network forward delete {lxdbr0} {hostip}
+
+to-do: https://www.youtube.com/watch?v=vYK1aLSDVIw&t=1570s
+       https://www.youtube.com/watch?v=cqOtksmsxfg&t=740s
+
 -+-+-+-+-+-+ firewall on host -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # configure the host firewall ufw. applies to managed bridge networks only !
 # help: https://documentation.ubuntu.com/lxd/latest/howto/network_bridge_firewalld/
@@ -127,14 +225,17 @@ sudo ufw route allow out on lxdbr0
 # more restrictive firewall rules
 # limit access from the guests to the host to only DHCP and DNS and allow all outbound connections.
 # allow the guest to get an IP from the LXD host
-sudo ufw allow in on lxdbr0 to any port 67 proto udp
-sudo ufw allow in on lxdbr0 to any port 547 proto udp
+sudo ufw allow in on lxdbr0 to any port 67 proto udp   #ipv4 dhcp
+sudo ufw allow in on lxdbr0 to any port 547 proto udp  #ipv6 dhcp
 # allow the guest to resolve host names from the LXD host
 sudo ufw allow in on lxdbr0 to any port 53
 # allow the guest to have access to outbound connections
 lxc network get lxdbr0 ipv4.address  #show the lxd network
 lxc network get lxdbr0 ipv6.address
 sudo ufw route allow in on lxdbr0 from {lxd network}
+
+# allow traffic from outside. after you set up the lxd forwarding rules
+sudo ufw route allow out on {lxdbr0} from {192.168.x.x/24}
 
 -+-+-+-+-+-+ help -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 sudo apt install snapd  #if snap is not installed
