@@ -6,6 +6,7 @@ systemctl reboot
 
 uptime   #uptime
 free -h  #memory
+lsmem    #memory
 
 lscpu, lspci, lsusb, lshw    #hardware info
 lscpu --extended             #info on cpu cores

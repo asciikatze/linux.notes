@@ -1,6 +1,6 @@
-ssh {user}@{serverip}
-ssh {serverip}                         #uses the client username
-ssh -p {portnumber} {user}@{serverip}  #specify the port, 22 is the default
+ssh {user}@{serverip}                              #whitout {user}@ uses the client username
+ssh -p {portnumber} {user}@{serverip}              #specify the port, 22 is the default
+ssh -i ~/.ssh/{private-keyfile} {user}@{serverip}  #connect with a specific key. benefical if you have lots of keys
 
 file: ~/.ssh/known_hosts  #stores the servers fingerprint which you connected to before, you can delete it if you want to reset it
 file: ~/.ssh/config       #make this file. more servers can be added to this file
@@ -31,8 +31,6 @@ ssh-add -l                           #list private keys currently accessible to 
 ssh-add ~/.ssh/{private-keyfile}     #add passphrase for private key to ssh agent
 ssh-add -d ~/.ssh/{private-keyfile}  #remove passphrase from agent
 ssh-add -D                           #remove all key passphrase
-
-ssh -i ~/.ssh/{private-keyfile} {user}@{serverip}  #connect with a specific key. DO THIS IF YOU HAVE MORE THAN 5 KEYS !
 
 # ssh key/file transfer
 ssh-copy-id -i ~/.ssh/{keyfile.pub} {user}@{serverip}  #transfers the public key onto the server to the correct location.
@@ -70,6 +68,13 @@ file: /etc/ssh/sshd_config
 # after editing file: /etc/ssh/sshd_config
 sudo systemctl restart sshd
 
+# cloud init configuration can still enable password authentication. audit the init config file!
+file: /etc/ssh/sshd_config.d/50-cloud-init.conf
+
+# authorized keys
+file: ~/.ssh/authorized_keys  #file permissions 600
+#add the public keys one per line to grant access to user on server
+
 # DO NOT LOCK YOURSELF OUT ! DO NOT LOG OUT UNTIL YOU SURE THAT YOU CAN LOG BACK IN !
 
 tail -f /var/log/auth.log  #monitor the connections, good for troubleshooting
@@ -99,7 +104,7 @@ ps aux | grep sshd:        #first number after the username is the process ID, k
   .ssh        drwx------
   privatekey  -rw-------
 
-# connecting to my old macintosh gives error:  no matching host key type found. Their offer: ssh-rsa,ssh-dss
+# connecting to my old 2008macintosh gives error:  no matching host key type found. Their offer: ssh-rsa,ssh-dss
 # add this option:  -oHostKeyAlgorithms=+ssh-rsa
 # source:  https://www.openssh.org/legacy.html
 ssh -oHostKeyAlgorithms=+ssh-rsa {user}@{serverip}

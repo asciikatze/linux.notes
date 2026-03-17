@@ -1,5 +1,5 @@
-uname -a             #systeminfo
-uname -sr            #kernelversion
+uname -a             #all systeminfo
+uname -r             #kernelversion
 cat /etc/os-release  #os info
 lsb_release --all    #os info
 date                 #shows the current date and time

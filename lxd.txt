@@ -68,6 +68,10 @@ lxc storage volume attach {poolname} {diskvolume} {vmname} {devicenameforvm}  #d
 lxc storage volume delete {poolname} {diskvolume}  #detach from vm before deletion!
 # the data disk can be on a different pool than the vm root disk
 
+# set static ip for vm
+# stop or restart the vm after
+lxc config device override {vmname} eth0 ipv4.address={static ip}
+
 # edit configuration
 lxc config show {vmname}             #show vm configuration
 lxc config show --expanded {vmname}  #show vm configuration + device information network disk
@@ -237,6 +241,26 @@ sudo ufw route allow in on lxdbr0 from {lxd network}
 # allow traffic from outside. after you set up the lxd forwarding rules
 sudo ufw route allow out on {lxdbr0} from {192.168.x.x/24}
 
+-+-+-+-+-+-+ remote management +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# manage more than one server instead of ssh you can use the lxc cli tool to manage from your laptop or management server
+
+# on lxd host server
+lxc config set core.https_address=:8443  #server listen on 8443 management port
+OR lxc config edit
+lxc config trust add {clientname}  #clientname not needed the setup tool gonna ask it
+
+# on management laptop
+apt install lxc
+lxc remote list
+lxc remote add {lxdservername} {lxdserverip}  #specify port number if the server not listening on default8443
+# once you added all the lxd servers set the default remote:
+lxc remote switch {lxdservername}
+lxc remote list  #check your setup
+# after this all your lxc command run on the default remote server that you set
+# however most of the commands have option to specify {remotename:}
+lxc image list {remotename:}  #querries the sppecified remote lxd server
+lxc image copy {remotename:}{image fingerprint} {another remotename:}  #copy image between two hosts. from to
+
 -+-+-+-+-+-+ help -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 sudo apt install snapd  #if snap is not installed
 #if lxc command not found after install logout-login to update env varieables
@@ -253,4 +277,7 @@ lxc config set MyAlpineVm security.secureboot=false
 
 # to-do: https://documentation.ubuntu.com/lxd/latest/howto/server_expose/
          https://documentation.ubuntu.com/lxd/latest/howto/access_ui/#access-ui
+# to-do: https://documentation.ubuntu.com/lxd/latest/howto/security_harden/
+         https://linuxcontainers.org/lxc/security/
+# to-do: microcloud https://www.youtube.com/watch?v=tSJqjZjLrig
 

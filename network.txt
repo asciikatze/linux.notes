@@ -51,7 +51,7 @@ netsh wlan show profile * key=clear  #show known wifi networks in windows
 
 watch 'nmcli device wifi | grep -E "IN-USE|{networkname}|{networkname}"'  #monitor two wifi networks
 
-ethtool {networkinterface} | grep Speed  #shows speed of ethernet
+ethtool {network-interface} | grep Speed  #shows speed of ethernet
 
 -+-+-+-+-+-+ dns +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 file: /etc/hosts                        #local dns rules. your system looks here first
@@ -93,7 +93,7 @@ sudo reboot
 file: /etc/netplan/00-installer-config.yaml
   network:
     ethernets:
-      {NETWORK_INTERFACE}:
+      {network_interface}:
         dhcp4: true
     version: 2
 
@@ -105,15 +105,39 @@ file: /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg
 # static ip on Debian
 file: /etc/network/interfaces  #dns is NOT set from here !
   # The primary network interface
-  auto {NETWORK_INTERFACE}
-  iface {NETWORK_INTERFACE} inet static
-    address {STATIC_IP}
+  auto {network_interface}
+  iface {network_interface} inet static
+    address {static_ip}
     netmask 255.255.255.0
-    gateway {GATEWAY_IP}
-    dns-nameservers {DNS_IP} {DNS_IP}
+    gateway {gateway_ip}
+    dns-nameservers {dns_ip} {dns_ip}
 # restart networking.service  kicks you out of session!
 sudo systemctl restart networking  OR  sudo systemctl restart networking.service
 
 -+-+-+-+-+-+ help -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 sudo strace -p {PID} -e network  #shows whtat the program doing on the network
-sudo apt install net-tools  #if you dont have netstat ifconfig +more cool tools
+sudo apt install net-tools  #if you need netstat ifconfig + more cool tools
+
+# system ports             from     0 through  1023
+# registered ports         from  1024 through 49151
+# dynamic or private ports from 49152 through 65535
+20       file transfer protocol FTP data transfer
+21       file transfer protocol FTP command control
+22       secure shell SSH secure login
+23       telnet remote login service unencrypted text messages
+25       simple mail transfer protocol SMTP email delivery
+53       domain name system DNS service
+67,68    dynamic host configuration protocol DHCP
+80       hypertext transfer protocol HTTP used in the world wide web
+110      post office protocol POP3
+119      network news transfer protocol NNTP
+123      network time protocol NTP
+143      internet message access protocol IMAP management of digital mail
+161      simple network management protocol SNMP
+179      border gateway protocol BGP
+194      internet relay chat IRC
+443      HTTP secure HTTPS HTTP over TLS/SSL
+500      internet security association and key management protocol ISAKMP
+546,547  DHCPv6 IPv6 version of DHCP
+587      modern secure SMTP that uses encryption
+3389     remote desktop protocol RDP

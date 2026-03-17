@@ -5,10 +5,8 @@ curl {https://url}  #content. like the index.html filecontent. HTTP GET is defau
 curl -I {url}       #header. HEAD method is default
 curl -i {url}       #header + content
 
-curl -I {url} -X GET  #-X change the method. use only if default is not what you want !
-
 curl -o {file} {url}      #writes to a file
-cirl -O {url/index.html}  #downloads a specific file
+curl -O {url/index.html}  #downloads a specific file
 
 # curl needs the protocol because http is the default. you may run into 300 redirect with default http
 curl -L {url}  #follows the redirect
@@ -21,11 +19,8 @@ curl -s {url} -o /dev/null -w '%{response_code}'  #-s not show progress or error
 
 curl {url} -H "User-agent:"  #-H add things to or change the header. in this case remove user agent information from header. "User-agent;" blank field with;
 
-# to-do: interact with api  https://www.youtube.com/watch?v=Q3_3saEQiSA
-# to-do: send email with curl
-
-# help: https://www.youtube.com/watch?v=I6id1Y0YuNk
 # help: https://curl.se/  https://everything.curl.dev/
+# to-do: send email with curl
 
 -+-+-+-+-+-+ wget -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # download files

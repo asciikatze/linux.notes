@@ -1,8 +1,8 @@
 # network layers
-layer1 physical  : the wires
-layer2 data link : defines format of data, simple switches routing by mac address
-layer3 network   : physical path, routers and layer3 switchews, routing by ip address, vlans opereate here
-layer4 transport : transmission protocols tcp and udp
+layer1 physical   #the wires
+layer2 data link  #defines format of data, simple switches routing by mac address
+layer3 network    #physical path, routers and layer3 switchews, routing by ip address, vlans opereate here
+layer4 transport  #transmission protocols tcp and udp
 layer5 session
 layer6 presentation
 layer7 application
@@ -30,16 +30,16 @@ RJ45 T568 A        RJ45 T568 B     #USE THE B VERSION!
 
 -+-+-+-+-+-+ ip address -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # ip ranges by classification
-class a :   1.0.0.0-126.255.255.255  /8   ~16777216 hosts
-class b : 128.0.0.0-191.255.255.255  /16  ~65536 hosts
-class c : 192.0.0.0-223.255.255.255  /24  ~256 hosts
-class d : 224-239 multicast
-class e : 240-255 experimental
+class a    1.0.0.0-126.255.255.255  /8   ~16777216 hosts
+class b  128.0.0.0-191.255.255.255  /16  ~65536 hosts
+class c  192.0.0.0-223.255.255.255  /24  ~256 hosts
+class d  224-239 multicast
+class e  240-255 experimental
 
 # private ip ranges
-class a :    10.0.0.0-10.255.255.255   /8
-class b :  172.16.0.0-172.31.255.255   /24
-class c : 192.168.0.0-192.168.255.255  /24
+class a     10.0.0.0-10.255.255.255   /8
+class b   172.16.0.0-172.31.255.255   /24
+class c  192.168.0.0-192.168.255.255  /24
 
 # loopback  127.0.0.0-127.255.255.255  /8
 to your own computer usually  127.0.0.1 loaclhost
@@ -139,4 +139,3 @@ mode1 active backup
   complementary
   match the architecture to actual requirements
 
-# help: https://www.youtube.com/watch?v=DVR0zvDYJgY
