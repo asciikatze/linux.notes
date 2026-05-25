@@ -34,4 +34,7 @@ wget -v --user-agent="{useragent}" --referer={url} {urltofile}
 # download hosted media
 yt-dlp -f 'bv*[height=720]+ba' {url}
 yt-dlp -x --audio-format mp3 {url}
-#add this tag if cant find method to download:  --ies Generic,HTML5
+yt-dlp -f 'bv*[height=720]+ba' -a urls.txt  #batch download from file. each url on its own line.
+
+# add this tag if cant find method to download
+--ies Generic,HTML5

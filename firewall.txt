@@ -23,8 +23,18 @@ sudo ufw reset  #delete all firewall rules
 
 # config profile for applications
 sudo ufw app list
+sudo ufw app info "{application-name}"  #show rules for app
 sudo ufw allow "{application-name}"
 sudo ufw delete allow "{application-name}"
+
+# custom profile
+# add your custom rules to a file in /etc/ufw/applications.d/{filename}
+  [{name}]
+  title=
+  description=
+  {rules here}
+  {rules here}
+# to-do: what is the syntax for rules in this file
 
 # deny pings
 file: sudo nano /etc/ufw/before.rules
@@ -76,3 +86,5 @@ grep -i ufw /var/log/syslog
 grep -i ufw /var/log/messages
 grep -i ufw /var/log/kern.log
 
+
+# to-do: firewalld

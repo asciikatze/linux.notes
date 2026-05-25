@@ -59,6 +59,7 @@ file: /etc/apt/sources.list.d/            #contains program specific repos
 dpkg -s {programname}          #information on programs if installed
 sudo dpkg -i {file.deb}        #install
 sudo dpkg -r {programname}     #remove
+dpkg -l                        #list the installed packages
 #you need to install the dependencies too:  apt --fix-broken install
 
 # automatic updates
@@ -119,4 +120,14 @@ dpkg-reconfigure locales  #setup for locales
 # or try this
 apt install locales
 nano /etc/locale.gen  #uncomment the one you want
-locale-gen
+locale-gen            #generate the uncommented locales
+
+# perl locale warnings indicating language settings are not properly configured
+# missing locale configurations or improperly set LANG or LC_* variables
+locale-gen en_US.UTF-8 en_GB.UTF-8 && update-locale
+locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8
+locale-gen en_US.UTF-8 && update-locale LC_ALL=en_US.UTF-8
+# to prevent these warnings in scripts and automated processes
+# consider adding to file: /etc/environment
+  export LC_ALL=C.UTF-8
+# help: https://linuxconfig.org/fix-perl-setting-locale-failed-error-in-debian-ubuntu

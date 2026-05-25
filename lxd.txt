@@ -9,10 +9,10 @@
 
 # install and setup
 snap install lxd
-lxd init     #pay attention to the pool and network setup!
+lxd init     #initial setup. pay attention to the pool and network configuration!
 lxc version  #client-version=lxc  server-version=lxd
 
-# create vm and container
+-+-+-+-+-+-+ create vm and container +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 lxc remote list                      #available remote vm image servers
 lxc image list images: debian        #lists all the debian images on the remote server called images
 lxc image info images:{fingerprint}  #shows the more aliases for it + more info about it
@@ -24,6 +24,17 @@ lxc launch --vm {image} {vmname}  #whitout the --vm it will launch a container i
 # for image you can specify a repository from remote list
 lxc launch --vm images:ubuntu/23.04 MyFirstVM  #uses ubuntu 23.04 from the repo called images
 
+# create vm with custom ISO image
+# the init creates the vm but does not launch it
+lxc init --vm --empty --config=limits.cpu=3 --config=limits.memory=6GiB --device root,size=60GiB {vmname}
+lxc config device add {vmname} iso disk source={file.iso}  #attach iso file to vm
+lxc config device remove {vmname} iso                      #remove installation media
+# if you want to install graphical vm see remote managment options
+
+# make a windows vm
+# help: https://blog.simos.info/how-to-run-a-windows-virtual-machine-on-incus-on-linux/
+# help: https://www.youtube.com/watch?v=amslKipAjxo
+
 lxc list             #list of containers/vms
 lxc list -c n,s,4,image.description:image  #you can edit what the list shows
 lxc info {vmname}    #status. created/used times. disk cpu ram usage. ip. +available snapshots and more
@@ -31,17 +42,29 @@ lxc stop {vmname}    #stops the vm. stop  AND  start  AND  restart  are all vali
 lxc delete {nvmame}  #you need to stop it first. you can add --force at the end
 lxc copy {nvmame} {newnvmame}
 
-# interact with vm and container
+-+-+-+-+-+-+ interact with vm and container -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 lxc exec --help                 #help for exec command. --help helps with all commands!
 lxc exec {vmname} -- {command}  #run a command against the vm
+lxc exec {vmname} -- ls -lGa /home/user1
 lxc exec {vmname} -- bash       #hop in the vm terminal. can be bash or sh or whatever available on the vm
-# help: https://documentation.ubuntu.com/lxd/latest/howto/instances_console/
-# to-do: access the graphical interface on host server? rdp for remote?
-lxc console {vmname}            #open the console for the vm
+
 # help: https://documentation.ubuntu.com/lxd/latest/reference/manpages/lxc/file/#lxc-file-md
 lxc file push {file} {vmname}/{pathtofile}  #copy file to vm. push ssh keys this way
 lxc file pull {vmname}/{pathtofile} {file}  #copy from vm
 lxc file edit {vmname}/{pathtofile}         #edit file on vm
+lxc file delete {vmname}/{pathtofile}
+
+# mount a directory from the vm to local system
+# useful when you manage the servers from a management computer
+# uses SSHFS:
+lxc file mount {vmname}/{pathtofolder}
+# SSHSFTP through LXD daemon:
+# gives you username and password then you canuse whatever program you like to connect
+lxc file mount --listen=0.0.0.0:{port} {vmname}  #instead of 0.0.0.0 you can use localhost 127.0.0.1
+
+lxc console {vmname}              #open the console for the vm
+lxc start {vmname} --console=vga  #starts the vm with graphical window
+lxc console {vmname} --type=vga   #connect graphical window. uses SPICE needs viewer program
 
 -+-+-+-+-+-+ configure instances +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # default config is 1GiB memory, 1cpu core, 10GiB root hdd
@@ -83,6 +106,20 @@ lxc config set {vmname} {configurations changes listed here one by one}  #set mo
 lxc config set {vmname} boot.autostart=ture               #automatically boots when host boots
 lxc config set {vmname} boot.autostart.priority={number}  #starting with the highest 
 lxc config set {vmname} boot.autostart.delay=10           #add this to each vm for a 10 second sequenced boot
+
+# tips: you can disable ethernet because ISO vms try to PXE boot by default when you install them
+lxc config device override {vmname} eth0 type=none
+OR config edit {vmname}
+devices:
+  eth0:
+    type: none
+# restore the network interface
+config edit {vmname}
+devices:
+  eth0:
+    type: nic
+    nictype: bridged
+    parent: lxdbr0
 
 lxc config get {vmname} {configuration}  #see one specific configuration setting
 
@@ -201,8 +238,10 @@ lxc network list  #available networks on host
 lxc network forward create {lxdbr0} {hostip}
 lxc network forward port add {lxdbr0} {hostip} {tcp|udp} {hostport} {vmip} {vmport}
 
-# forward a secondary ip host ip to a vm
-sudo ip address add {new2ndhostip/24} dev {eth0}  #configure secondary address for host(del for delete)
+# forward a secondary host ip to a vm
+# for a permanently solution edit the netplan *config.yaml file and add another ip there!
+# temporarly configure secondary address for host(del for delete)
+sudo ip address add {new2ndhostip/24} dev {eth0}
 lxc network forward create {lxdbr0} {new2ndhostip} target_address={vmip}  #ip forward rule
 
 lxc network forward list {lxdbr0}  #list network forwards for interface
@@ -242,24 +281,47 @@ sudo ufw route allow in on lxdbr0 from {lxd network}
 sudo ufw route allow out on {lxdbr0} from {192.168.x.x/24}
 
 -+-+-+-+-+-+ remote management +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-# manage more than one server instead of ssh you can use the lxc cli tool to manage from your laptop or management server
+# manage more than one server instead of ssh you can use the lxc cli tool to manage from your management server
 
 # on lxd host server
 lxc config set core.https_address=:8443  #server listen on 8443 management port
 OR lxc config edit
-lxc config trust add {clientname}  #clientname not needed the setup tool gonna ask it
+lxc config trust add  #setup tool for adding a trusted coputer
+lxc config trust list
 
-# on management laptop
-apt install lxc
+# on management workstation
+# when i tried using just the "sudo apt install lxc" package to manage it doe not worked for me
+# to-do: is there any working lxd management software out there?
+# my experience; you need to install the lxd server on your management pc
 lxc remote list
-lxc remote add {lxdservername} {lxdserverip}  #specify port number if the server not listening on default8443
+lxc remote add {lxdservername} {lxdserverip}  #specify port number if the server not listening on default 8443
 # once you added all the lxd servers set the default remote:
 lxc remote switch {lxdservername}
 lxc remote list  #check your setup
 # after this all your lxc command run on the default remote server that you set
 # however most of the commands have option to specify {remotename:}
 lxc image list {remotename:}  #querries the sppecified remote lxd server
-lxc image copy {remotename:}{image fingerprint} {another remotename:}  #copy image between two hosts. from to
+lxc image copy {remotename:}{image fingerprint} {another remotename:}  #copy image between two hosts. from-to
+
+# on management workstation with graphical GUI
+# you can use virt-viewer to install desktop vms with graphical interface
+# virt-viewer and lxd uses the SPICE protocol
+sudo apt install virt-viewer
+# help: https://gitlab.com/virt-viewer/virt-viewer
+# help: help: https://www.spice-space.org/
+
+# WEB-UI management
+# help: https://documentation.ubuntu.com/lxd/latest/howto/server_expose/
+# help: https://documentation.ubuntu.com/lxd/latest/howto/access_ui/#access-ui
+# help: https://www.youtube.com/watch?v=wqEH_d8LC1k
+# during initialization allow lxd server to be available over the network OR
+lxc config set core.https_address=:8443  #allow lxd server to be available over the network
+lxc config show  #see the config
+# from you browser go to the hostip:8443 and follow instructions
+lxc auth identity list  #list authorized identities
+
+-+-+-+-+-+-+ host clustering +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# to-do: https://www.youtube.com/watch?v=VhkxIY-jCjA
 
 -+-+-+-+-+-+ help -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 sudo apt install snapd  #if snap is not installed
@@ -275,9 +337,16 @@ lxc config edit MyAlpineVm
 OR
 lxc config set MyAlpineVm security.secureboot=false
 
-# to-do: https://documentation.ubuntu.com/lxd/latest/howto/server_expose/
-         https://documentation.ubuntu.com/lxd/latest/howto/access_ui/#access-ui
-# to-do: https://documentation.ubuntu.com/lxd/latest/howto/security_harden/
-         https://linuxcontainers.org/lxc/security/
-# to-do: microcloud https://www.youtube.com/watch?v=tSJqjZjLrig
 
+# to-do: https://documentation.ubuntu.com/lxd/latest/howto/security_harden/
+# to-do: microcloud https://www.youtube.com/watch?v=tSJqjZjLrig
+# to-do: automated method to spin up a new lxd node?
+# to-do: zfs optimization and configuration
+
+
+-+-+-+-+-+-+ lxc +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# lxc standalone just for lxc containers
+sudo apt install lxc
+
+# help: https://www.youtube.com/watch?v=7RNmYVZjs80
+# help: https://linuxcontainers.org/lxc/introduction/

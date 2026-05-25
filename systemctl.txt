@@ -1,6 +1,8 @@
 # systemd is a system and service manager for Linux that initializes and manages system processes
 # systemctl is the command-line tool used to control and manage systemd services and units
-pstree
+pstree  #tree of running processes
+systemctl        #show loaded active units
+systemctl --all  #show loaded active and inactve units
 
 # service vs daemon: for all intents and purposes they are the same. all daemons are services, but not all services are daemons
 # daemon: background process running continuously

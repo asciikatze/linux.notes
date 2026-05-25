@@ -1,8 +1,5 @@
-sudo shutdown now  OR  sudo poweroff   #shutdown
-sudo shutdown -r now  OR  sudo reboot  #reboot
-OR
-systemctl poweroff
-systemctl reboot
+sudo shutdown now  OR  sudo poweroff  OR  systemctl poweroff  #shutdown
+sudo shutdown -r now  OR  sudo reboot  OR  systemctl reboot   #reboot
 
 uptime   #uptime
 free -h  #memory
@@ -19,9 +16,10 @@ sudo lshw -class storage     #storage interfaces
 sudo lshw -c memory          #memory info eg speed
 lspci -k | grep -EA3 'VGA|3D|Display'  #show videocard and video driver
 
-sudo dmidecode	           #extensive hardware information
-sudo dmidecode -t bios -q  #bios information
+sudo dmidecode	                       #extensive hardware information
 sudo dmidecode -s system-product-name  #for my macbook
+sudo dmidecode -t bios -q              #bios information
+cat /sys/class/dmi/id/bios_version     #show bios version
 
 # battery status
 upower -e  #list power devices
@@ -46,6 +44,7 @@ df -i          #number of inodes. if disk reported full this can be the couse of
 lsblk          #disk partition mountpoint
 lsblk -f       #type label uuid.  use this!
 sudo fdisk -l  #disk partition mountpoint
+ls /dev/disk/by-id -l  #list disk devices with serial and sdX designation
 
 # sda usually means the first hdd device with the system on it mounted in /
 # sdb usually means the second connected hdd device

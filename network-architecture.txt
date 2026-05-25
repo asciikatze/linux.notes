@@ -89,13 +89,9 @@ mode1 active backup
 # to-do: how to set these up in ubuntu networkd
 
 -+-+-+-+-+-+ gateway vs balancer vs proxy -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-# forward proxy
-  filtering web
-  masking you
+# forward proxy : filtering web, masking you
 
-# reverse proxy
-  forwards traffic
-
+# reverse proxy : forwards traffic
   front of servers never see behind it
   ssl termination(hw intesive)
   caching
@@ -105,9 +101,7 @@ mode1 active backup
   nginx apache haproxy caddy
   forwards traffic based on rules does not care about what is the traffic
 
-# load balancer
-  distributes traffic
-
+# load balancer : distributes traffic
   request distribution to multiple backends
   scalability and availability
   failover
@@ -120,9 +114,8 @@ mode1 active backup
   layer4(transport) balancing: sees ips and port does not see http content, fast but limited
   layer7(application) balancing: understands http protocol and route accordingly
 
-# api gateway
-  manages apis
-    api aware reverse proxy with features designed specifically for managinf, securing and monitoring apis
+# api gateway : manages apis
+  api aware reverse proxy with features designed specifically for managing, securing and monitoring apis
 
   authentiation and authorization
   rate limiting
@@ -138,4 +131,40 @@ mode1 active backup
 # these used mixed together the inportatnt thing is what capabilities you need tool have mixed features between these categories
   complementary
   match the architecture to actual requirements
+
+-+-+-+-+-+-+ dns +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# DNS
+DoT: over tls. tcp
+DoH: over https. tls tcp  #use this if you can!
+DoQ: over quic. udp
+
+# organization level control. make sure you own the dns server that your organization uses. block other dns providers.
+# easy to spoof a dns request to a server on behalf of someone else this can be used for denial of service attacks. mitigate with rate limiting?
+
+-+-+-+-+-+-+ kB VS kiB +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+Bit  1b        1 / 0
+Byte 1B = 8b   00000000
+     4B = 32b
+
+# SI prefixes  1kB  = 1000B
+Kilobyte  kB  10^3 Bytes
+Megabyte  MB  10^6 Bytes
+Gigabyte  GB  10^9 Bytes
+Terrabyte TB  10^12 Bytes
+Petabyte  PB  10^15 Bytes
+
+# IEC binary prefixes  1kib = 1024B
+Kibibyte kiB  2^10 Bytes
+Mebibyte MiB  2^20 Bytes
+Gibibyte GiB  2^30 Bytes
+Tebibyte TiB  2^40 Bytes
+Pebibyte PiB  2^50 Bytes
+
+#example
+1TB = ?GiB  TB:10^12 AND GiB:2^30
+? = (1TB*10^12)/2^30
+? = 931.3GiB
+
+# computers can show one kind of prefix and mean the other :-/
+# help: https://www.youtube.com/watch?v=dsvD6OIxFec
 

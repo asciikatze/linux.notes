@@ -76,6 +76,7 @@ file: /etc/netplan/00-installer-config.yaml
       {networkinterface}:
         addresses:
           - {staticip}/24
+          - {secondaryip}/24  #you can do this
         nameservers:
           search: []
           addresses: [{dnsip1}, {dnsip2}]
@@ -141,3 +142,6 @@ sudo apt install net-tools  #if you need netstat ifconfig + more cool tools
 546,547  DHCPv6 IPv6 version of DHCP
 587      modern secure SMTP that uses encryption
 3389     remote desktop protocol RDP
+
+# configure secondary ip
+# help: https://computingforgeeks.com/add-secondary-ip-address-on-ubuntu/
