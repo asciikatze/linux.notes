@@ -12,22 +12,22 @@ snap install lxd
 lxd init     #initial setup. pay attention to the pool and network configuration!
 lxc version  #client-version=lxc  server-version=lxd
 
--+-+-+-+-+-+ create vm and container +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-lxc remote list                      #available remote vm image servers
+-+-+-+-+-+-+ create instances -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+lxc remote list                      #available remote image servers
 lxc image list images: debian        #lists all the debian images on the remote server called images
-lxc image info images:{fingerprint}  #shows the more aliases for it + more info about it
+lxc image info images:{fingerprint}  #show more info about image; like usable alias
 # the repository called images: https://images.lxd.canonical.com/
-# difference between default and cloud images is that cloud images are work with cloudinit
-lxc image list  #available images locally
+# difference between default and cloud images is that cloud images are work with cloudinit.
+# there are container and vm images.
+lxc image list  #show available images locally
 
-lxc launch --vm {image} {vmname}  #whitout the --vm it will launch a container instead of a vm
-# for image you can specify a repository from remote list
-lxc launch --vm images:ubuntu/23.04 MyFirstVM  #uses ubuntu 23.04 from the repo called images
+lxc launch --vm {image} {vmname}              #--vm launches a virtual machine; whitout it lanches a conatainer
+lxc launch --vm images:ubuntu/23.04 {vmname}  #you can specify the remote and the specific image you need
 
 # create vm with custom ISO image
 # the init creates the vm but does not launch it
 lxc init --vm --empty --config=limits.cpu=3 --config=limits.memory=6GiB --device root,size=60GiB {vmname}
-lxc config device add {vmname} iso disk source={file.iso}  #attach iso file to vm
+lxc config device add {vmname} iso disk source={file.iso}  #attach installation iso file to vm
 lxc config device remove {vmname} iso                      #remove installation media
 # if you want to install graphical vm see remote managment options
 
@@ -35,31 +35,31 @@ lxc config device remove {vmname} iso                      #remove installation 
 # help: https://blog.simos.info/how-to-run-a-windows-virtual-machine-on-incus-on-linux/
 # help: https://www.youtube.com/watch?v=amslKipAjxo
 
-lxc list             #list of containers/vms
+lxc list                       #list of containers/vms
 lxc list -c n,s,4,image.description:image  #you can edit what the list shows
-lxc info {vmname}    #status. created/used times. disk cpu ram usage. ip. +available snapshots and more
-lxc stop {vmname}    #stops the vm. stop  AND  start  AND  restart  are all valid
-lxc delete {nvmame}  #you need to stop it first. you can add --force at the end
-lxc copy {nvmame} {newnvmame}
+lxc info {vmname}              #status. created/used times. disk cpu ram usage. ip. +available snapshots and more
+lxc stop {vmname}              #stops the vm. stop  AND  start  AND  restart  are all valid
+lxc delete {nvmame}            #you need to stop it first. you can add --force at the end
+lxc copy {nvmame} {newnvmame}  #make a copy of the vm
 
--+-+-+-+-+-+ interact with vm and container -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+-+-+-+-+-+-+ interact with instances +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 lxc exec --help                 #help for exec command. --help helps with all commands!
 lxc exec {vmname} -- {command}  #run a command against the vm
-lxc exec {vmname} -- ls -lGa /home/user1
+lxc exec {vmname} -- ls -lGa /home/user1  #list files on vm from home directory
 lxc exec {vmname} -- bash       #hop in the vm terminal. can be bash or sh or whatever available on the vm
 
 # help: https://documentation.ubuntu.com/lxd/latest/reference/manpages/lxc/file/#lxc-file-md
 lxc file push {file} {vmname}/{pathtofile}  #copy file to vm. push ssh keys this way
 lxc file pull {vmname}/{pathtofile} {file}  #copy from vm
 lxc file edit {vmname}/{pathtofile}         #edit file on vm
-lxc file delete {vmname}/{pathtofile}
+lxc file delete {vmname}/{pathtofile}       #delete
 
-# mount a directory from the vm to local system
+# mount a directory from the vm to local system(uses SSHFS)
 # useful when you manage the servers from a management computer
-# uses SSHFS:
 lxc file mount {vmname}/{pathtofolder}
-# SSHSFTP through LXD daemon:
-# gives you username and password then you canuse whatever program you like to connect
+
+# SSHSFTP through LXD daemon
+# gives you username and password then you can use whatever program you like to connect
 lxc file mount --listen=0.0.0.0:{port} {vmname}  #instead of 0.0.0.0 you can use localhost 127.0.0.1
 
 lxc console {vmname}              #open the console for the vm
@@ -92,22 +92,21 @@ lxc storage volume delete {poolname} {diskvolume}  #detach from vm before deleti
 # the data disk can be on a different pool than the vm root disk
 
 # set static ip for vm
-# stop or restart the vm after
-lxc config device override {vmname} eth0 ipv4.address={static ip}
+lxc config device override {vmname} eth0 ipv4.address={static ip}  #stop before or restart the vm after
 
 # edit configuration
 lxc config show {vmname}             #show vm configuration
 lxc config show --expanded {vmname}  #show vm configuration + device information network disk
 # two ways to edit vm configuration:
-lxc config edit {vmname}  #edit the vms configuration file
-lxc config set {vmname} {configurations changes listed here one by one}  #set more configs with lxc command
+lxc config edit {vmname}                 #edit the vms configuration file
+lxc config set {vmname} {configurations changes here one by one}  #set more configs with lxc command
 
 # help: https://documentation.ubuntu.com/lxd/stable-5.0/reference/instance_options/
 lxc config set {vmname} boot.autostart=ture               #automatically boots when host boots
 lxc config set {vmname} boot.autostart.priority={number}  #starting with the highest 
 lxc config set {vmname} boot.autostart.delay=10           #add this to each vm for a 10 second sequenced boot
 
-# tips: you can disable ethernet because ISO vms try to PXE boot by default when you install them
+# tips: you can disable ethernet because ISO vms try to PXE boot by default when you install with them
 lxc config device override {vmname} eth0 type=none
 OR config edit {vmname}
 devices:
@@ -123,7 +122,7 @@ devices:
 
 lxc config get {vmname} {configuration}  #see one specific configuration setting
 
--+-+-+-+-+-+ configuration profiles -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+-+-+-+-+-+-+ configure profiles -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # default profile applied when creating a vm if not instructed otherwise
 # with profiles you can pre set: root disk size, target storage pool, etc..
 
@@ -136,14 +135,12 @@ OR
 lxc profile edit {profilename}  #edit by text editor
 
 lxc profile add {vmname} {profilename}  #you can append more than one profile to a vm
-# profile settings conflicts settled by profile assign order! the last profiles setting apply
+# profile settings conflicts settled by profile ASSIGN ORDER: the LAST profiles SETTING APPLY!
 lxc profile assign {vmname} {profilename},{profilename}  #you can change profile order with this?
-# when you edit a profile that is in use the new config applies to the vms that use that profile!
+# when you edit a profile that is in use the new CONFIG APPLIES to the RUNNING VMs that use that profile!
 # most cases reboot or manual configuration still needed when applied to vms in use!
 
 lxc launch --vm --profile default --profile {profilename} {image} {vmname}  #applied 2 profiles at creation
-
-# to-do: see profile order for vm.
 
 -+-+-+-+-+-+ snapshots +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 lxc snapshot {vmname} {snapshotname}  #takes a snapshot. snapshotname is not required
@@ -181,7 +178,7 @@ lxc import {filename} {newvmname} --storage={poolname}
 # you made the setup on your laptop then you push it to your lxd server:
 lxc import {targetremotelxdserver} {filename} {newvmname}
 
-# to-do: cron-job to make a backup or snapshot and upload it offsite
+# to-do: cron-job to make a backup or snapshot and transfer offsite
 # to-do: https://documentation.ubuntu.com/lxd/latest/backup/#secondary-backup-server
 # to-do: https://documentation.ubuntu.com/lxd/latest/howto/instances_migrate/#howto-instances-migrate
 
@@ -226,7 +223,7 @@ lxc remote add --protocol simplestreams {remotename} {remoteurl}  #protocol can 
 # lxd automatically creates an image storage volume (to unpach the image) on the same pool where the vm is created
 # you can delete it or it will be deleted 10days after the last use of it
 
-# to-do: turn off automatic refresh on specific images. manually refresh a image
+# to-do: turn off automatic refresh on specific images. how to manually refresh image
 
 -+-+-+-+-+-+ virtual network +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # default bridge network 10.x.x.x/24 for the vms. host connects to it through lxdbr0 virtual interface
@@ -320,13 +317,11 @@ lxc config show  #see the config
 # from you browser go to the hostip:8443 and follow instructions
 lxc auth identity list  #list authorized identities
 
--+-+-+-+-+-+ host clustering +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-# to-do: https://www.youtube.com/watch?v=VhkxIY-jCjA
-
 -+-+-+-+-+-+ help -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-sudo apt install snapd  #if snap is not installed
-#if lxc command not found after install logout-login to update env varieables
-sudo usermod -aG lxd {username}  #add user so you dont need sudo to interact with lxd lxc
+# if lxc command not found after install logout-login to update env varieables.
+
+# lxd administrator users should be in the lxd group. if not:
+sudo usermod -aG lxd {username}  #add user so you dont need sudo to interact with lxd
 
 # error incompatible with secureboot appears during vm creation add:  --config security.secureboot=false
 lxc launch --config security.secureboot=false --vm images:alpine/3.15 MyAlpineVM
@@ -337,14 +332,18 @@ lxc config edit MyAlpineVm
 OR
 lxc config set MyAlpineVm security.secureboot=false
 
+# when you create a ubuntu desktop vm set the passwd from the host !
+lxc exec {vmname} -- passwd ubuntu
+lxc exec {vmname} -- passwd root
+
 
 # to-do: https://documentation.ubuntu.com/lxd/latest/howto/security_harden/
+# to-do: clustering https://www.youtube.com/watch?v=VhkxIY-jCjA
 # to-do: microcloud https://www.youtube.com/watch?v=tSJqjZjLrig
-# to-do: automated method to spin up a new lxd node?
+# to-do: automated method to spin up a new lxd node? maas https://www.youtube.com/watch?v=b_bdVfG47G4
 # to-do: zfs optimization and configuration
 
-
--+-+-+-+-+-+ lxc +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+-+-+-+-+-+-+ only lxc -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # lxc standalone just for lxc containers
 sudo apt install lxc
 
