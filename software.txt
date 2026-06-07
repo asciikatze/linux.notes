@@ -2,7 +2,9 @@ uname -a             #all systeminfo
 uname -r             #kernelversion
 cat /etc/os-release  #os info
 lsb_release --all    #os info
+hostnamectl          #computer info; kernel, bios, coputer type
 date                 #shows the current date and time
+timedatectl status   #time settings info
 
 man {program}         #manual pages
 which {program}       #locate programfile
@@ -48,6 +50,9 @@ apt list --installed | grep {program}  #search for a installed program
 
 # manage repositories
 sudo add-apt-repository {repository-url}  #adds new repository
+sudo add-apt-repository --update ppa:{repository name}  #--update as you add the repo instantly sync with it
+#ppa: personal package archive; use it only if you trust it
+OR
 sudo apt edit-sources                     #edit file: /etc/apt/sources.list
 file: /etc/apt/sources.list.d/            #contains program specific repos
 
@@ -60,7 +65,8 @@ dpkg -s {programname}          #information on programs if installed
 sudo dpkg -i {file.deb}        #install
 sudo dpkg -r {programname}     #remove
 dpkg -l                        #list the installed packages
-#you need to install the dependencies too:  apt --fix-broken install
+dpkg --get-selections | grep {program}  #list the installed packages
+#when you need to install the dependencies too:  apt --fix-broken install
 
 # automatic updates
 apt install unattended-upgrades

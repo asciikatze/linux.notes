@@ -37,6 +37,8 @@ sudo systemctl is-active {service}  #is it runnig
 sudo systemctl is-enabled {service}  #is it enabled
 systemctl --reverse list-dependencies {service}  #lists what is dependent on this service, check before removing/masking services
 
+systemd-inhibit --list  #commands that inhibits operations; shutdown restart sleep
+
 -+-+-+-+-+-+ journal logs -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # journalctl allows you to query and display logs collected by the systemd journal
 sudo journalctl -xe             #logs for systemd stuff

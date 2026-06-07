@@ -16,8 +16,9 @@ sudo lsof -i @{ip}            #connections by ip
 sudo lsof -c {program} -a -i  #connections by program. -in shows ip adresses instead of hostnames
 
 # change computer name
-file: /etc/hostname
-file: /etc/hosts
+file: /etc/hostname  AND  file: /etc/hosts
+OR
+sudo hostnamectl set-hostname {computername}
 
 # renew ip
 sudo dhclient -r {network-interface}  #release current ip
@@ -51,7 +52,9 @@ netsh wlan show profile * key=clear  #show known wifi networks in windows
 
 watch 'nmcli device wifi | grep -E "IN-USE|{networkname}|{networkname}"'  #monitor two wifi networks
 
-ethtool {network-interface} | grep Speed  #shows speed of ethernet
+# tips n tricks
+ethtool {network-interface} | grep Speed          #shows speed of ethernet
+sudo ip address add {new2ndhostip/24} dev {eth0}  #temporarly configure secondary ip(del for delete)
 
 -+-+-+-+-+-+ dns +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 file: /etc/hosts                        #local dns rules. your system looks here first
@@ -143,5 +146,4 @@ sudo apt install net-tools  #if you need netstat ifconfig + more cool tools
 587      modern secure SMTP that uses encryption
 3389     remote desktop protocol RDP
 
-# configure secondary ip
 # help: https://computingforgeeks.com/add-secondary-ip-address-on-ubuntu/

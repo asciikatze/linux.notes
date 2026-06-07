@@ -5,6 +5,7 @@
 # lxd can be run nested under lxd
 # incus is the community driven version of lxd. incusOS is a debian based linuxOS.
 # help: https://www.youtube.com/playlist?list=PLDbRgZ0OOEpX_uqK_hAq98ltdc4DP-D34
+# help: https://www.youtube.com/@LXD/videos
 # help: https://documentation.ubuntu.com/lxd/latest/
 
 # install and setup

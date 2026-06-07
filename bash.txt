@@ -37,10 +37,11 @@ sudo bash
 
 # program management
 
-./{program} &  #starts the program and puts it in the background
-jobs           #list of running processes in current session with [JOBID]
-bg [JOBID]     #puts it in the backgroung, you cant interact with it
-fg [JOBID]     #puts it in the foreground
+./{program.sh} &  #starts the program and puts it in the background
+{command} &       #runs command in the background
+jobs              #list of running processes in current session with [JOBID]
+fg [JOBID]        #puts it in the foreground
+bg [JOBID]        #puts it in the backgroung, you cant interact with it
 
 top                        #show processes by system resource usage
 ps                         #lists what is running in the current terminal session

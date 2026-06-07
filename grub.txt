@@ -5,6 +5,22 @@
 # to-do: how to roll back to a previous kernel version (how to delete/reinstall a kernel version)(how to deal with kernel panic)
 # to-do: kernel modules adding and removing
 
+-+-+-+-+-+-+ partitioning -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# boot partition
+efi  fat32  500MiB-1024MiB
+
+# swap partition
+# on mechanical hdd put on a separate partititon
+# put in the begining of the hdd drive for faster times, faster head movements.
+# on ssh you can use swap file
+swap  2GiB-4GiB
+
+# system partition
+/
+# you can separate a home partition
+/home
+
+-+-+-+-+-+-+ grub -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # if you install grub you will might be given the choice of:
 /dev/sda  OR  /dev/sda1
 # the answer is to install it on /dev/sda !

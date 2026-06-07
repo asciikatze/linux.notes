@@ -83,7 +83,6 @@ stat {file}   #information about file, inode number and metadata
 # hardlink: links to same inode
 ln {sourcefile} {newsamefile}
 # they have the same inode ergo they are the same file
-# both files are the same no real file bullshit here
 # has to be on the same device; devicenumber identifies the filesystem
 
 # symlink: not the same file, different inode
@@ -154,7 +153,7 @@ sys               #info about devices, drivers, kernel features, similar to proc
 tmp               #temprary files, empties after reboot
 usr               #bulk of the programs live here
 var               #system specific variable files, logs, temporary message files, spool files, occasionly config files, webserver files
-                  #var/tmp does not clears after reboot
+  var/tmp         #does not clears after reboot
 
 # check file integrity
 sha256sum {file}
