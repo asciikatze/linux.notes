@@ -28,13 +28,14 @@ swap  2GiB-4GiB
 # enable boot menu
 sudo nano /ect/default/grub
   GRUB_TIMEOUT_STYLE=menu
-  GRUB_TIMEOUT=2
+  GRUB_TIMEOUT=10
 sudo update-grub
 
 # display of the splash screen
 sudo nano /ect/default/grub
-  GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"  #hide text and show splash, default for the desktop
-  GRUB_CMDLINE_LINUX_DEFAULT="splash"        #for the splash, but the ability to show the boot messages by pressing Esc
+  GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"   #hide text and show splash, default for the desktop
+  GRUB_CMDLINE_LINUX_DEFAULT="splash"         #for the splash, but the ability to show the boot messages by pressing Esc
+  #GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"  #comment this line out !!! for boot messages
 sudo update-grub
 
 # manual kernel module loading 

@@ -22,6 +22,9 @@ curl {url} -H "User-agent:"  #-H add things to or change the header. in this cas
 # help: https://curl.se/  https://everything.curl.dev/
 # to-do: send email with curl
 
+# upload file
+curl -T {file.txt} sftp://{ip}:{port} --user {username}:{password}  #upload to sftp
+
 -+-+-+-+-+-+ wget -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # download files
 wget -v {urltofile}                   #download a file

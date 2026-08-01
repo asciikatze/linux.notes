@@ -1,12 +1,17 @@
 ip a            #shows network configuration
-hostname -I     #shows ip
-ifconfig        #shows network configuration + traffic statistics
+ip -s link      #packet flow traffic info
+ifconfig        #shows network configuration + packet flow traffic info
 iwconfig        #only wireless info
-ip route        #default gateway. same as  ip rout
-route -n        #-n is for showing the ip addresses
-arp -a          #displays the kernels ipv4 network neighbour cache, ip-macaddress
-netstat -tunlp  #network port information, similar: ss -ltnp OR ss -tupln OR ss -atpu 
-sudo watch netstat -natup  #active internet connections and listening services. use this!
+ipconfig /all   #in windows
+
+hostname -I          #shows your ip
+ip route OR ip rout  #default gateway; network interface; your ip; network
+route -n             #kernel ip routing table
+arp -a               #displays the kernels ipv4 network neighbour cache
+
+netstat -tunlp                     #network port information
+ss -ltnp OR ss -tupln OR ss -atpu  #network port information
+sudo watch netstat -natup          #active internet connections and listening services. use this!
 
 # network connections with lsof
 sudo lsof -i                  #open network connections
@@ -15,6 +20,11 @@ sudo lsof -i :{port}          #with -iP shows port number instead of port name
 sudo lsof -i @{ip}            #connections by ip
 sudo lsof -c {program} -a -i  #connections by program. -in shows ip adresses instead of hostnames
 
+# to-do: what can i do with this?
+# to-do: how can i enable disable these modes?
+sudo ifconfig {interface} promisc
+sudo ifconfig {interface} allmulti
+
 # change computer name
 file: /etc/hostname  AND  file: /etc/hosts
 OR
@@ -22,8 +32,8 @@ sudo hostnamectl set-hostname {computername}
 
 # renew ip
 sudo dhclient -r {network-interface}  #release current ip
-ipconfig /release                     #in windows
-sudo dhclient {network-interface}     #obtain a new ip 
+sudo dhclient {network-interface}     #obtain a new ip
+ipconfig /release                     #in windows 
 ipconfig /renew                       #in windows
 
 # ping
@@ -32,8 +42,9 @@ ping -c {number} {ip}  #only sends a number of packets
 
 # traceroute
 traceroute {ip OR url}
+tracert {ip}  #in windows
 
-# ip information about urls
+# dns information about urls
 nslookup {url} {dnsserver}
 host {url} {dnsserver}
 whois
@@ -79,7 +90,7 @@ file: /etc/netplan/00-installer-config.yaml
       {networkinterface}:
         addresses:
           - {staticip}/24
-          - {secondaryip}/24  #you can do this
+          - {secondaryip}/24  #you can add another ip to the interface!
         nameservers:
           search: []
           addresses: [{dnsip1}, {dnsip2}]
@@ -119,7 +130,7 @@ file: /etc/network/interfaces  #dns is NOT set from here !
 sudo systemctl restart networking  OR  sudo systemctl restart networking.service
 
 -+-+-+-+-+-+ help -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-sudo strace -p {PID} -e network  #shows whtat the program doing on the network
+sudo strace -p {PID} -e network  #shows what the program doing on the network
 sudo apt install net-tools  #if you need netstat ifconfig + more cool tools
 
 # system ports             from     0 through  1023

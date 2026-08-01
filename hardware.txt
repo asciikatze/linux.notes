@@ -44,7 +44,9 @@ df -i          #number of inodes. if disk reported full this can be the couse of
 lsblk          #disk partition mountpoint
 lsblk -f       #type label uuid.  use this!
 sudo fdisk -l  #disk partition mountpoint
-ls /dev/disk/by-id -l  #list disk devices with serial and sdX designation
+ls -l /dev/disk/by-id  #list disk devices with serial and sdX designation
+lsblk -d -o TRAN,NAME,TYPE,MODEL,SERIAL,SIZE
+blkid  OR  blkid /dev/sda
 
 # sda usually means the first hdd device with the system on it mounted in /
 # sdb usually means the second connected hdd device
@@ -76,8 +78,10 @@ sudo mount | grep sdX           #list down all the mounted drives and partitions
 lsblk -f  #shows devices with UUIDs
 file: /etc/fstab
   UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx /mnt/disk2 ext4 defaults,nofail 0 2  #nofail means it will boot if hdd is not connected
-sudo systemctl daemon-reload  OR  sudo mount -a  #if changes happened and need to reload the fstab file
-sudo dmesg                                       #if there are issues look here
+sudo systemctl daemon-reload  #if changes happened and need to reload the fstab file
+OR  sudo mount -a             #mount all unmounted volumes. exept 'noauto' labeled
+sudo findmnt --verify
+sudo dmesg                    #if there are issues look here
 
 # disk health
 sudo badblocks -sv /dev/sdX  #-s displays progress, -v verbose mode
@@ -85,6 +89,8 @@ sudo badblocks /dev/sdX      #non-destructive read-only test
 sudo badblocks -n /dev/sdX   #non-destructive read-write test
 sudo badblocks -w /dev/sdX   #destructive write test
 sudo badblocks -o {file.txt} -w /dev/sdX  #destructive and output found blocks to a file
+
+# to-do: zfs: https://neil.computer/notes/how-to-setup-minimal-zfs-nas-without-truenas/
 
 -+-+-+-+-+-+ dd -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # hard drive read test 

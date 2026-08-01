@@ -21,6 +21,10 @@ exit  OR  Ctrl+d   #exit terminal
 clear  OR  Ctrl+l  #clears the screen
 history            #lists all previously entered commands
 
+# make ubuntu 26.04 Ptyxis terminal transparent
+conf read /org/gnome/Ptyxis/default-profile-uuid
+conf write /org/gnome/Ptyxis/Profiles/{default-profile-uuid}/opacity 0.8
+
 # environment variables: universally avaiable values by programs in your session
 printenv  OR  env                 #list all environment variables
 {VARIEABLE}="{value}"             #create a varieable with value: echo {VARIEABLE} prints out the {value}
@@ -88,3 +92,4 @@ read {VARIEABLE}  #the script waits for your input{value} and then stores that i
 sleep 10 && echo "hello"  #terminal sleeps for 10 seconds then writes out hello
 
 echo -e "\a"  OR  echo -e "\007"  #play the bell sound. ansi code
+

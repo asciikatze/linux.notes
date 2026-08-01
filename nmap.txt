@@ -2,8 +2,8 @@
 sudo nmap -sL 192.168.1.0/24  #list devices on network
 sudo nmap -sS 192.168.1.2     #DEFAULT SCAN dont need to add -sS . half handshake SYN SYNACK
 sudo nmap -sT 192.168.1.2     #full handshake SYN SYNACK ACK
-sudo nmap -sV 192.168.1.2     #tries to guess service and version
-sudo nmap -O 192.168.1.2      #tries to guess the operating system
+sudo nmap -sV 192.168.1.2     #guess service and version
+sudo nmap -O 192.168.1.2      #guess the operating system
 sudo nmap -A 192.168.1.2      #agressive scan
 sudo nmap -sn 192.168.1.2     #ping: ICMP echo. -sP is the same
 
@@ -28,7 +28,40 @@ nmap {ip} --spoof-mac {macaddress}             #mac spoof
 # unfiltered : acessable but again nmap cant determine if open
 # open|filtered  closed|filtered : same
 
-# while scan runs press ? for interactive keyboard commands
+# while scan runs press '?' for interactive keyboard commands
+
+# noise reduction
+nmap -T0 {ip}  #slow scan sends packet every 5 minutes; T1 T2
+nmap --scan-delay
+nmap -n        #no name resolution DNS; dont leak about yourself
+nmap -Pn       #no ping before scan, no host discovery; cant use it anyways with proxychains
+nmap -p 445    #scan only the necessary port; less is more
+# camouflage
+nmap -n -Pn -p 445 --data-length 24  #adds random data to th scan packets; breaks up the signature
+{...} --ttl 64  #set a time to live; 64 is linux macos 128 is windows default ttl signature
+{...} -sV --script-args http.useragent={useragentstring}  #with -sV good practice to use this
+
+# to-do: set up proxychains
+# ssh into a box from there proxy into a http box and traffic goes through there
+/etc/proxychains4.conf
+  [ProxyList]
+  #socks4 127.0.0.1 9050
+  socks5 127.0.0.1 {port default 1080}
+  http {ip} {port} {username} {password}
+ssh -N -D 127.0.0.1:1080 {user}@{ip}
+proxychains nmap -sT -n -Pn -p 445,3389,80,443,8080 {targetip}
+#with proxychains only -sT works because of tcp works with proxychains
+
+# local port forwarding
+ssh -v -N -L {my port 8080}:{targetip}:{target port 8080} {user}@{ip}
+#when i go to my local 127.0.0.1:8080 the traffic goes to the target:8080 through that ssh proxy
+
+# reverse port forwarding
+sudo ssh -v -N -R {my 443?}:localhost:{ssh servers 443?} {user}@{ip}
+#when the ssh server gets traffic on 443port it redirectts it to my local machines 443
+
+# help: https://www.youtube.com/watch?v=aKm3ZjNlH2E
+# to-do: metasploit
 
 -+-+-+-+-+-+ netcat ncat nc -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # chat
