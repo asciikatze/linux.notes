@@ -38,6 +38,7 @@ rm {filename}      #delete a file
 rm -I              #prompt once before removing more than three files. -i prompt before every removal
 rm a*              #delete every file thats name starts with the letter a
 rm -r {directory}  #delete directory along whith its contents
+shred -u {file}    #remove with extra steps
 
 cat {file}                     #lists what is in a file, can show more files back to back 'cat {file1} {file2}'
 cat > {file}                   #writes keyboard input into a file, Ctrl+d to stop, stop on empty line, this will overwrite the file!

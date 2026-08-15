@@ -1,3 +1,4 @@
+-+-+-+-+-+-+ lxd +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # uses qemu for vms and lxc for containers
 # cgroups for resource allocation and namespaces for isolation
 # vms have their own kernel, containers share the kernel with the host machine

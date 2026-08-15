@@ -1,0 +1,54 @@
+-+-+-+-+-+-+ gpg +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# gpg manages pgp keys
+sudo apt install gnupg  #install
+gpg --version
+
+gpg --full-gen-key    #create keys
+# when generating an pgp key with gpg per default 2 key pair is generated.
+# primary key pair(master-key): contains one or more user-id(name email) and is used for signing.
+# sub-key pair: signed by the primary key and thus confirmed to belong to its user-id; is used for encryption/decryption.
+gpg --list-keys       #list available keys
+# pub: public primary key / sec: secret primary key
+# sub: public sub-key / ssb: secret sub-key
+gpg --edit-key {userid}  
+gpg --passwd {userid}  #change passphrase
+
+gpg --armor --export {userid} > {pubkey.asc}               #export public key file
+gpg --export-secret-keys --armor {userid} > {privkey.asc}  #export private key file
+# --armor makes it so the data displayed with ascii characters not gibberish
+
+gpg --import {file.asc}     #import a public key
+gpg --fingerprint {userid}  #you can compare known fingerprint values to validate the downloaded pubkey
+
+# encrypt file
+gpg -r {userid} -e {file}    #encrypt file with key associated with email
+gpg -d {file.gpg}            #decrypt file
+gpg -d {file.gpg} >> {file}  #makes a decryted file
+gpg -d -o {pic.jpg} {pic.jpg.gpg}  #makes a decryted file
+
+# encrypt text
+echo "{textgoeshere.}" | gpg -e -a -r {userid} > {pgpmessage.txt}
+cat {pgpmessage.txt} | gpg -d > {message.txt}  #decrypt
+
+# pgp signature for clear data
+gpg --sign -u {userid} {file}  #sign a file
+gpg --verify {file.gpg}        #verify the file
+
+gpg --detach-sign -u {userid} {file}  #the signature will be in a separate file.sig
+gpg --verify {file.sig} {file}
+
+echo "{text goes here.}" | gpg --clearsign -u {userid} > {signedmessage.txt}  #adds pgp signature to clear text message
+gpg --verify {signedmessage.txt}  #if the message altered after creation it will say BAD signature
+
+-+-+-+-+-+-+ help -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# files located in /home/user/.gnupg directory
+chmod 700 /home/user/.gnupg  #permissions
+
+# change passphrase cache time limit
+file: /home/user/.gnupg/gpg-agent.conf
+  default-cache-ttl {seconds}
+  max-cache-ttl {seconds}
+
+# help: keymanagement https://www.youtube.com/watch?v=1vVIpIvboSg
+# help: https://www.youtube.com/watch?v=cYVOe7k1N7w&t=3206s
+
