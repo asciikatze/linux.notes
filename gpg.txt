@@ -3,11 +3,12 @@
 sudo apt install gnupg  #install
 gpg --version
 
-gpg --full-gen-key    #create keys
+gpg --full-gen-key     #create keys
 # when generating an pgp key with gpg per default 2 key pair is generated.
 # primary key pair(master-key): contains one or more user-id(name email) and is used for signing.
 # sub-key pair: signed by the primary key and thus confirmed to belong to its user-id; is used for encryption/decryption.
-gpg --list-keys       #list available keys
+gpg --list-keys        #list available keys
+gpg --list-secret-key  #list secret keys
 # pub: public primary key / sec: secret primary key
 # sub: public sub-key / ssb: secret sub-key
 gpg --edit-key {userid}  
@@ -19,6 +20,9 @@ gpg --export-secret-keys --armor {userid} > {privkey.asc}  #export private key f
 
 gpg --import {file.asc}     #import a public key
 gpg --fingerprint {userid}  #you can compare known fingerprint values to validate the downloaded pubkey
+
+gpg --delete-secret-key {userid}  #first delete the secret key
+gpg --delete-key {userid}         #delete public key
 
 # encrypt file
 gpg -r {userid} -e {file}    #encrypt file with key associated with email
@@ -48,6 +52,9 @@ chmod 700 /home/user/.gnupg  #permissions
 file: /home/user/.gnupg/gpg-agent.conf
   default-cache-ttl {seconds}
   max-cache-ttl {seconds}
+
+# generate a revocation key
+gpg --gen-revoke {keyid}  OR  gpg --output {revoke.rev} --gen-revoke {keyid}
 
 # help: keymanagement https://www.youtube.com/watch?v=1vVIpIvboSg
 # help: https://www.youtube.com/watch?v=cYVOe7k1N7w&t=3206s

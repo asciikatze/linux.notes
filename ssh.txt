@@ -1,3 +1,4 @@
+-+-+-+-+-+-+ ssh client -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ssh {user}@{serverip}                              #whitout {user}@ uses the client username
 ssh -p {portnumber} {user}@{serverip}              #specify the port, 22 is the default
 ssh -i ~/.ssh/{private-keyfile} {user}@{serverip}  #connect with a specific key. benefical if you have lots of keys
@@ -110,5 +111,5 @@ ps aux | grep sshd:        #first number after the username is the process ID, k
 ssh -oHostKeyAlgorithms=+ssh-rsa {user}@{serverip}
 
 # help: https://www.ssh.com/academy/ssh
-# to-do: send a command via ssh
-ssh -t {user}@{server} 'sudo reboot'
+# to-do: send a command via ssh:  ssh -t {user}@{server} 'sudo reboot'
+

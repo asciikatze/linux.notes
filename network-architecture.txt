@@ -1,15 +1,3 @@
-# network layers
-layer1 physical   #the wires
-layer2 data link  #defines format of data, simple switches routing by mac address
-layer3 network    #physical path, routers and layer3 switchews, routing by ip address, vlans opereate here
-layer4 transport  #transmission protocols tcp and udp
-layer5 session
-layer6 presentation
-layer7 application
-
-# tcp: reliable and ordered delivery of data packets 
-# udp: faster data transmission without error-checking
-
 -+-+-+-+-+-+ lan cable +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # looking at the bottom, cable towards you, on the left is pin-1 on the right is pin-8
 # both end needs to be the same, but B is the most common method
@@ -28,7 +16,7 @@ RJ45 T568 A        RJ45 T568 B     #USE THE B VERSION!
 # but the need for it is very unlikely most old hardware work with straight through cable in that case
 # different crossover methods exist, always good practice to read the documentation
 
--+-+-+-+-+-+ ip address -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+-+-+-+-+-+-+ ip addressing +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # ip ranges by classification
 class a    1.0.0.0-126.255.255.255  /8   ~16777216 hosts
 class b  128.0.0.0-191.255.255.255  /16  ~65536 hosts
@@ -45,6 +33,7 @@ class c  192.168.0.0-192.168.255.255  /24
 to your own computer usually  127.0.0.1 loaclhost
 # broadcast to all devices on local network  255.255.255.255
 
+-+-+-+-+-+-+ subnetting -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # binary numbers
 2^7 2^6 2^5 2^4 2^3 2^2 2^1 2^0
  1   1   1   1   1   1   1   1
@@ -78,6 +67,43 @@ usable ips -> cant address the network and the broadcast address therefore : 14 
 
 # help: https://www.youtube.com/watch?v=Oe8Vd12m4H4
 # help: https://www.calculator.net/ip-subnet-calculator.html
+
+-+-+-+-+-+-+ default port -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# system ports             from     0 through  1023
+# registered ports         from  1024 through 49151
+# dynamic or private ports from 49152 through 65535
+20       file transfer protocol FTP data transfer
+21       file transfer protocol FTP command control
+22       secure shell SSH secure login
+23       telnet remote login service unencrypted text messages
+25       simple mail transfer protocol SMTP email delivery
+53       domain name system DNS service
+67,68    dynamic host configuration protocol DHCP
+80       hypertext transfer protocol HTTP used in the world wide web
+110      post office protocol POP3
+119      network news transfer protocol NNTP
+123      network time protocol NTP
+143      internet message access protocol IMAP management of digital mail
+161      simple network management protocol SNMP
+179      border gateway protocol BGP
+194      internet relay chat IRC
+443      HTTP secure HTTPS HTTP over TLS/SSL
+500      internet security association and key management protocol ISAKMP
+546,547  DHCPv6 IPv6 version of DHCP
+587      modern secure SMTP that uses encryption
+3389     remote desktop protocol RDP
+
+-+-+-+-+-+-+ network layers -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+layer1 physical   #the wires
+layer2 data link  #defines format of data, simple switches routing by mac address
+layer3 network    #physical path, routers and layer3 switchews, routing by ip address, vlans opereate here
+layer4 transport  #transmission protocols tcp and udp
+layer5 session
+layer6 presentation
+layer7 application
+
+# tcp: reliable and ordered delivery of data packets 
+# udp: faster data transmission without error-checking
 
 -+-+-+-+-+-+ network bonding +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # using more than one network interface to increase bandwith

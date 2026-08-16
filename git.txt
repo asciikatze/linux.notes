@@ -1,3 +1,6 @@
+-+-+-+-+-+-+ git +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# help: https://git-scm.com/docs
+
 # set up a local repository
 mkdir /home/user1/git
 #navigate to that directory
@@ -13,6 +16,7 @@ git remote -v  #check the link to the remote repo
 git remote add origin https://github.com/username/repository.git  #add link if nothing present
 git remote set-url origin git@github.com:username/repository.git  #change link, in this case to use ssh
 
+-+-+-+-+-+-+ setup ssh +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # use your best practices for generating and managing ssh keys
 # GO TO https://github.com LOG IN and upload your public key
 ssh -T git@github.com  #test the connection
@@ -24,6 +28,7 @@ file: ~/.ssh/config
     IdentityFile ~/.ssh/{private-keyfile}
     IdentitiesOnly yes
 
+-+-+-+-+-+-+ use git +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # (1) edit your files
 git mv {oldfilename} {newfilename}  #rename a file. do this with git to properly be tracked!
 git rm {file}           #delete a file + add the deletion to staging
@@ -50,6 +55,13 @@ git reset HEAD~            #undo the last commit set everything back to before p
 git branch -M main  #set the branch if needed
 git push -u origin main  OR  git push --all
 
-git pull
+# (5) keep updated with the remote repository
+git pull   #pull=fetch+merge; NOT ADVISED to use this!
+git fetch  #download remote commits
+git merge  #merge local and remote commits; updates main branch pointer
+# if i merge it results in a new branch with a merge commit bringing the baranc back to main
+# alternatively it is ADVISED to use "git pull --rebase":
+git pull --rebase   #pulls all changes then adds your changes on top of it as the next commit
+git rebase --abort  #if there are merge conflicts
+# help: https://www.youtube.com/watch?v=T13gDBXarj0
 
-# help: https://git-scm.com/docs

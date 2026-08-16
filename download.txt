@@ -1,6 +1,9 @@
 -+-+-+-+-+-+ curl -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# curl is basically a web browser whitout rendering webpages; dealing only with raw data
+# can do anything that a webbrowser can + talk to web api-s
+# with libcurl you can write programs with it for autoamtion
+
 # download contents of files
-# basically can do anything that a webbrowser can + talk to web api-s + with libcurl you can write programs with it for autoamtion
 curl {https://url}  #content. like the index.html filecontent. HTTP GET is default if you dont specify
 curl -I {url}       #header. HEAD method is default
 curl -i {url}       #header + content

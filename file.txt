@@ -10,14 +10,6 @@ cd ~  OR  cd       #jump to /home/user/ directory
 cd -               #previous directory
 pushd  AND  popd
 
-more  AND  less    #paiger programs, less is more than more
-# if the output of a command is too long and you cant see it all, then | pipe it in the 'less' command, | = AltGr+w
-# with less type / then type {what-you-searching-for} ENTER then press n for next result and press N for previous result
-less -N {file}     #scroll through a file contents, every line is numbered
-head -n 15 {file}  #view the first 15 lines of a file
-tail -n 15 {file}  #view the last 15
-tail -f {file}     #monitor a log file, printing new additions to the file until you stop it (Ctrl + C)
-
 -+-+-+-+-+-+ file manipulation +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 touch {filename}  #make empty file OR update the timestamp on existing file, you can make more: touch file1.txt file2.txt
 
@@ -35,7 +27,7 @@ mv {filename} {newname}  #rename
 mv -n                    #-n no overwrite, -v verbose
 
 rm {filename}      #delete a file
-rm -I              #prompt once before removing more than three files. -i prompt before every removal
+rm -i              #prompt before delete. -I prompt once before removing more than three files
 rm a*              #delete every file thats name starts with the letter a
 rm -r {directory}  #delete directory along whith its contents
 shred -u {file}    #remove with extra steps
@@ -50,11 +42,17 @@ echo "{randomtext}" > file.txt   #replaces the text in the file
 echo "{randomtext}" >> file.txt  #adds to the end of the file
 
 -+-+-+-+-+-+ file permissions -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# ownership
 chown {user}:{group} {filename}      #set file ownership
 chown -R {user}:{group} {directory}  #set folder ownership, -R apply to files within directory
 chown -h {user}:{group} {linkfile}   #change the owner of a symbolic link
 
-# file type d--------- :  regular file=-  directory=d  link=l
+# permission
+chmod 755 {filename}              #set a file to be executable and readable by everyone but only writable by you
+chmod +x {filename}               #set execute bit without changing other permissions, -x removes it
+chmod -R u=rwx,g=,o= {directory}  #set permissions for folder and its contents
+
+# file type: regular file= -rw-------  directory= drwx------  link= lrw-------
 # octal values:  read=4  write=2  execute=1
   421 421 421
   rwx rwx rwx
@@ -69,13 +67,15 @@ chown -h {user}:{group} {linkfile}   #change the owner of a symbolic link
 # read bit allows the affected user to list the files within the directory.
 # execue bit allows the affected user to enter the directory and access files and directories inside.
 
-chmod 755 {filename}              #set a file to be executable and readable by everyone but only writable by you
-chmod +x {filename}               #set execute bit without changing other permissions, -x removes it
-chmod -R u=rwx,g=,o= {directory}  #set permissions for folder and its contents
-
 -+-+-+-+-+-+ about files +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-file {file}   #information about file
-stat {file}   #information about file, inode number and metadata
+file {file}    #information about file
+stat {file}    #information about file, inode number and metadata
+du -hs {file}  #size of a file or folder
+du -hs *       #size of the current working directory
+
+diff {file1} {file2}  #compares the two files shows whats different
+cmp {file1} {file2}   #compares byte by byte
+wc {file}             #counts new lines, words and bytes in a file
 
 # files have: 1.file name, 2.inode/metadata, 3.file contents
 # file name points to inode, inode points to file contents
@@ -99,13 +99,6 @@ chown -h {user}:{group} {linkfile}  #change owner of the linkfile. whitout the -
 # the root directory's ./ and ../ are the same 
 # user can not make hard links to a directory
 
-du -hs {file}  #size of a file or folder
-du -hs *       #size of the current working directory
-
-diff {file1} {file2}  #compares the two files shows whats different
-cmp {file1} {file2}   #compares byte by byte
-wc {file}             #counts new lines, words and bytes in a file
-
 -+-+-+-+-+-+ search -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # grep is for finding text in a file
 grep "{sting}" {file}  #look for a string in a file, you can add multiple files
@@ -120,9 +113,16 @@ find {directory} -mmin -7               #search for files that are modified in t
 find {directory} -mtime -7 -size +10M   #search for files that are modified in the last 7 days and bigger than 10Mb, you can us '-' for smaller
 find {directory} -size +10M | grep txt  #narrows the list to contain txt in the filenames
 sudo find / -name {filename}            #search for a specific filename on the whole computer
-
 #find in current directory all jpg and png files that are modified in the last year and copies it to the Pictures folder
 find . \( -name '*.jpg' -o -name '*.png' \) -mtime -365 -exec cp {} /home/user1/Pictures \;
+
+more  AND  less    #paiger programs, less is more than more
+# if the output of a command is too long and you cant see it all, then | pipe it in the 'less' command, | = AltGr+w
+# with less type / then type {what-you-searching-for} ENTER then press n for next result and press N for previous result
+less -N {file}     #scroll through a file contents, every line is numbered
+head -n 15 {file}  #view the first 15 lines of a file
+tail -n 15 {file}  #view the last 15
+tail -f {file}     #monitor a log file, printing new additions to the file until you stop it (Ctrl + C)
 
 -+-+-+-+-+-+ help -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # midnight-commander filemanager
@@ -134,32 +134,31 @@ Ctrl + u       #paste
 Alt + 6        #copy, on mac Esc + 6
 Ctrl + k       #cut
 
-# file system
-bin -> usr/bin    #program files, commands
-boot              #files needed for the bootloader, initial ram files, linux kernel
-dev               #device files, connected phisical and virual devices
-etc               #configuration files, startup scripts
-home              #users home directories
-lib -> usr/lib    #shared libraries needed for multiple programs
-lost+found        #broken files after a system crash
-media             #mount point for removeable media, example: auto mounted usb drive
-mnt               #(do not need to be)temporary mounting point, example: network storage
-opt               #optional software packages, mostly for copability purposes
-proc              #information about every active process, information about system
-root              #home directory for the root user
-run               #information describing system since boot, running deamons, logins
-sbin -> usr/sbin  #system essential files, essentially same purpose as bin
-srv               #occasionly! used for files serverd by a webserver or fileserver
-sys               #info about devices, drivers, kernel features, similar to proc
-tmp               #temprary files, empties after reboot
-usr               #bulk of the programs live here
-var               #system specific variable files, logs, temporary message files, spool files, occasionly config files, webserver files
-  var/tmp         #does not clears after reboot
-
 # check file integrity
 sha256sum {file}
 md5sum {file}
 sha256sum {file} | grep {thevaluethatyouwanttocompareto}
 
+-+-+-+-+-+-+ file system +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+bin -> usr/bin    program files, commands
+boot              files needed for the bootloader, initial ram files, linux kernel
+dev               device files, connected phisical and virual devices
+etc               configuration files, startup scripts
+home              users home directories
+lib -> usr/lib    shared libraries needed for multiple programs
+lost+found        broken files after a system crash
+media             mount point for removeable media, example: auto mounted usb drive
+mnt               (do not need to be)temporary mounting point, example: network storage
+opt               optional software packages, mostly for copability purposes
+proc              information about every active process, information about system
+root              home directory for the root user
+run               information describing system since boot, running deamons, logins
+sbin -> usr/sbin  system essential files, essentially same purpose as bin
+srv               occasionly! used for files serverd by a webserver or fileserver
+sys               info about devices, drivers, kernel features, similar to proc
+tmp               temprary files, empties after reboot
+usr               bulk of the programs live here
+var               system specific variable files, logs, temporary message files, spool files, occasionly config files, webserver files
+  var/tmp         does not clears after reboot
 
 # to-do: chcon SELinux
