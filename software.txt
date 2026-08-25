@@ -60,28 +60,33 @@ file: /etc/apt/sources.list.d/            #contains program specific repos
 /var/log/apt/history.log
 /var/log/apt/term.log
 
-# dpkg package manager for .deb debian packages
-dpkg -s {programname}          #information on programs if installed
-sudo dpkg -i {file.deb}        #install
-sudo dpkg -r {programname}     #remove
-dpkg -l                        #list the installed packages
-dpkg --get-selections | grep {program}  #list the installed packages
-#when you need to install the dependencies too:  apt --fix-broken install
-
 # automatic updates
 apt install unattended-upgrades
 dpkg-reconfigure --priority=low unattended-upgrades
 apt install update.notifier.common #automatic reboot
-/etc/apt/apt.conf.d/50unattended-upgrades
-	#make sure that the 3 lines saying -security are not commented out
-	Unattended-Upgrade::Automatic-Reboot "false"; #"true", remove the comment symbols
-	Unattended-Upgrade::Automatic-Reboot-Time "02:00"; #set the time, remove the comment symbols
-/etc/apt/apt.conf.d/20auto-upgrades #this files tells what to do
-	#both lines needed to set to "1"
+file: /etc/apt/apt.conf.d/50unattended-upgrades
+  #make sure that the 3 lines saying -security are not commented out
+  Unattended-Upgrade::Automatic-Reboot "false"; #"true", remove the comment symbols
+  Unattended-Upgrade::Automatic-Reboot-Time "02:00"; #set the time, remove the comment symbols
+file: /etc/apt/apt.conf.d/20auto-upgrades #this files tells what to do
+  #both lines needed to set to "1"
 sudo systemctls status unattended-upgrades #check if its running
 
 # aptitude apt with ui
 sudo aptitude
+
+-+-+-+-+-+-+ dpkg -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# dpkg package manager for .deb debian packages
+sudo dpkg -i {file.deb}     #install
+
+sudo dpkg -yf install       #fix broken install; fix missing dependecies and reconfigure package
+apt --fix-broken install    #try fix with apt
+
+sudo dpkg -r {programname}  #remove
+
+dpkg -s {programname}       #information on programs if installed
+dpkg -l                     #list the installed packages
+dpkg --get-selections | grep {program}  #list the installed package
 
 -+-+-+-+-+-+ snap -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 which snap              #see if its installed
@@ -137,3 +142,5 @@ locale-gen en_US.UTF-8 && update-locale LC_ALL=en_US.UTF-8
 # consider adding to file: /etc/environment
   export LC_ALL=C.UTF-8
 # help: https://linuxconfig.org/fix-perl-setting-locale-failed-error-in-debian-ubuntu
+
+# help debian iso: https://cdimage.debian.org/cdimage/archive/

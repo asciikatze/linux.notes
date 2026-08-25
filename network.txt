@@ -1,13 +1,22 @@
+hostname -I     #shows your ip
 ip a            #shows network configuration
 ip -s link      #packet flow traffic info
 ifconfig        #shows network configuration + packet flow traffic info
 iwconfig        #only wireless info
 ipconfig /all   #in windows
+networkctl status  #with networkd
 
-hostname -I          #shows your ip
-ip route OR ip rout  #default gateway; network interface; your ip; network
-route -n             #kernel ip routing table
-arp -a               #displays the kernels ipv4 network neighbour cache
+ip route show OR ip route OR ip rout OR ip r  #default gateway; network interface; your ip; network
+ip -6 route show   #-6 for ipv6 routing
+route -n           #kernel ip routing table
+arp -a             #displays the kernels ipv4 network neighbour cache
+ip route get {ip}  #find the route to the ip; interface-metric-gateway that used to reach ip
+ip route list {network/24}
+
+sudo ip route add {network/24} via {gatewayip}  #set a route to another network via gateway
+sudo ip route add {network/24} dev {device}     #set a route to another network via device
+# https://www.cyberciti.biz/faq/ip-route-add-network-command-for-linux-explained/
+# https://www.cyberciti.biz/faq/howto-linux-configuring-default-route-with-ipcommand/
 
 netstat -tunlp                     #network port information
 ss -ltnp OR ss -tupln OR ss -atpu  #network port information
@@ -56,6 +65,8 @@ dig +noall +answer {url}  #simple answer
 sudo nmtui
 # information about network connections managed by NetworkManager
 file: /etc/NetworkManager/system-connections/
+
+sudo nmcli connection show  #list all connections
 
 nmcli device wifi                #show available wifi networks
 nmcli device wifi show-password  #show current connected wifi password + QR-code
@@ -126,7 +137,7 @@ file: /etc/network/interfaces  #dns is NOT set from here !
     netmask 255.255.255.0
     gateway {gateway_ip}
     dns-nameservers {dns_ip} {dns_ip}
-# restart networking.service  kicks you out of session!
+# when restarting networking service it KICKS YOU OUT of session! reconnect after
 sudo systemctl restart networking  OR  sudo systemctl restart networking.service
 
 -+-+-+-+-+-+ help -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -134,3 +145,7 @@ sudo strace -p {PID} -e network  #shows what the program doing on the network
 sudo apt install net-tools  #if you need netstat ifconfig + more cool tools
 
 # help: https://computingforgeeks.com/add-secondary-ip-address-on-ubuntu/
+
+# ignore 5GHz wifi in ubuntu desktop
+nm-connection-editor
+# band option under the wifitab that will let you select: Automatic, A 5GHz, B/G 2.4GHz
