@@ -118,3 +118,6 @@ yes  #repeatedly writes y to standard input/output, if you let it run it eats cp
 
 # make a usb installer
 sudo dd if={installerfile.iso} of=/dev/sdX bs=4M status=progress
+
+# make a 100 MB file
+sudo dd if=/dev/urandom of={file.bin} bs=1M count=100

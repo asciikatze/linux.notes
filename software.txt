@@ -99,6 +99,7 @@ snap list                    #show installed snaps
 snap find {program} OR snap search {program}  #looking for program in the snap repository
 snap info {program}  #look for the release channels here for a specific version of a program
 snap install {program} --channel={version}  #install a specific version of a program
+sudo snap refresh {program} --channel={newchannel}  #change the channel of a snap package
 
 sudo snap refresh                               #update all snaps
 sudo snap refresh {program}                     #update a specific snap

@@ -11,6 +11,7 @@ git init  #initialize a local repository, creates all the necessary files in .gi
 git config user.name  AND  git config user.email  #shows what is being used
 git config user.name {name}                 #set name
 git config user.email {dummy-github-email}  #set email
+git config --global user.name {name}        #set global default values
 #set the remote repository
 git remote -v  #check the link to the remote repo
 git remote add origin https://github.com/username/repository.git  #add link if nothing present
@@ -65,3 +66,14 @@ git pull --rebase   #pulls all changes then adds your changes on top of it as th
 git rebase --abort  #if there are merge conflicts
 # help: https://www.youtube.com/watch?v=T13gDBXarj0
 
+-+-+-+-+-+-+ merge 2 repos +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# simple clean uncoplicated merge. no history preserved
+git remote add {remote name} {repository url or path}
+git fetch {remote name}
+git read-tree --prefix={directory name}/ -u {remote-name}/{branch}
+git commit -m "merge {remote name} as a subtree"
+# at the end set the remote back to the original!
+
+# history preserved
+git subtree add --prefix={directory name} {repository url OR path} {branch}
+git subtree add --prefix=shutdownconfirm.sh ../shutdownconfirm.sh main  #example

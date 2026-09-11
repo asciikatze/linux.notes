@@ -1,28 +1,26 @@
 -+-+-+-+-+-+ nmap -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-sudo nmap -sL 192.168.1.0/24  #list devices on network
 sudo nmap -sS 192.168.1.2     #DEFAULT SCAN dont need to add -sS . half handshake SYN SYNACK
+sudo nmap -sS -v 192.168.1.2  #verbose mode
 sudo nmap -sT 192.168.1.2     #full handshake SYN SYNACK ACK
-sudo nmap -sV 192.168.1.2     #guess service and version
+sudo nmap -sL 192.168.1.0/24  #list devices on network
+
+sudo nmap -sn 192.168.1.0/24  #find active hosts. ping: ICMP echo. -sP is the same
+sudo nmap -sV 192.168.1.2     #identify running sevices
+
 sudo nmap -O 192.168.1.2      #guess the operating system
 sudo nmap -A 192.168.1.2      #agressive scan
-sudo nmap -sn 192.168.1.2     #ping: ICMP echo. -sP is the same
 
-sudo nmap scanme.nmap.org  #scan a domain
-sudo nmap -p- localhost    #selfscan
-
-sudo nmap -sS -v 192.168.1.2                       #verbose mode
-sudo nmap -sS 192.168.1.2-6 --exclude 192.168.1.4  #scan range of ips + exclusion
+sudo nmap scanme.nmap.org     #scan a domain
+sudo nmap -p- localhost       #selfscan
 
 # by default nmap scans 1000 most common ports
 sudo nmap -p22 192.168.1.2       #scan a specific port
 sudo nmap -p1-65535 192.168.1.2  #scan the whole port range. -p- scan all ports
 
+sudo nmap -sL 192.168.1.2-6 --exclude 192.168.1.4  #scan range of ips + exclusion
 sudo nmap -sL 192.168.1.0/24 -oN list.txt  #writes the output to a file, -oX provides xml output
 sudo nmap -sL 192.168.1.0/24 > list.txt    #writes the output to a file
 sudo nmap -sL list.txt                     #reads ip adresses from file
-
-nmap {ip} -D {spoofip1},{spoofip2},{spoofip3}  #ip spoof
-nmap {ip} --spoof-mac {macaddress}             #mac spoof
 
 # filtered   : nmap cant tell if open or closed its been behind some kind of firewall
 # unfiltered : acessable but again nmap cant determine if open
@@ -33,13 +31,15 @@ nmap {ip} --spoof-mac {macaddress}             #mac spoof
 # noise reduction
 nmap -T0 {ip}  #slow scan sends packet every 5 minutes; T1 T2
 nmap --scan-delay
-nmap -n        #no name resolution DNS; dont leak about yourself
-nmap -Pn       #no ping before scan, no host discovery; cant use it anyways with proxychains
-nmap -p 445    #scan only the necessary port; less is more
+nmap -n         #no name resolution DNS; dont leak about yourself
+nmap -Pn        #no ping before scan, no host discovery; cant use it anyways with proxychains
+nmap -p 445,22  #scan only the necessary port; less is more
 # camouflage
 nmap -n -Pn -p 445 --data-length 24  #adds random data to th scan packets; breaks up the signature
 {...} --ttl 64  #set a time to live; 64 is linux macos 128 is windows default ttl signature
 {...} -sV --script-args http.useragent={useragentstring}  #with -sV good practice to use this
+nmap {ip} -D {spoofip1},{spoofip2},{spoofip3}  #ip spoof
+nmap {ip} --spoof-mac {macaddress}             #mac spoof
 
 # to-do: set up proxychains
 # ssh into a box from there proxy into a http box and traffic goes through there

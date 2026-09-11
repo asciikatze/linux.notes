@@ -75,7 +75,9 @@ du -hs *       #size of the current working directory
 
 diff {file1} {file2}  #compares the two files shows whats different
 cmp {file1} {file2}   #compares byte by byte
-wc {file}             #counts new lines, words and bytes in a file
+wc {file.txt}         #counts: 'line word byte' in a file
+wc -l {file.txt}      #line count
+wc -w {file.txt}      #word count
 
 # files have: 1.file name, 2.inode/metadata, 3.file contents
 # file name points to inode, inode points to file contents

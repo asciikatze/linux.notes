@@ -28,6 +28,10 @@ curl {url} -H "User-agent:"  #-H add things to or change the header. in this cas
 # upload file
 curl -T {file.txt} sftp://{ip}:{port} --user {username}:{password}  #upload to sftp
 
+# curl website | grep part of lines between {from} and {to} that matches pattern | remove duplicate lines
+# good for sorting file links then use wget to download
+curl {url} | grep -oP '{from}\K.*?(?={to})' | sort -u > {file.txt}
+
 -+-+-+-+-+-+ wget -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # download files
 wget -v {urltofile}                   #download a file
