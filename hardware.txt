@@ -39,8 +39,9 @@ setterm --blank 0 #never turn off
   run:      sensors OR watch sensors
 
 -+-+-+-+-+-+ data storage -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-df -h          #disk partition mountpoint usage
+df -h          #disk partition mountpoint, how full a disk/partition is
 df -i          #number of inodes. if disk reported full this can be the couse of it!
+du -sh /* 2>/dev/null | sort -rh  #size of directories in root
 lsblk          #disk partition mountpoint
 lsblk -f       #type label uuid.  use this!
 sudo fdisk -l  #disk partition mountpoint

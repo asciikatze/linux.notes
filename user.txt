@@ -1,6 +1,7 @@
 -+-+-+-+-+-+ user -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 whoami             #current user
 users OR who OR w  #users currently logged in
+last -a            #previous and current logins
 id                 #current users UID(username) and member of groups=GID(groupname)
 id -u {user}       #shows only user UID
 
@@ -64,7 +65,8 @@ grep '^{group}:.*$' /etc/group | cut -d: -f4  #members of a group
 
 -+-+-+-+-+-+ sudo -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 sudo !!  #runs most recent command as sudo
-sudo -l  #show sudo privileges for user. -ll more readable
+sudo -l  #show sudo privileges for current user. -ll more readable
+sudo -l -U {user}  #show sudo privileges for user
 
 # sudo privileges  WHO WHERE=(ASWHO) WHAT
 # ALL ALL=(ALL) ALL grants full sudo privileges to all users on all hosts for all commands 

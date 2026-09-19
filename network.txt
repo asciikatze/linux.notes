@@ -1,6 +1,7 @@
 hostname -I     #shows your ip
 ip a            #shows network configuration
 ip -s link      #packet flow traffic info
+ip -br -c a     #interface status
 ifconfig        #shows network configuration + packet flow traffic info
 iwconfig        #only wireless info
 ipconfig /all   #in windows
@@ -18,9 +19,9 @@ sudo ip route add {network/24} dev {device}     #set a route to another network 
 # https://www.cyberciti.biz/faq/ip-route-add-network-command-for-linux-explained/
 # https://www.cyberciti.biz/faq/howto-linux-configuring-default-route-with-ipcommand/
 
-netstat -tunlp                     #network port information
-ss -ltnp OR ss -tupln OR ss -atpu  #network port information
-sudo watch netstat -natup          #active internet connections and listening services. use this!
+netstat -tunlp                         #network port information
+ss -ltnp OR -tupln OR -atpu OR -tulnw  #network port information
+sudo watch netstat -natup              #active internet connections and listening services. use this!
 
 # network connections with lsof
 sudo lsof -i                  #open network connections

@@ -1,12 +1,14 @@
-uname -a             #all systeminfo
-uname -r             #kernelversion
 cat /etc/os-release  #os info
 lsb_release --all    #os info
+uname -a             #kernel info
+uname -r             #kernel version
 hostnamectl          #computer info; kernel, bios, coputer type
-date                 #shows the current date and time
-timedatectl status   #time settings info
 
 man {program}         #manual pages
+man -k {keyword}      #search manual pages for a keyword
+# with less type / then type {what-you-searching-for} ENTER then press n for next result and press N for previous result
+
+{program} --help  OR  {program} -h  OR  {program} help
 which {program}       #locate programfile
 whereis {program}     #locate programfiles
 info {program}        #advanced than man but less program
@@ -16,11 +18,8 @@ help {command}        #info on bash commands
 type {command}        #simple info
 command -v {program}  #shows what runs exactly
 
-# for help try:
-{program} --help  OR  {program} -h  OR  {program} help
-
-# search inside man
-# with less type / then type {what-you-searching-for} ENTER then press n for next result and press N for previous result
+date                #shows the current date and time
+timedatectl status  #time settings info
 
 -+-+-+-+-+-+ apt +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 sudo apt update   #reads the repo list
@@ -37,6 +36,7 @@ sudo apt install {program}  #apt update before install!
 sudo apt remove {program}
 sudo apt purge {program}
 
+sudo apt check                 #check for broken packages
 sudo apt --fix-broken install  #fix broken install and installs missing dependencies
 
 apt search {program}                    #searches the repos for the program package
@@ -79,6 +79,7 @@ sudo aptitude
 # dpkg package manager for .deb debian packages
 sudo dpkg -i {file.deb}     #install
 
+sudo dpkg --audit           #check for broken packages
 sudo dpkg -yf install       #fix broken install; fix missing dependecies and reconfigure package
 apt --fix-broken install    #try fix with apt
 
@@ -93,8 +94,11 @@ which snap              #see if its installed
 sudo apt install snapd  #if snap is not installed
 
 sudo snap install {program}  #install a snap
-sudo snap remove {program}   #remove a snap
+sudo snap remove {program}   #remove a snap; but it keeps the package in cache
+sudo snap remove {program} --purge  #remove a snap
 snap list                    #show installed snaps
+snap saved                   #show packages in cache
+sudo snap forge {Setnumber}  #remove from cache
 
 snap find {program} OR snap search {program}  #looking for program in the snap repository
 snap info {program}  #look for the release channels here for a specific version of a program

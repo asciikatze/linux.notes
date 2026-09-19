@@ -11,8 +11,9 @@
 
 # install and setup
 snap install lxd
-lxd init     #initial setup. pay attention to the pool and network configuration!
 lxc version  #client-version=lxc  server-version=lxd
+lxd init     #initial setup. pay attention to the pool and network configuration!
+lxd init --preseed <{lxd-init.yml}  #init with previously configured file
 
 -+-+-+-+-+-+ create instances -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 lxc remote list                      #available remote image servers
@@ -64,7 +65,7 @@ lxc file mount {vmname}/{pathtofolder}
 # gives you username and password then you can use whatever program you like to connect
 lxc file mount --listen=0.0.0.0:{port} {vmname}  #instead of 0.0.0.0 you can use localhost 127.0.0.1
 
-lxc console {vmname}              #open the console for the vm
+lxc console {vmname}              #open the console for the vm; exit console: Ctrl+a q
 lxc start {vmname} --console=vga  #starts the vm with graphical window
 lxc console {vmname} --type=vga   #connect graphical window. uses SPICE needs viewer program
 
