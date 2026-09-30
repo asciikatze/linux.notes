@@ -75,5 +75,6 @@ git commit -m "merge {remote name} as a subtree"
 # at the end set the remote back to the original!
 
 # history preserved
-git subtree add --prefix={directory name} {repository url OR path} {branch}
+# puts the other repo in a directory in your repo that you merge the other into.
+git subtree add --prefix={new directory name} {repository url OR path} {branch}
 git subtree add --prefix=shutdownconfirm.sh ../shutdownconfirm.sh main  #example

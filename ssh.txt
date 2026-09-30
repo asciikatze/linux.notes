@@ -9,8 +9,8 @@ file: ~/.ssh/config       #make this file. more servers can be added to this fil
     Hostname {serverip}
     Port {portnumber}
     User {user}
-    IdentityFile ~/.ssh/{private-keyfile}
     IdentitiesOnly yes
+    IdentityFile ~/.ssh/{private-keyfile}
 
 ssh {servername}  #now you can do this
 

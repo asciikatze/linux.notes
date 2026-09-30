@@ -4,16 +4,19 @@ sudo shutdown -r now  OR  sudo reboot  OR  systemctl reboot   #reboot
 uptime   #uptime
 free -h  #memory
 lsmem    #memory
+sudo lshw -short -c memory  #all kind of memory modules
 
 lscpu, lspci, lsusb, lshw    #hardware info
 lscpu --extended             #info on cpu cores
 watch -d lsusb               #see if the usb device appears in the list whenyou plug it in
 watch lsusb -t	             #tree view
-sudo lshw -short
-sudo lshw -html > file.html  #takes the output and puts it in a html file
-sudo lshw -class network     #network interfaces
-sudo lshw -class storage     #storage interfaces
-sudo lshw -c memory          #memory info eg speed
+sudo lshw -html > file.html  #output in a file in html format
+sudo lshw -short             #only important info
+sudo lshw -c network         #network interfaces
+sudo lshw -c storage         #storage interfaces
+sudo lshw -short -c memory   #all kind of memory modules
+free -h                      #system memory availability
+lsmem                        #memory modules
 lspci -k | grep -EA3 'VGA|3D|Display'  #show videocard and video driver
 
 sudo dmidecode	                       #extensive hardware information
@@ -26,6 +29,8 @@ upower -e  #list power devices
 upower -d  #all the info
 upower -i /org/freedesktop/UPower/devices/DisplayDevice
 upower -i /org/freedesktop/UPower/devices/battery_BAT0
+cat /sys/class/power_supply/BAT0/capacity  #current battery(BAT0) capcity
+cat /sys/class/power_supply/BAT0/status    #battery(BAT0) status: charging/discharging
 
 # laptop screen on-off
 setterm --blank 1 #after 1 min the screen goes blank. press any key to come back
