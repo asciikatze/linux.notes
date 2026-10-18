@@ -41,6 +41,7 @@ wget -v --limit-rate=50k {urltofile}  #limit download speed
 wget -v --user-agent="{useragent}" --referer={url} {urltofile}
 
 -+-+-+-+-+-+ yt-dlp -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# help: https://github.com/yt-dlp/yt-dlp
 # download hosted media
 yt-dlp -f 'bv*[height=720]+ba' {url}
 yt-dlp -x --audio-format mp3 {url}

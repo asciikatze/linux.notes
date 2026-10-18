@@ -19,6 +19,7 @@ echo $0  OR  echo $SHELL  #shows what shell you are running
 cat /etc/shells    #list of valid login shells
 exit  OR  Ctrl+d   #exit terminal
 clear  OR  Ctrl+l  #clears the screen
+Ctrl+w             #delete last continous string on the command line
 history            #lists all previously entered commands
 
 # make ubuntu 26.04 Ptyxis terminal transparent

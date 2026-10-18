@@ -37,6 +37,12 @@ to your own computer usually  127.0.0.1 loaclhost
 # except 169.254.0.0/24 and 169.254.255.0/24 networks are prohibited for link-local
 # help: https://en.wikipedia.org/wiki/Link-local_address
 
+100.64.0.0/10  100.64.0.0 through 100.127.255.255
+# Carrier-Grade-NAT CGNAT; for internet service providers rather than private networks
+# they differ from private IP addresses in that they're reserved for internet service provider (ISP) networks and routing equipment
+# don't conflict with private networks, however conflicts might occur when using multiple commercial vpns and tailscale
+# for intermediate traffic that requires additional NAT
+
 -+-+-+-+-+-+ subnetting -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # binary numbers
 2^7 2^6 2^5 2^4 2^3 2^2 2^1 2^0

@@ -49,8 +49,9 @@ df -i          #number of inodes. if disk reported full this can be the couse of
 du -sh /* 2>/dev/null | sort -rh  #size of directories in root
 lsblk          #disk partition mountpoint
 lsblk -f       #type label uuid.  use this!
-sudo fdisk -l  #disk partition mountpoint
-ls -l /dev/disk/by-id  #list disk devices with serial and sdX designation
+sudo fdisk -l  #all disk partition mountpoint
+sudo fdisk -l /dev/sda  #one specific disk partitions and info
+ls -l /dev/disk/by-id   #list disk devices with serial and sdX designation
 lsblk -d -o TRAN,NAME,TYPE,MODEL,SERIAL,SIZE
 blkid  OR  blkid /dev/sda
 
@@ -60,16 +61,20 @@ blkid  OR  blkid /dev/sda
 # in these examples i'll use sdX where X represents the drive (sdX can be a valid drive)
 # NOT always gonna be sdX something! sdX is just the common SCSI disk designation
 # nvme and other drives can use different designations for the devices!
+# IMPORTANT do not rely on the sda or sdb names; with multiple disks in a system; on reboot disks could be assingned in different order than before!
+# furthermore you can reference a disk instead of sdX by uuid OR /dev/disk/by-id/{disk-identifier}
 
 # partitioning and formatting
 sudo cfdisk /dev/sdX  #partition editing tui tool
 sudo fdisk /dev/sdX   #follow the menu
+sudo gdisk /dev/sdX
 
 sudo mkfs.ext4 /dev/sdX        #format ext4
 sudo mkfs.ntfs /dev/sdX        #format ntfs
 sudo mkfs.vfat -F 32 /dev/sdX  #format fat32
 
 sudo wipefs /dev/sdX*    #prints info about all partitions on sdX
+sudo wipefs -a /dev/sdX1
 sudo wipefs -a /dev/sdX  #erase all filesystem raid pratition signatures
 # to-do: how to use fdisk and parted
 
@@ -83,7 +88,11 @@ sudo mount | grep sdX           #list down all the mounted drives and partitions
 # help: https://wiki.archlinux.org/title/Fstab
 lsblk -f  #shows devices with UUIDs
 file: /etc/fstab
-  UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx /mnt/disk2 ext4 defaults,nofail 0 2  #nofail means it will boot if hdd is not connected
+  UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx /mnt/disk2 ext4 defaults,nofail 0 2
+# nofail: it will boot if hdd is not connected
+# for ssd: defaults,noatime,discard  this might help with ssd speed and health  but read up on it if you need it or not!
+# noatime: every read operation comes with write; inode access update. you might want this or not 
+# discard: ext4 shoud issue TRIM commands or not. TRIM is a feature of a ssd: hdparm -I /dev/sdx | grep "TRIM supported"
 sudo systemctl daemon-reload  #if changes happened and need to reload the fstab file
 OR  sudo mount -a             #mount all unmounted volumes. exept 'noauto' labeled
 sudo findmnt --verify
