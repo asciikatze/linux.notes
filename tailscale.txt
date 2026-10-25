@@ -1,0 +1,103 @@
+-+-+-+-+-+-+ tailscale +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# help: https://tailscale.com/blog/how-tailscale-works
+# help: https://tailscale.com/blog/how-nat-traversal-works
+# help: https://www.youtube.com/@Tailscale/videos
+tailscale  #printout all available options
+
+# install
+curl -fsSL https://tailscale.com/install.sh | sh
+#OR install from package https://tailscale.com/docs/install/static
+sudo tailscale up                        #follow on screen instructions
+sudo tailscale up --help
+sudo tailscale up --auth-key={authkey}   #authkey generated on the web dashboard
+sudo tailscale up --ssh                  #tailscale can manage your ssh connections
+sudo tailscale up --advertise-exit-node  #node act as exit node
+# with tailscale up you can chain all the options for your machine you want to have on initial login
+# however if you want to change something use: tailscale set
+sudo tailscale set --help
+sudo tailscale set --ssh=false           #disable tailscale option with =false
+sudo tailscale set --auto-update=true
+sudo tailscale set --hostname {name}     #set a name for the tailscale dashboard
+sudo tailscale set --webclient           #webpage for the client with information and options
+
+tailscale switch --list  #shows all available tailnets for this client
+tailscale switch --help
+tailscale switch {id}    #switch to that tailnet account
+
+tailscale status         #view of the world/tailnet from this host. --peers
+tailscale status --help
+#tip: use this to check if ACL rules are correct and applied
+tailscale status --web --browser  #shows the same but on a webpage format
+tailscale status --json | jq      #json format. jq makes it readeable
+tailscale status --active  #shows only active nodes
+
+tailscale ping {node}  #you can see the route on the tailnet between nodes
+# the route can change as the DERP servers establish a direct route between nodes
+# ping stops after 10 pings or a direct connection is established
+tailscale ping --icmp {node}  #normal ping instead of a tailscale layer ping
+
+tailscale dns status
+tailscale dns -help
+tailscale dns query {google.com}
+
+tailscale netcheck  #nodes view of the public tailscale infrastructure
+tailscale netcheck --help
+
+-+-+-+-+-+-+ subnet routing -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# access your home network from your tailnet; setting up a host to behave like a router
+# help: https://www.youtube.com/watch?v=UmVMaymH1-s
+# help: https://tailscale.com/docs/features/subnet-routers
+tailscale set --advertise-routes=192.168.0.0/24,{you can add more subnets}  #authorize on the web dashboard!
+# enable ip forwarding with /etc/sysctl.d/ otherwise use /etc/sysctl.conf instead
+  echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+  echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+  sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
+tailscale set --accept-routes=true  #set this on your other hosts to get routing information for subnets available on your tailnet
+
+# reverse subnet routing: access to your tailnet from your home network
+# help: https://www.youtube.com/watch?v=ZrAoPvFot7c
+tailscale set --snat-subnet-routes=false  #disable snat on router
+# snat: translates the source ip to the routers ip
+# it looks like the source of the traffic is the router
+# when you disable it forwards the packets with the source ip
+ip route add 100.64.0.0/10 via {subnetrouter-local-ip}  #set this on the client machine OR advertise this route on your dhcp
+
+# site to site
+# help: https://tailscale.com/docs/features/site-to-site
+
+-+-+-+-+-+-+ peer relay -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# help: https://www.youtube.com/watch?v=wkBSjT1hO6k
+# help: https://tailscale.com/docs/features/peer-relay
+# when direct connection not possible the fallback DERP server infrastructure is slow
+# peer relays facilitate data connection between your hosts by one of your host
+tailscale set --relay-server-port=40000  #you need open port forward for 40000 UDP traffic for your relay host! OR put the machine in a DMZ
+
+# to-do: need some ACL rules to work properly
+# help: https://tailscale.com/blog/peer-relays-international-networks
+
+-+-+-+-+-+-+ tailcat +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# help: https://www.youtube.com/watch?v=pA8e1uX195A
+# tailcet uses the talscale DERP server infrastructure whitout a tailscale account.
+# install: https://github.com/tailscale/tailcat
+
+tailcat serve  #gives a address string
+# the machines address-string can be set to be presistent. i do not recommend!
+tailcat {address string}  #connects to the machine that gave you the address
+
+tailcat serve {portnumber}  #serve the service thats on that port to a tailcat client
+tailcat {address string} {portnumber}  #you can type in requests to the service that bing served
+# example: serve a webserver; then send html GET requests.
+
+tailcat serve files  #serves the current directories contents
+tailcat ls -l {address string}  #lists the files that being served
+tailcat cp {address string}:file.txt .  #copies over the file
+
+tailcat serve --ssh-authorized-keys=/home/user1/.ssh/authorized_keys ssh
+tailcat serve no-auth-ssh  #the address string authorizes the connection. i do not recommend!
+tailcat ssh {address string}
+
+
+# to-do: 
+https://www.youtube.com/watch?v=Jn8_Sh4r8d4  acl
+https://www.youtube.com/watch?v=MpxmfpCl20c  serve and funnel
+https://www.youtube.com/watch?v=N3vZrgrSz6g  tailnet lock

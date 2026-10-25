@@ -136,3 +136,10 @@ sudo dd if={installerfile.iso} of=/dev/sdX bs=4M status=progress
 
 # make a 100 MB file
 sudo dd if=/dev/urandom of={file.bin} bs=1M count=100
+
+-+-+-+-+-+-+ misc -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# disable usb inputdevices like keyboard and mouse; rubberducky mitigation
+# mass storage devices will still be allowed
+sudo echo 'blacklist usbhid' > /etc/modprobe.d/usbhid.conf
+sudo update-initramfs -u -k $(uname -r)  #update the boot configuration then reboot
+

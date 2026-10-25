@@ -58,9 +58,7 @@ file: /etc/ssh/sshd_config
   AddressFamily inet         #only ipv4 allowed
   PermitRootLogin no         #make sure there is another user!
   PasswordAuthentication no  #set up keyauthentication first!
-
 # allow or deny users, add to the end
-file: /etc/ssh/sshd_config
   AllowUsers {user} {user}
   DenyUsers {user} {user}
   AllowGroups {group} {group}

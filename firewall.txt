@@ -6,6 +6,7 @@ sudo ufw disable
 
 # add rules
 sudo ufw default deny incoming  #deny all incoming traffic EXCEPt PINGS !
+sudo ufw default deny forward
 sudo ufw default allow outgoing
 
 sudo ufw limit 22/tcp  #limit: some protection against brute force, ssh uses tcp
@@ -56,6 +57,15 @@ OR AND
 #on local network the resulting behavior is not the same as pinging a unused ip !
 #instead of "Destination Host Unreachable" error it is silence.
 
+# lock it down by denying outgoing connections. this will disable you internet connection!
+sudo ufw default deny outgoing
+# enable 1 by 1 the type of connections that you need
+sudo ufw allow out on {interface} to 1.1.1.1 proto udp port 53 comment 'allow DNS on {interface}'
+sudo ufw allow out on {interface} to any proto tcp port 80 comment 'allow HTTP on {interface}'
+sudo ufw allow out on {interface} to any proto tcp port 443 comment 'allow HTTPS on {interface}'
+# dont forget to set your network managers dns to match your rules!
+sudo ufw allow out on {interface} from {my-ip} to {destination-ip} proto tcp port {destination-port}  #example
+
 # logs
 service rsyslog status  #for ufw logging to work, rsyslog must be enabled.
 
@@ -66,25 +76,24 @@ sudo ufw logging low     #logs all blocked or allowed packets by defined policie
                  medium  #same as above, and additionally, it includes packets not matching policies.
                  high    #logs all rate-limiting and without rate limiting.
                  full    #logs all packets without rate limiting.
-
-sudo tail -f /var/log/ufw.log
-    IN    device for incoming traffic.
-    OUT   device for outgoing traffic.
-    MAC   device’s MAC address.
-    SRC   connection source IP address.
-    DST   destination IP address of a connection.
-    LEN   packet’s length.
-    TOS   (Type of Service) packet classification, it is deprecated.
-    PREC  Precedence Type of Service.
-    TTL   Time To Live.
-    ID    unique ID for the IP datagram, which is shared by fragments of the same packet.
-    PROTO the used protocol.
-    SPT   source port.
-    DPT   destination port.
-
+# logfiles
 grep -i ufw /var/log/syslog
 grep -i ufw /var/log/messages
 grep -i ufw /var/log/kern.log
+sudo tail -f /var/log/ufw.log
+  IN    device for incoming traffic.
+  OUT   device for outgoing traffic.
+  MAC   device’s MAC address.
+  SRC   connection source IP address.
+  DST   destination IP address of a connection.
+  LEN   packet’s length.
+  TOS   (Type of Service) packet classification, it is deprecated.
+  PREC  Precedence Type of Service.
+  TTL   Time To Live.
+  ID    unique ID for the IP datagram, which is shared by fragments of the same packet.
+  PROTO the used protocol.
+  SPT   source port.
+  DPT   destination port.
 
 
 # to-do: firewalld

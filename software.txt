@@ -14,8 +14,8 @@ whereis {program}     #locate programfiles
 info {program}        #advanced than man but less program
 apropos {keyword}     #search the manual
 whatis {program}      #simple description
-help {command}        #info on bash commands
-type {command}        #simple info
+type -a {command}     #command is what type? alias, shell builtin and where does it lives
+help {command}        #help page for shell builtin
 command -v {program}  #shows what runs exactly
 
 date                #shows the current date and time

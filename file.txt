@@ -3,6 +3,8 @@ pwd                #path to working directory
 ls -lah            #list the files in directory, -a hidden files, -l more info, -h human readable sizes
 ls -R {directory}  #lists all the files and the files in subdirectories too
 ls -d */           #list only directories
+ls -r              #reversed alphabetic order
+ls -t              #order by latest time created
 tree {folder}      #lists what inside with hirearchy
 cd {directory}     #change directory
 cd ..              #move up on the directory tree
@@ -105,6 +107,7 @@ chown -h {user}:{group} {linkfile}  #change owner of the linkfile. whitout the -
 # grep is for finding text in a file
 grep "{sting}" {file}  #look for a string in a file, you can add multiple files
 grep -r "{sting}" .    #look for a string in all the files in the current directory
+grep -w "{sting}"      #look for exact match
 
 # find is for finding files
 find {directory} -iname a*              #search for files starting with a or A. case insensitive search
@@ -131,6 +134,7 @@ tail -f {file}     #monitor a log file, printing new additions to the file until
 sudo apt install mc
 
 # nano editor
+Ctrl + g       #help
 Shift + arrow  #selection
 Ctrl + u       #paste
 Alt + 6        #copy, on mac Esc + 6

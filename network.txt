@@ -1,5 +1,6 @@
 hostname -I     #shows your ip
 ip a            #shows network configuration
+ip a | grep -w "inet"  #ipv4 ip network interface
 ip -s link      #packet flow traffic info
 ip -br -c a     #interface status
 ifconfig        #shows network configuration + packet flow traffic info
@@ -78,6 +79,11 @@ watch 'nmcli device wifi | grep -E "IN-USE|{networkname}|{networkname}"'  #monit
 # tips n tricks
 ethtool {network-interface} | grep Speed          #shows speed of ethernet
 sudo ip address add {new2ndhostip/24} dev {eth0}  #temporarly configure secondary ip(del for delete)
+
+# test connection between two machines
+sudo apt iperf3 install
+iperf -s  #server listening
+iperf3 -c {serverip} -p {serverport}
 
 -+-+-+-+-+-+ dns +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 file: /etc/hosts                        #local dns rules. your system looks here first
@@ -173,3 +179,11 @@ sudo apt install net-tools  #if you need netstat ifconfig + more cool tools
 # ignore 5GHz wifi in ubuntu desktop
 nm-connection-editor
 # band option under the wifitab that will let you select: Automatic, A 5GHz, B/G 2.4GHz
+
+# cups: printer interface
+systemctl disable cups-browsed   #disable cups
+sudo apt autoremove cups-daemon  #remove cups
+
+# avahi: apples rendezvous bonjour protocol
+sudo systemctl disable avahi-daemon  #disable avahi
+sudo apt purge avahi-daemon          #remove avahi

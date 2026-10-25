@@ -7,6 +7,7 @@
 curl {https://url}  #content. like the index.html filecontent. HTTP GET is default if you dont specify
 curl -I {url}       #header. HEAD method is default
 curl -i {url}       #header + content
+curl -fsSL {url}    #-f: fail on error -s: hide progress -S: show error message -L: follow redirects
 
 curl -o {file} {url}      #writes to a file
 curl -O {url/index.html}  #downloads a specific file

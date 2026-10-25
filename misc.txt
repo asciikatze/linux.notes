@@ -40,3 +40,12 @@ umount /dev/sdb2  #unmount the filesystem you want to disable journaling on
 debugfs -R features /dev/sdb2
 tune2fs -O ^has_journal /dev/sdb2  #disable journal; whitour the ^ enable journal
 debugfs -R features /dev/sdb2  #see if journaling dissapeared
+
+-+-+-+-+-+ tips n tricks-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+head -c 16 /dev/urandom | base64  #generate 16 character long random string
+# base64 converts form binary data to readeable format
+base64 /dev/urandom  #continously generate random data; Ctrl+c to stop
+head -c 10M /dev/urandom | base64 > file.txt  #makes a 10megabyte file with random data
+find {folder} -type f -exec sh -c 'touch "{}"'  #-type f means files. -exec means execute in this case a sh shell command. touch "{}" means touch all the found files. "{}" placeholder for files the brackets are needed.
+# help: https://www.youtube.com/watch?v=URrSf2uKg0c
+

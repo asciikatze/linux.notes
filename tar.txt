@@ -1,3 +1,6 @@
+tar -cf {archive.tar} {files or directory you want to include}  #archive files in tar a tar file, -cfv for verbose
+tar -cvf {archive.tar} *.txt  #archive all txt files in from current directory
+
 tar -xf {archive.tar}  #unpack, -xvf for verbose
 # for *.tar.gz
 #     *.tar.bz2
