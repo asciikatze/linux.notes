@@ -6,7 +6,8 @@ id                 #current users UID(username) and member of groups=GID(groupna
 id -u {user}       #shows only user UID
 
 su - {user}  #switch to user. the - or -l loads the $PATH variables for the user
-su -         #switch to root
+su -  OR  sudo -i  #switch to root with roots environment variables
+su    OR  sudo -s  #switch to root with users environment variables
 
 adduser {user}  #creates user with every important settings. if you want to specify things see useradd
 OR
@@ -29,6 +30,9 @@ sudo passwd -u root    #enable root account
 OR
 sudo chsh root         #change the loginshell to /usr/sbin/nologin binary shell, you can check for it in the /etc/passwd file
 sudo nano /etc/passwd  #you have to change it back manually
+
+sudo passwd -S {user}  #show status of user account
+sudo passwd -e {user}  #forcing password change on next login
 
 # brute force login mitigation with faillock
 file: /etc/security/faillock.conf    
@@ -67,6 +71,7 @@ grep '^{group}:.*$' /etc/group | cut -d: -f4  #members of a group
 sudo !!  #runs most recent command as sudo
 sudo -l  #show sudo privileges for current user. -ll more readable
 sudo -l -U {user}  #show sudo privileges for user
+sudo -u {user} {command}  #run command as specific user
 
 # sudo privileges  WHO WHERE=(ASWHO) WHAT
 # ALL ALL=(ALL) ALL grants full sudo privileges to all users on all hosts for all commands 

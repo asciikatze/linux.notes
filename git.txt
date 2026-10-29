@@ -17,6 +17,9 @@ git remote -v  #check the link to the remote repo
 git remote add origin https://github.com/username/repository.git  #add link if nothing present
 git remote set-url origin git@github.com:username/repository.git  #change link, in this case to use ssh
 
+git remote add {remotename} {linktoremote/repo.git}  #you can add more than one remote
+git remote remove {remotename}
+
 -+-+-+-+-+-+ setup ssh +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # use your best practices for generating and managing ssh keys
 # GO TO https://github.com LOG IN and upload your public key
@@ -53,8 +56,11 @@ git log                    #show commit history
 git reset HEAD~            #undo the last commit set everything back to before previous stage
 
 # (4) push changes
-git branch -M main  #set the branch if needed
 git push -u origin main  OR  git push --all
+# -u --set-upstream  configures the default upstream location; dont need to use it all the time.
+# origin  is the name of the remote you want to push to
+# main    is the name of the branch
+git branch -M main  #set the branch if needed
 
 # (5) keep updated with the remote repository
 git pull   #pull=fetch+merge; NOT ADVISED to use this!

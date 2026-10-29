@@ -6,15 +6,16 @@ sudo ufw disable
 
 # add rules
 sudo ufw default deny incoming  #deny all incoming traffic EXCEPt PINGS !
-sudo ufw default deny forward
 sudo ufw default allow outgoing
+sudo ufw default deny forward
 
 sudo ufw limit 22/tcp  #limit: some protection against brute force, ssh uses tcp
 sudo ufw deny 80/tcp   #deny: ignoring / reject: let the sender know traffic is being denied
 sudo ufw allow 443/tcp
 ufw {rule-here} comment '{comment-text-here}'  #add comment to rule
 
-sudo ufw limit from 192.168.1.0/24 to any port 22 proto tcp  #ssh access on port 22 from local address
+sudo ufw limit from 192.168.1.0/24 to any port 22 proto tcp  #ssh access on port 22 from local network
+sudo ufw allow from any to any port 80,443 proto tcp  #allow incoming from anywhere to port 80 and 443
 
 # delete rules
 sudo ufw delete {rule-here}
@@ -94,6 +95,56 @@ sudo tail -f /var/log/ufw.log
   PROTO the used protocol.
   SPT   source port.
   DPT   destination port.
+
+-+-+-+-+-+-+ fail2ban -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# secure ssh connections
+file: /etc/fail2ban/jail.local
+  [sshd]
+  enabled = true
+  port = 22
+  filter = sshd
+  logpath = /var/log/auth.log
+  maxretry = 3
+  bantime = {time in seconds}
+  ignoreip = {ip}
+systemctl restart fail2ban.service
+
+fail2ban-client status  #shows the available jails
+fail2ban-client status {jailname}  #shows the satate of the jail
+
+# question: how is this different from ssh config max tries?
+
+-+-+-+-+-+-+ iptables -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# netfilter: kernel framework. iptables: packet selection system.
+# default tables: filter, nat, mangle, raw, security
+# defailt chains: input, output, forward, prerouting, postrouting
+# default targets: accept, drop, reject, log, return
+# creating rules = match + target
+# ip6tables handles ipv6!
+
+apt install iptables-presistent  #package for presistent rule change!
+
+iptables -L  #list policies
+iptables -P {chain} {policy}  #change policy
+iptables -P INPUT DROP  #drop all incoming packets
+iptables -I INPUT -p tcp --dport 22 -j DROP  #drop all ssh connections
+
+# use iptables -A to append more rules, iptables -D to delete a rule
+iptables -A INPUT -p tcp --dport 22 -s {sourceip} -j ACCEPT  #allow ssh from specific ip
+
+# configure webserver http and https
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+# allow dns traffic
+iptables -A INPUT -p tcp --dport 53 -j ACCEPT
+iptables -A INPUT -p udp --dport 53 -j ACCEPT
+
+# configure ftp server
+iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+iptables -A INPUT -p tcp --dport 20 -j ACCEPT
+iptables -A INPUT -m conntrack --cstate ESTABLISHED,RELATED -j ACCEPT
+
+iptables -F  #flush all rules except policies
 
 
 # to-do: firewalld

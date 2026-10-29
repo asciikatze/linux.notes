@@ -43,13 +43,30 @@ systemd-inhibit --list  #commands that inhibits operations; shutdown restart sle
 
 -+-+-+-+-+-+ journal logs -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # journalctl allows you to query and display logs collected by the systemd journal
-sudo journalctl -xe             #logs for systemd stuff
-sudo journalctl -u {service}    #logs for a service. -f follow -e jump to end
-sudo journalctl -p 3 -xb
+# help: https://linuxize.com/cheatsheet/journalctl/
+
+sudo journalctl -xe           #logs for systemd stuff
+sudo journalctl -k -b         #kernel messages for current boot
+sudo journalctl -b -1         #previous boot logs
+sudo journalctl -u {service}  #logs for a service. -f follow -e jump to end
+
+sudo journalctl -p 3 -xb         #-x explanatory messages, -b current boot logs, -p 3 priority number(0-7)
+sudo journalctl -p err           #errors and above
+sudo journalctl -p warning       #warnings and above
+sudo journalctl -k -p err -b -1  #previous boot kernel errors
+
+sudo journalctl -g "failed"            #filter messages by pattern
+sudo journalctl -u nginx -g "timeout"  #pattern search within a unit
+sudo journalctl -u ssh --since "1 day ago" -g "invalid user"
+sudo journalctl --since "today" --no-pager > today.log
+# add --user for current user logs
+journalctl _UID=1000  #logs from specific user by id
+journalctl _PID=1234   #by process
+journalctl _COMM=sshd  #by processname
 
 #if journalctl is empty there may be a problem so restart the journalctl daemon
 sudo systemctl list-units | grep journal  #to find out the daemon name for journalctl
 sudo systemctl restart systemd-journald   #restarts systemd-journald
 
 
-# to-do: strace
+# to-do: strace  https://www.youtube.com/watch?v=mBfurelWwPQ

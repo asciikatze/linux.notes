@@ -39,6 +39,7 @@ tailscale ping --icmp {node}  #normal ping instead of a tailscale layer ping
 tailscale dns status
 tailscale dns -help
 tailscale dns query {google.com}
+# help: https://tailscale.com/docs/features/magicdns
 
 tailscale netcheck  #nodes view of the public tailscale infrastructure
 tailscale netcheck --help
@@ -77,7 +78,7 @@ tailscale set --relay-server-port=40000  #you need open port forward for 40000 U
 
 -+-+-+-+-+-+ tailcat +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # help: https://www.youtube.com/watch?v=pA8e1uX195A
-# tailcet uses the talscale DERP server infrastructure whitout a tailscale account.
+# tailcat uses the tailscale DERP server infrastructure whitout a tailscale account.
 # install: https://github.com/tailscale/tailcat
 
 tailcat serve  #gives a address string

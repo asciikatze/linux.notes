@@ -82,7 +82,7 @@ sudo ip address add {new2ndhostip/24} dev {eth0}  #temporarly configure secondar
 
 # test connection between two machines
 sudo apt iperf3 install
-iperf -s  #server listening
+iperf3 -s  #server listening
 iperf3 -c {serverip} -p {serverport}
 
 -+-+-+-+-+-+ dns +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -183,7 +183,18 @@ nm-connection-editor
 # cups: printer interface
 systemctl disable cups-browsed   #disable cups
 sudo apt autoremove cups-daemon  #remove cups
+cups-service  cups.path  cups.socket
 
 # avahi: apples rendezvous bonjour protocol
 sudo systemctl disable avahi-daemon  #disable avahi
 sudo apt purge avahi-daemon          #remove avahi
+avahi-daemon.socket
+
+# network bonding
+# using more than one network interface to increase bandwith
+mode0 between 2 servers
+mode4 if your switch support it
+mode6 if your switch does not support it
+mode1 active backup
+# to-do: how to set these up in ubuntu networkd
+

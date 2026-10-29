@@ -143,3 +143,15 @@ sudo dd if=/dev/urandom of={file.bin} bs=1M count=100
 sudo echo 'blacklist usbhid' > /etc/modprobe.d/usbhid.conf
 sudo update-initramfs -u -k $(uname -r)  #update the boot configuration then reboot
 
+# send tmp and logfiles to ram (for ssd health)
+file: /etc/fstab  #add following lines
+  tmpfs  /var/log  tmpfs  defaults,noatime 0 0
+  tmpfs  /var/tmp  tmpfs  defaults,noatime 0 0
+  tmpfs  /tmp      tmpfs  defaults,noatime 0 0
+
+# disable journaling (for ssd health)
+umount /dev/sdb2  #unmount the filesystem you want to disable journaling on
+debugfs -R features /dev/sdb2
+tune2fs -O ^has_journal /dev/sdb2  #disable journal; whitour the ^ enable journal
+debugfs -R features /dev/sdb2  #see if journaling dissapeared
+

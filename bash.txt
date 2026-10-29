@@ -1,3 +1,4 @@
+-+-+-+-+-+-+ terminal shell -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 # terminal/console: device that sends data from input to a computer and renders data on a screen from a computer
 # virtual terminal is a full-screen terminal which doesn't run inside an X window. tty session
 Ubuntu: Ctrl+Alt+F3-F7  F1-GUIlogin  F2-GUIdesktop 
@@ -14,17 +15,20 @@ w    #shows who runs what session
 tty  #shows your session device type and number. device: /dev/tty{number} or dev/pts/{number}
 echo "{text}" > /dev/pts/3  #writes a text to standard output on device dev/pts/3
 
-Ctrl+Alt+t         #open bash terminal window
+Ctrl+Alt+t       #open terminal window
+Ctrl+d OR exit   #exit terminal
+Ctrl+l OR clear  #clears the screen
+Ctrl+Shift+c     #copy
+Ctrl+Shift+v     #paste
+Ctrl+w           #delete last continous string on the command line
+
 echo $0  OR  echo $SHELL  #shows what shell you are running
 cat /etc/shells    #list of valid login shells
-exit  OR  Ctrl+d   #exit terminal
-clear  OR  Ctrl+l  #clears the screen
-Ctrl+w             #delete last continous string on the command line
-history            #lists all previously entered commands
+# type in the name of the shell you want to change to: sh  bash  etc..
+chsh               #change default shell for user
 
-# make ubuntu 26.04 Ptyxis terminal transparent
-conf read /org/gnome/Ptyxis/default-profile-uuid
-conf write /org/gnome/Ptyxis/Profiles/{default-profile-uuid}/opacity 0.8
+history  #lists all previously entered commands
+cat /dev/null > ~/.bash_history  #clear the historyfile
 
 # environment variables: universally avaiable values by programs in your session
 printenv  OR  env                 #list all environment variables
@@ -35,13 +39,11 @@ export PATH="$PATH:/path/to/new"  #adds the /path/to/new directory to your $PATH
 # add the previous line to your .bashrc file to be permanent
 source .bashrc  #initialize the .bashrc file again
 
-# help: https://linuxconfig.org/sudo-install-usage-and-sudoers-config-file-basics
-sudo -i
-sudo -s
-sudo bash
+# make ubuntu 26.04 Ptyxis terminal transparent
+conf read /org/gnome/Ptyxis/default-profile-uuid
+conf write /org/gnome/Ptyxis/Profiles/{default-profile-uuid}/opacity 0.8
 
-# program management
-
+-+-+-+-+-+-+ program management -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ./{program.sh} &  #starts the program and puts it in the background
 {command} &       #runs command in the background
 jobs              #list of running processes in current session with [JOBID]
@@ -55,7 +57,7 @@ pgrep {program}            #shows PID for a program
 ps aux | grep "{program}"  #find the PID number of a process. grep is in the results that is not what you looking for!
 ps -Flww -p {PID}          #more info about program behind a pid
 
-Ctrl+c                 #try to close it, sends SIGINT signal. ! COPY: Shift+Ctrl+c, PASTE: Shift+Ctrl+v !
+Ctrl+c                 #try to close it, sends SIGINT signal
 Ctrl+z                 #pause running process SIGSTOP
 kill -l                #shows killsignal list
 kill {PID}             #termiante program by PID number, default signal: SIGTERM
